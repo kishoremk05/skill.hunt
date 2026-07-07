@@ -9,13 +9,6 @@ export default function RecentActivity() {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
 
-  const staticActivities = [
-    { title: "Faculty Review Completed", time: "2 hours ago", icon: Star, color: "text-white bg-white/10 border-white/20" },
-    { title: "Peer Voting Started", time: "1 day ago", icon: Users, color: "text-white bg-white/10 border-white/20" },
-    { title: "Rubric Evaluated", time: "2 days ago", icon: CheckCircle2, color: "text-white bg-white/10 border-white/20" },
-    { title: "Project Submitted Successfully", time: "5 days ago", icon: Award, color: "text-white bg-white/10 border-white/20" },
-  ];
-
   useEffect(() => {
     const fetchActivity = async () => {
       if (!user) return;
@@ -45,8 +38,6 @@ export default function RecentActivity() {
     fetchActivity();
   }, [user]);
 
-  const displayActivities = activities.length > 0 ? activities : staticActivities;
-
   return (
     <>
       {/* Compact text button */}
@@ -57,7 +48,7 @@ export default function RecentActivity() {
         <Zap className="h-3.5 w-3.5 text-white/40 group-hover:text-white transition-colors" />
         <span>Recent Activity</span>
         <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-white/10 text-white text-[9px] font-black">
-          {displayActivities.length}
+          {activities.length}
         </span>
       </button>
 
@@ -99,22 +90,28 @@ export default function RecentActivity() {
                 </div>
               ) : (
                 <div className="relative">
-                  <div className="absolute left-3 top-0 bottom-0 w-px bg-white/10" />
-                  <div className="space-y-4 pl-8">
-                    {displayActivities.map((act: any, idx: number) => {
-                      const Icon = act.icon || Bell;
-                      const colorClass = act.color || "text-white bg-white/10 border-white/20";
-                      return (
-                        <div key={idx} className="relative">
-                           <div className={`absolute -left-[29px] top-0.5 w-6 h-6 rounded-full border flex items-center justify-center ${colorClass} shadow-sm`}>
-                            <Icon className="h-3 w-3" />
-                          </div>
-                          <h4 className="text-xs font-bold text-white leading-snug">{act.title}</h4>
-                          <span className="text-[10px] text-white/40 font-semibold block mt-0.5">{act.time}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
+                  {activities.length > 0 ? (
+                    <>
+                      <div className="absolute left-3 top-0 bottom-0 w-px bg-white/10" />
+                      <div className="space-y-4 pl-8">
+                        {activities.map((act: any, idx: number) => {
+                          const Icon = act.icon || Bell;
+                          const colorClass = act.color || "text-white bg-white/10 border-white/20";
+                          return (
+                            <div key={idx} className="relative">
+                               <div className={`absolute -left-[29px] top-0.5 w-6 h-6 rounded-full border flex items-center justify-center ${colorClass} shadow-sm`}>
+                                <Icon className="h-3 w-3" />
+                              </div>
+                              <h4 className="text-xs font-bold text-white leading-snug">{act.title}</h4>
+                              <span className="text-[10px] text-white/40 font-semibold block mt-0.5">{act.time}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
+                  ) : (
+                    <p className="text-xs text-white/40 italic text-center py-4">No recent activity logged.</p>
+                  )}
                 </div>
               )}
             </div>

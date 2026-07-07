@@ -6,14 +6,6 @@ export default function LeaderboardPreview() {
   const [standings, setStandings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const staticStandings = [
-    { rank: 1, project: "Autonomous Mapping Drone", score: "96.8" },
-    { rank: 2, project: "MediChain Record System", score: "93.8" },
-    { rank: 3, project: "EcoTrack Carbon Analyzer", score: "93.1" },
-    { rank: 4, project: "SmartGrid AI Distribution", score: "90.9" },
-    { rank: 5, project: "FinAI Sentiment Trading Bot", score: "90.5" },
-  ];
-
   useEffect(() => {
     const fetchStandings = async () => {
       try {
@@ -32,10 +24,10 @@ export default function LeaderboardPreview() {
             score: d.projects?.final_score?.toFixed(1) || "—",
           })));
         } else {
-          setStandings(staticStandings);
+          setStandings([]);
         }
       } catch {
-        setStandings(staticStandings);
+        setStandings([]);
       } finally {
         setLoading(false);
       }
@@ -69,36 +61,40 @@ export default function LeaderboardPreview() {
         </div>
       ) : (
         <div className="flex-1 space-y-2">
-          {standings.map((team, idx) => {
-            const rankMeta = getRankDisplay(team.rank);
-            const Icon = rankMeta?.icon;
-            return (
-              <div
-                key={idx}
-                className={`flex items-center justify-between px-4 py-3 rounded-2xl border transition-all hover:scale-[1.01] ${
-                  team.rank <= 3
-                    ? rankMeta!.color
-                    : "bg-white/5 border-white/12 hover:bg-white/10"
-                }`}
-              >
-                <div className="flex items-center gap-3 overflow-hidden">
-                  <div className={`w-6 h-6 flex items-center justify-center shrink-0`}>
-                    {Icon ? (
-                      <Icon className={`h-4 w-4 ${team.rank === 1 ? "text-white" : team.rank === 2 ? "text-white/80" : "text-white/60"}`} />
-                    ) : (
-                      <span className="text-xs font-extrabold text-white/40">{team.rank}</span>
-                    )}
+          {standings.length > 0 ? (
+            standings.map((team, idx) => {
+              const rankMeta = getRankDisplay(team.rank);
+              const Icon = rankMeta?.icon;
+              return (
+                <div
+                  key={idx}
+                  className={`flex items-center justify-between px-4 py-3 rounded-2xl border transition-all hover:scale-[1.01] ${
+                    team.rank <= 3
+                      ? rankMeta!.color
+                      : "bg-white/5 border-white/12 hover:bg-white/10"
+                  }`}
+                >
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    <div className={`w-6 h-6 flex items-center justify-center shrink-0`}>
+                      {Icon ? (
+                        <Icon className={`h-4 w-4 ${team.rank === 1 ? "text-white" : team.rank === 2 ? "text-white/80" : "text-white/60"}`} />
+                      ) : (
+                        <span className="text-xs font-extrabold text-white/40">{team.rank}</span>
+                      )}
+                    </div>
+                    <span className={`text-xs font-bold truncate ${team.rank <= 3 ? "text-white" : "text-white/70"}`}>
+                      {team.project}
+                    </span>
                   </div>
-                  <span className={`text-xs font-bold truncate ${team.rank <= 3 ? "text-white" : "text-white/70"}`}>
-                    {team.project}
+                  <span className="text-xs font-extrabold text-white bg-white/10 px-2 py-0.5 rounded-lg border border-white/20 shrink-0 ml-2">
+                    {team.score}
                   </span>
                 </div>
-                <span className="text-xs font-extrabold text-white bg-white/10 px-2 py-0.5 rounded-lg border border-white/20 shrink-0 ml-2">
-                  {team.score}
-                </span>
-              </div>
-            );
-          })}
+              );
+            })
+          ) : (
+            <p className="text-xs text-white/40 italic text-center py-6">No leaderboard standings published yet.</p>
+          )}
         </div>
       )}
 

@@ -12,6 +12,7 @@ import AdminAnalyticsView from "./views/AdminAnalyticsView";
 import AdminSettingsView from "./views/AdminSettingsView";
 import ReportsView from "./views/ReportsView";
 import FacultyNotifications from "../Faculty/views/FacultyNotifications";
+import AdminProfile from "./views/AdminProfile";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase";
 
@@ -134,6 +135,7 @@ export default function AdminDashboard() {
           setIsCollapsed={setSidebarCollapsed}
           onQuickCreate={handleQuickCreate}
           onSearch={(query) => setSearchQuery(query)}
+          onProfileClick={() => setActiveTab("profile")}
         />
 
         {/* Content Body Grid */}
@@ -165,6 +167,8 @@ export default function AdminDashboard() {
           {activeTab === "reports" && <ReportsView />}
 
           {activeTab === "notifications" && <FacultyNotifications />}
+
+          {activeTab === "profile" && <AdminProfile />}
         </main>
       </div>
     </div>

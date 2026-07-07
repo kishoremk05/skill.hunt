@@ -224,7 +224,7 @@ export default function FacultyDashboard() {
       {/* Main content container shifting left on desktop to give room for the fixed sidebar */}
       <div className={`min-h-screen flex flex-col transition-all duration-300 ease-in-out ${sidebarCollapsed ? "md:pl-20" : "md:pl-64"}`}>
         {/* Top Navbar */}
-        <FacultyNavbar isCollapsed={sidebarCollapsed} />
+        <FacultyNavbar isCollapsed={sidebarCollapsed} onProfileClick={() => setActiveTab("profile")} />
 
         {/* Content view body */}
         <main className="flex-1 p-5 sm:p-7 pt-20 sm:pt-24 max-w-[1600px] w-full mx-auto space-y-8">

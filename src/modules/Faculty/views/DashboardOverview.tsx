@@ -5,15 +5,7 @@ import { Project } from "../components/ProjectDetailCard";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 
-const CHART_DATA = [
-  { name: "Mon", evaluations: 2 },
-  { name: "Tue", evaluations: 5 },
-  { name: "Wed", evaluations: 3 },
-  { name: "Thu", evaluations: 8 },
-  { name: "Fri", evaluations: 6 },
-  { name: "Sat", evaluations: 4 },
-  { name: "Sun", evaluations: 1 },
-];
+
 
 interface DashboardOverviewProps {
   projects: Project[];
@@ -25,6 +17,9 @@ export default function DashboardOverview({ projects, onSelectProject, setActive
   const { user } = useAuth();
   const [fullName, setFullName] = useState("Faculty");
   const [avgScoreGiven, setAvgScoreGiven] = useState<string>("N/A");
+  const [classAvg, setClassAvg] = useState<string>("N/A");
+  const [chartData, setChartData] = useState<{ name: string; evaluations: number }[]>([]);
+  const [eventName, setEventName] = useState("AI Innovation Expo 2026");
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -46,12 +41,57 @@ export default function DashboardOverview({ projects, onSelectProject, setActive
   }, [user]);
 
   useEffect(() => {
+    const fetchActiveEvent = async () => {
+      try {
+        const { data: settings } = await supabase
+          .from("settings")
+          .select("events:current_event_id(title)")
+          .single();
+        if (settings && (settings as any).events?.title) {
+          setEventName((settings as any).events.title);
+        }
+      } catch (err) {
+        console.error("Error fetching active event in Faculty DashboardOverview:", err);
+      }
+    };
+
+    fetchActiveEvent();
+
+    // Subscribe to settings table updates
+    const settingsChannel = supabase
+      .channel("faculty-overview-sync")
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "settings" },
+        async (payload) => {
+          if (payload.new && payload.new.current_event_id) {
+            const { data: eventData } = await supabase
+              .from("events")
+              .select("title")
+              .eq("id", payload.new.current_event_id)
+              .single();
+            if (eventData) {
+              setEventName(eventData.title);
+            }
+          } else {
+            setEventName("No Active Event");
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(settingsChannel);
+    };
+  }, []);
+
+  useEffect(() => {
     const fetchStats = async () => {
       if (!user) return;
       try {
         const { data: evals } = await supabase
           .from("evaluations")
-          .select("total_score")
+          .select("total_score, created_at")
           .eq("faculty_id", user.id)
           .eq("status", "submitted");
 
@@ -61,6 +101,42 @@ export default function DashboardOverview({ projects, onSelectProject, setActive
         } else {
           setAvgScoreGiven("N/A");
         }
+
+        // Fetch overall class average (all submitted evaluations)
+        const { data: allEvals } = await supabase
+          .from("evaluations")
+          .select("total_score")
+          .eq("status", "submitted");
+
+        if (allEvals && allEvals.length > 0) {
+          const avgAll = allEvals.reduce((sum: number, item: any) => sum + parseFloat(item.total_score || 0), 0) / allEvals.length;
+          setClassAvg(avgAll.toFixed(1));
+        } else {
+          setClassAvg("N/A");
+        }
+
+        // Generate 7-day chart data based on actual evaluations
+        const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        const last7Days = Array.from({ length: 7 }).map((_, i) => {
+          const d = new Date();
+          d.setDate(d.getDate() - (6 - i));
+          return {
+            name: days[d.getDay()],
+            dateStr: d.toDateString(),
+            evaluations: 0,
+          };
+        });
+
+        if (evals) {
+          evals.forEach((item: any) => {
+            const evalDate = new Date(item.created_at).toDateString();
+            const found = last7Days.find((d) => d.dateStr === evalDate);
+            if (found) {
+              found.evaluations += 1;
+            }
+          });
+        }
+        setChartData(last7Days.map((d) => ({ name: d.name, evaluations: d.evaluations })));
       } catch (err) {
         console.error("Error fetching stats:", err);
       }
@@ -102,7 +178,7 @@ export default function DashboardOverview({ projects, onSelectProject, setActive
       value: avgScoreGiven,
       icon: BarChart3,
       color: "text-indigo-650 bg-indigo-50 dark:bg-indigo-950/40",
-      trend: "Class Avg 81.5",
+      trend: classAvg !== "N/A" ? `Class Avg ${classAvg}` : "Class Avg N/A",
       isTrendUp: true,
     },
   ];
@@ -121,14 +197,14 @@ export default function DashboardOverview({ projects, onSelectProject, setActive
           <div className="flex-1">
             <div className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-full bg-black/5 border border-black/10">
               <AlertCircle className="h-3.5 w-3.5 text-black/60" />
-              <span className="text-xs font-bold text-[#1a1a1a]">AI Innovation Expo 2026</span>
+              <span className="text-xs font-bold text-[#1a1a1a]">{eventName}</span>
             </div>
 
             <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-[#1a1a1a] mb-2 leading-tight">
               Welcome back, {fullName} 👋
             </h2>
             <p className="text-sm text-black/60 max-w-lg mb-7 leading-relaxed">
-              You are designated as evaluator for the <strong className="font-extrabold text-[#1a1a1a]">AI Innovation Expo 2026</strong>. 
+              You are designated as evaluator for the <strong className="font-extrabold text-[#1a1a1a]">{eventName}</strong>. 
               There are {pendingReviews} projects awaiting your weighted rubric grading.
             </p>
 
@@ -264,7 +340,7 @@ export default function DashboardOverview({ projects, onSelectProject, setActive
 
           <div className="h-56 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={CHART_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="evalGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#ffffff" stopOpacity={0.2} />

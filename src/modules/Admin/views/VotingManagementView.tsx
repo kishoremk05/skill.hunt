@@ -10,26 +10,9 @@ interface FraudLog {
   timestamp: string;
 }
 
-const FRAUD_LOGS: FraudLog[] = [
-  {
-    id: "f1",
-    studentName: "John Smith",
-    ipAddress: "192.168.1.42",
-    reason: "Duplicate session vote attempt from identical client token",
-    timestamp: "2026-07-06 14:22:10",
-  },
-  {
-    id: "f2",
-    studentName: "Jane Miller",
-    ipAddress: "172.56.22.105",
-    reason: "Rapid consecutive votes (5 submissions within 2 seconds)",
-    timestamp: "2026-07-05 18:05:44",
-  },
-];
-
 export default function VotingManagementView() {
   const [votingActive, setVotingActive] = useState(false);
-  const [logs, setLogs] = useState<FraudLog[]>(FRAUD_LOGS);
+  const [logs, setLogs] = useState<FraudLog[]>([]);
   const [voterCount, setVoterCount] = useState(0);
   const [loading, setLoading] = useState(true);
 

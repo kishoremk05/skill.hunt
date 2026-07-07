@@ -12,6 +12,8 @@ export default function StudentNavbar({ isCollapsed }: { isCollapsed: boolean })
   const [hasUnread, setHasUnread] = useState(false);
 
   useEffect(() => {
+    let settingsChannel: any;
+
     const fetchNavbarData = async () => {
       if (!user) return;
       try {
@@ -40,11 +42,40 @@ export default function StudentNavbar({ isCollapsed }: { isCollapsed: boolean })
           .eq("user_id", user.id)
           .eq("is_read", false);
         setHasUnread((count ?? 0) > 0);
+
+        // Subscribe to settings table updates
+        settingsChannel = supabase
+          .channel("student-settings-sync")
+          .on(
+            "postgres_changes",
+            { event: "UPDATE", schema: "public", table: "settings" },
+            async (payload) => {
+              if (payload.new && payload.new.current_event_id) {
+                const { data: eventData } = await supabase
+                  .from("events")
+                  .select("title")
+                  .eq("id", payload.new.current_event_id)
+                  .single();
+                if (eventData) {
+                  setActiveEventTitle(eventData.title);
+                }
+              } else {
+                setActiveEventTitle("No Active Event");
+              }
+            }
+          )
+          .subscribe();
       } catch (err) {
         console.error("Navbar error:", err);
       }
     };
     fetchNavbarData();
+
+    return () => {
+      if (settingsChannel) {
+        supabase.removeChannel(settingsChannel);
+      }
+    };
   }, [user]);
 
   const getInitials = (name: string) =>

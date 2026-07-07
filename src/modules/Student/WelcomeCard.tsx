@@ -18,6 +18,8 @@ export default function WelcomeCard({ setActiveTab }: WelcomeCardProps) {
   const [projectStatus, setProjectStatus] = useState<string | null>(null);
 
   useEffect(() => {
+    let settingsChannel: any;
+
     const fetchData = async () => {
       if (!user) return;
       try {
@@ -72,11 +74,40 @@ export default function WelcomeCard({ setActiveTab }: WelcomeCardProps) {
         if (settings && (settings as any).events?.title) {
           setEventName((settings as any).events.title);
         }
+
+        // Subscribe to settings table updates
+        settingsChannel = supabase
+          .channel("student-welcome-sync")
+          .on(
+            "postgres_changes",
+            { event: "UPDATE", schema: "public", table: "settings" },
+            async (payload) => {
+              if (payload.new && payload.new.current_event_id) {
+                const { data: eventData } = await supabase
+                  .from("events")
+                  .select("title")
+                  .eq("id", payload.new.current_event_id)
+                  .single();
+                if (eventData) {
+                  setEventName(eventData.title);
+                }
+              } else {
+                setEventName("No Active Event");
+              }
+            }
+          )
+          .subscribe();
       } catch (err) {
         console.error("WelcomeCard error:", err);
       }
     };
     fetchData();
+
+    return () => {
+      if (settingsChannel) {
+        supabase.removeChannel(settingsChannel);
+      }
+    };
   }, [user]);
 
   const progressPct = totalRubrics > 0 ? (rubricsDone / totalRubrics) * 100 : 0;

@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Users, GraduationCap, Briefcase, FolderKanban, FileBadge, Vote, Trophy, Calendar, PlusCircle, UserPlus, ClipboardList, Download, ArrowUpRight } from "lucide-react";
 import StatCard from "../components/StatCard";
+import { supabase } from "@/lib/supabase";
 
 interface AdminDashboardOverviewProps {
   stats: {
@@ -18,6 +19,68 @@ interface AdminDashboardOverviewProps {
 }
 
 export default function AdminDashboardOverview({ stats, onQuickAction, setActiveTab }: AdminDashboardOverviewProps) {
+  const [eventName, setEventName] = useState("AI Innovation Expo 2026");
+  const [activeEventData, setActiveEventData] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchActiveEvent = async () => {
+      try {
+        const { data: settings } = await supabase
+          .from("settings")
+          .select(`
+            events:current_event_id(
+              title,
+              submission_start,
+              submission_end,
+              review_start,
+              review_end,
+              voting_start,
+              voting_end,
+              results_date
+            )
+          `)
+          .single();
+        if (settings && (settings as any).events) {
+          const ev = (settings as any).events;
+          setEventName(ev.title);
+          setActiveEventData(ev);
+        }
+      } catch (err) {
+        console.error("Error fetching active event in AdminDashboardOverview:", err);
+      }
+    };
+
+    fetchActiveEvent();
+
+    // Subscribe to settings table updates
+    const settingsChannel = supabase
+      .channel("admin-overview-sync")
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "settings" },
+        async (payload) => {
+          if (payload.new && payload.new.current_event_id) {
+            const { data: eventData } = await supabase
+              .from("events")
+              .select("title, submission_start, submission_end, review_start, review_end, voting_start, voting_end, results_date")
+              .eq("id", payload.new.current_event_id)
+              .single();
+            if (eventData) {
+              setEventName(eventData.title);
+              setActiveEventData(eventData);
+            }
+          } else {
+            setEventName("No Active Event");
+            setActiveEventData(null);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(settingsChannel);
+    };
+  }, []);
   const statCards = [
     {
       label: "Total Users",
@@ -96,7 +159,7 @@ export default function AdminDashboardOverview({ stats, onQuickAction, setActive
         <div className="relative z-10 flex-1">
           <h2 className="text-2xl sm:text-3xl font-black tracking-tight mb-2">Welcome back, Administrator 👋</h2>
           <p className="text-sm text-black/60 max-w-lg mb-6 leading-relaxed">
-            Current active showcase: <strong className="font-extrabold text-[#1a1a1a]">AI Innovation Expo 2026</strong>. 
+            Current active showcase: <strong className="font-extrabold text-[#1a1a1a]">{eventName}</strong>. 
             All submission windows are open and active.
           </p>
 
@@ -151,25 +214,43 @@ export default function AdminDashboardOverview({ stats, onQuickAction, setActive
           <h3 className="text-base font-black text-white">Active Stage Checkpoints</h3>
           <p className="text-xs text-white/40 mt-0.5">Timeline milestones for the active event.</p>
           <div className="mt-4 space-y-3">
-            {[
-              { label: "Submissions Window", status: "Active", time: "Ends July 10" },
-              { label: "Faculty Evaluation", status: "Ongoing", time: "Ends July 15" },
-              { label: "Peer Vote Window", status: "Upcoming", time: "Starts July 16" },
-            ].map((step, idx) => (
-              <div key={idx} className="flex items-center justify-between p-3 bg-white/5 rounded-2xl border border-white/12 text-xs">
-                <div>
-                  <h4 className="font-bold text-white/90">{step.label}</h4>
-                  <p className="text-white/40 mt-0.5 text-[10px]">{step.time}</p>
+            {activeEventData ? (
+              [
+                { 
+                  label: "Submissions Window", 
+                  status: new Date() < new Date(activeEventData.submission_end) ? "Active" : "Completed", 
+                  time: `Ends ${new Date(activeEventData.submission_end).toLocaleDateString("en-US", { month: "short", day: "numeric" })}` 
+                },
+                { 
+                  label: "Faculty Evaluation", 
+                  status: new Date() >= new Date(activeEventData.review_start) && new Date() <= new Date(activeEventData.review_end) ? "Ongoing" : new Date() < new Date(activeEventData.review_start) ? "Upcoming" : "Completed", 
+                  time: `Ends ${new Date(activeEventData.review_end).toLocaleDateString("en-US", { month: "short", day: "numeric" })}` 
+                },
+                { 
+                  label: "Peer Vote Window", 
+                  status: new Date() >= new Date(activeEventData.voting_start) && new Date() <= new Date(activeEventData.voting_end) ? "Active" : new Date() < new Date(activeEventData.voting_start) ? "Upcoming" : "Completed", 
+                  time: `Ends ${new Date(activeEventData.voting_end).toLocaleDateString("en-US", { month: "short", day: "numeric" })}` 
+                },
+              ].map((step, idx) => (
+                <div key={idx} className="flex items-center justify-between p-3 bg-white/5 rounded-2xl border border-white/12 text-xs">
+                  <div>
+                    <h4 className="font-bold text-white/90">{step.label}</h4>
+                    <p className="text-white/40 mt-0.5 text-[10px]">{step.time}</p>
+                  </div>
+                  <span className={`px-2.5 py-0.5 rounded-lg font-bold text-[10px] border ${
+                    step.status === "Active" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
+                    step.status === "Ongoing" ? "bg-orange-500/10 text-orange-400 border-orange-500/20" :
+                    "bg-white/5 text-white/40 border-white/12"
+                  }`}>
+                    {step.status}
+                  </span>
                 </div>
-                <span className={`px-2.5 py-0.5 rounded-lg font-bold text-[10px] border ${
-                  step.status === "Active" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
-                  step.status === "Ongoing" ? "bg-orange-500/10 text-orange-400 border-orange-500/20" :
-                  "bg-white/5 text-white/40 border-white/12"
-                }`}>
-                  {step.status}
-                </span>
+              ))
+            ) : (
+              <div className="p-4 text-center text-white/40 border border-dashed border-white/12 rounded-2xl text-xs font-semibold">
+                No active event selected. Configure settings to activate.
               </div>
-            ))}
+            )}
           </div>
         </div>
 

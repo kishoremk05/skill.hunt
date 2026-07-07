@@ -58,16 +58,145 @@ export default function ReportsView() {
     fetchCounts();
   }, []);
 
-  const handleDownload = (reportName: string, format: "PDF" | "CSV" | "Excel") => {
+  const handleDownload = async (reportId: string, reportName: string, format: "PDF" | "CSV" | "Excel") => {
     const reportKey = `${reportName}-${format}`;
     setDownloading(reportKey);
-    setTimeout(() => {
-      setDownloading(null);
+    try {
+      let csvContent = "";
+      const fileName = `${reportName.replace(/\s+/g, "_")}.${format.toLowerCase()}`;
+
+      if (reportId === "r1") {
+        // Student Enrolment Ledger
+        const { data } = await supabase
+          .from("profiles")
+          .select("full_name, email, department, status, created_at")
+          .eq("role", "student")
+          .order("full_name");
+        
+        if (data) {
+          const headers = ["Full Name", "Email Address", "Department", "Status", "Enrollment Date"];
+          const rows = data.map((r) => [
+            r.full_name,
+            r.email,
+            r.department || "N/A",
+            r.status || "active",
+            new Date(r.created_at).toLocaleDateString()
+          ]);
+          csvContent = [headers, ...rows].map((e) => e.map((val) => `"${val.replace(/"/g, '""')}"`).join(",")).join("\n");
+        }
+      } else if (reportId === "r2") {
+        // Faculty Grading Ledger
+        const { data } = await supabase
+          .from("profiles")
+          .select("full_name, email, department, status, created_at")
+          .eq("role", "faculty")
+          .order("full_name");
+        
+        if (data) {
+          const headers = ["Full Name", "Email Address", "Department", "Status", "Joined Date"];
+          const rows = data.map((r) => [
+            r.full_name,
+            r.email,
+            r.department || "N/A",
+            r.status || "active",
+            new Date(r.created_at).toLocaleDateString()
+          ]);
+          csvContent = [headers, ...rows].map((e) => e.map((val) => `"${val.replace(/"/g, '""')}"`).join(",")).join("\n");
+        }
+      } else if (reportId === "r3") {
+        // Showcase Project Abstracts
+        const { data } = await supabase
+          .from("projects")
+          .select("title, department, category, status, final_score, created_at")
+          .order("created_at", { ascending: false });
+        
+        if (data) {
+          const headers = ["Project Title", "Department", "Category", "Status", "Final Score", "Submitted Date"];
+          const rows = data.map((r) => [
+            r.title,
+            r.department || "N/A",
+            r.category || "N/A",
+            r.status,
+            r.final_score !== null && r.final_score !== undefined ? r.final_score : "Not Graded",
+            new Date(r.created_at).toLocaleDateString()
+          ]);
+          csvContent = [headers, ...rows].map((e) => e.map((val) => `"${String(val).replace(/"/g, '""')}"`).join(",")).join("\n");
+        }
+      } else if (reportId === "r4") {
+        // Rubrics Evaluation Ledger
+        const { data } = await supabase
+          .from("evaluations")
+          .select(`
+            total_score,
+            status,
+            submitted_at,
+            strengths,
+            improvements,
+            overall_feedback,
+            projects (title),
+            profiles:faculty_id (full_name)
+          `)
+          .order("submitted_at", { ascending: false });
+        
+        if (data) {
+          const headers = ["Project Title", "Evaluator Faculty", "Total Score", "Status", "Strengths", "Improvements", "Overall Feedback", "Evaluation Date"];
+          const rows = data.map((r) => [
+            (r.projects as any)?.title || "N/A",
+            (r.profiles as any)?.full_name || "N/A",
+            r.total_score || "0",
+            r.status,
+            r.strengths || "",
+            r.improvements || "",
+            r.overall_feedback || "",
+            r.submitted_at ? new Date(r.submitted_at).toLocaleDateString() : "N/A"
+          ]);
+          csvContent = [headers, ...rows].map((e) => e.map((val) => `"${String(val).replace(/"/g, '""')}"`).join(",")).join("\n");
+        }
+      } else if (reportId === "r5") {
+        // Peer Voting Standings
+        const { data } = await supabase
+          .from("votes")
+          .select(`
+            created_at,
+            projects (title),
+            profiles:student_id (full_name)
+          `)
+          .order("created_at", { ascending: false });
+        
+        if (data) {
+          const headers = ["Student Voter", "Voted Project", "Vote Timestamp"];
+          const rows = data.map((r) => [
+            (r.profiles as any)?.full_name || "N/A",
+            (r.projects as any)?.title || "N/A",
+            new Date(r.created_at).toLocaleString()
+          ]);
+          csvContent = [headers, ...rows].map((e) => e.map((val) => `"${val.replace(/"/g, '""')}"`).join(",")).join("\n");
+        }
+      }
+
+      if (csvContent) {
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute("download", fileName);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
       toast({
         title: "Report Exported",
-        description: `Successfully generated and downloaded '${reportName}' as ${format}.`,
+        description: `Successfully exported live database records for '${reportName}' as ${format}.`,
       });
-    }, 1500);
+    } catch (err: any) {
+      toast({
+        title: "Export Failed",
+        description: err.message || "An error occurred while exporting the ledger.",
+        variant: "destructive"
+      });
+    } finally {
+      setDownloading(null);
+    }
   };
 
   return (
@@ -104,7 +233,7 @@ export default function ReportsView() {
                 return (
                   <button
                     key={format}
-                    onClick={() => handleDownload(rep.name, format)}
+                    onClick={() => handleDownload(rep.id, rep.name, format)}
                     disabled={downloading !== null}
                     className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-white/12 text-[10px] font-bold text-white hover:bg-white hover:text-black transition-all disabled:opacity-50"
                   >

@@ -7,13 +7,6 @@ export default function UpcomingEvents() {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
 
-  const staticEvents = [
-    { title: "Submission Deadline", date: "Oct 15, 2026", time: "11:59 PM", status: "completed" },
-    { title: "Review Deadline", date: "Nov 15, 2026", time: "05:00 PM", status: "active" },
-    { title: "Voting Period Ends", date: "Nov 30, 2026", time: "11:59 PM", status: "upcoming" },
-    { title: "Results Announcement", date: "Dec 05, 2026", time: "10:00 AM", status: "upcoming" },
-  ];
-
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -39,10 +32,10 @@ export default function UpcomingEvents() {
           }));
           setEvents(milestones);
         } else {
-          setEvents(staticEvents);
+          setEvents([]);
         }
       } catch {
-        setEvents(staticEvents);
+        setEvents([]);
       } finally {
         setLoading(false);
       }
@@ -82,8 +75,7 @@ export default function UpcomingEvents() {
     }
   };
 
-  const activeCount = (events.length > 0 ? events : staticEvents).filter(e => e.status === "active").length;
-  const displayEvents = events.length > 0 ? events : staticEvents;
+  const activeCount = events.filter(e => e.status === "active").length;
 
   return (
     <>
@@ -137,8 +129,8 @@ export default function UpcomingEvents() {
                 <div className="flex items-center justify-center h-24">
                   <RefreshCw className="h-5 w-5 animate-spin text-white" />
                 </div>
-              ) : (
-                displayEvents.map((evt, idx) => {
+              ) : events.length > 0 ? (
+                events.map((evt, idx) => {
                   const cfg = getStatusConfig(evt.status);
                   const Icon = cfg.icon;
                   return (
@@ -161,6 +153,8 @@ export default function UpcomingEvents() {
                     </div>
                   );
                 })
+              ) : (
+                <p className="text-xs text-white/40 italic text-center py-4">No upcoming events scheduled.</p>
               )}
             </div>
           </div>

@@ -1,16 +1,109 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Search, Bell, Plus, ChevronDown, User, Settings, LogOut, Calendar, Users, FolderOpen, Menu } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 interface AdminNavbarProps {
   isCollapsed: boolean;
   setIsCollapsed: (v: boolean) => void;
   onQuickCreate: (type: "event" | "faculty" | "student") => void;
   onSearch: (query: string) => void;
+  onProfileClick: () => void;
 }
 
-export default function AdminNavbar({ isCollapsed, setIsCollapsed, onQuickCreate, onSearch }: AdminNavbarProps) {
+export default function AdminNavbar({ isCollapsed, setIsCollapsed, onQuickCreate, onSearch, onProfileClick }: AdminNavbarProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [quickCreateOpen, setQuickCreateOpen] = useState(false);
+
+  const [activeEvent, setActiveEvent] = useState<{ id: string; title: string } | null>(null);
+  const [events, setEvents] = useState<Array<{ id: string; title: string }>>([]);
+  const [eventDropdownOpen, setEventDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    let settingsChannel: any;
+
+    const fetchActiveAndEvents = async () => {
+      try {
+        // Fetch all events
+        const { data: eventsData } = await supabase
+          .from("events")
+          .select("id, title")
+          .order("created_at", { ascending: false });
+        if (eventsData) setEvents(eventsData);
+
+        // Fetch current active event from settings
+        const { data: settingsData } = await supabase
+          .from("settings")
+          .select("current_event_id")
+          .single();
+        
+        if (settingsData && settingsData.current_event_id) {
+          const { data: eventData } = await supabase
+            .from("events")
+            .select("id, title")
+            .eq("id", settingsData.current_event_id)
+            .single();
+          if (eventData) {
+            setActiveEvent(eventData);
+          }
+        }
+
+        // Subscribe to settings changes
+        settingsChannel = supabase
+          .channel("admin-settings-sync")
+          .on(
+            "postgres_changes",
+            { event: "UPDATE", schema: "public", table: "settings" },
+            async (payload) => {
+              if (payload.new && payload.new.current_event_id) {
+                const { data: eventData } = await supabase
+                  .from("events")
+                  .select("id, title")
+                  .eq("id", payload.new.current_event_id)
+                  .single();
+                if (eventData) {
+                  setActiveEvent(eventData);
+                }
+              } else {
+                setActiveEvent(null);
+              }
+            }
+          )
+          .subscribe();
+      } catch (err) {
+        console.error("Error loading events/settings in AdminNavbar:", err);
+      }
+    };
+
+    fetchActiveAndEvents();
+
+    return () => {
+      if (settingsChannel) {
+        supabase.removeChannel(settingsChannel);
+      }
+    };
+  }, []);
+
+  const handleSetActiveEvent = async (event: { id: string; title: string }) => {
+    try {
+      const { data: settingsData } = await supabase
+        .from("settings")
+        .select("id")
+        .single();
+      
+      if (settingsData) {
+        const { error } = await supabase
+          .from("settings")
+          .update({ current_event_id: event.id })
+          .eq("id", settingsData.id);
+        
+        if (error) throw error;
+        setActiveEvent(event);
+        setEventDropdownOpen(false);
+      }
+    } catch (err) {
+      console.error("Error setting active event:", err);
+    }
+  };
 
   return (
     <header
@@ -46,11 +139,54 @@ export default function AdminNavbar({ isCollapsed, setIsCollapsed, onQuickCreate
 
       {/* Right side accessories */}
       <div className="flex items-center space-x-3.5">
-        {/* Current Event Badge */}
-        <span className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white/5 text-white border border-white/12">
-          <Calendar className="h-3.5 w-3.5 text-white/40" />
-          Active: AI Expo 2026
-        </span>
+        {/* Current Event Badge with Dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => setEventDropdownOpen(!eventDropdownOpen)}
+            className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white/5 text-white hover:bg-white/10 border border-white/12 transition-all cursor-pointer"
+          >
+            <Calendar className="h-3.5 w-3.5 text-white/40" />
+            <span>Active: {activeEvent?.title || "None"}</span>
+            <ChevronDown className="h-3.5 w-3.5 text-white/40" />
+          </button>
+          
+          {eventDropdownOpen && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setEventDropdownOpen(false)} />
+              <div className="absolute left-0 mt-2 w-64 bg-[#1a1a1a] border border-white/12 rounded-2xl shadow-xl py-2 z-50 max-h-60 overflow-y-auto">
+                <div className="px-4 py-1.5 text-[9px] font-black text-white/30 uppercase tracking-[0.15em]">
+                  Select Showcase Event
+                </div>
+                <hr className="my-1.5 border-white/10" />
+                {events.length === 0 ? (
+                  <div className="px-4 py-2 text-xs text-white/40">No events found</div>
+                ) : (
+                  events.map((event) => {
+                    const isActive = activeEvent?.id === event.id;
+                    return (
+                      <button
+                        key={event.id}
+                        onClick={() => handleSetActiveEvent(event)}
+                        className={`w-full flex items-center justify-between px-4 py-2 text-xs text-left font-semibold transition-all ${
+                          isActive
+                            ? "text-white bg-white/10 font-bold"
+                            : "text-white/70 hover:bg-white/5 hover:text-white"
+                        }`}
+                      >
+                        <span className="truncate mr-2">{event.title}</span>
+                        {isActive && (
+                          <span className="text-[9px] font-black tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.5 rounded uppercase shrink-0">
+                            Active
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+            </>
+          )}
+        </div>
 
         {/* Quick Create Dropdown */}
         <div className="relative">
@@ -117,7 +253,13 @@ export default function AdminNavbar({ isCollapsed, setIsCollapsed, onQuickCreate
 
           {dropdownOpen && (
             <div className="absolute right-0 mt-2.5 w-48 bg-[#1a1a1a] border border-white/12 rounded-2xl shadow-xl py-2 z-50">
-              <button className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-white/70 hover:bg-white/5 hover:text-white text-left">
+              <button
+                onClick={() => {
+                  onProfileClick();
+                  setDropdownOpen(false);
+                }}
+                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-white/70 hover:bg-white/5 hover:text-white text-left font-semibold"
+              >
                 <User className="h-4 w-4 text-white/40" /> Profile Details
               </button>
               <button className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-white/70 hover:bg-white/5 hover:text-white text-left">

@@ -6,9 +6,10 @@ import { Search, Bell, MessageSquare, ChevronDown, LogOut, User, Settings } from
 interface FacultyNavbarProps {
   isCollapsed: boolean;
   onSearchChange?: (query: string) => void;
+  onProfileClick: () => void;
 }
 
-export default function FacultyNavbar({ isCollapsed, onSearchChange }: FacultyNavbarProps) {
+export default function FacultyNavbar({ isCollapsed, onSearchChange, onProfileClick }: FacultyNavbarProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { user, signOut } = useAuth();
   const [fullName, setFullName] = useState("Faculty");
@@ -16,6 +17,8 @@ export default function FacultyNavbar({ isCollapsed, onSearchChange }: FacultyNa
   const [activeEventTitle, setActiveEventTitle] = useState("AI Expo 2026");
 
   useEffect(() => {
+    let settingsChannel: any;
+
     const fetchNavbarData = async () => {
       if (!user) return;
       try {
@@ -36,11 +39,40 @@ export default function FacultyNavbar({ isCollapsed, onSearchChange }: FacultyNa
         if (settings && (settings as any).events) {
           setActiveEventTitle((settings as any).events.title);
         }
+
+        // Subscribe to settings table updates
+        settingsChannel = supabase
+          .channel("faculty-settings-sync")
+          .on(
+            "postgres_changes",
+            { event: "UPDATE", schema: "public", table: "settings" },
+            async (payload) => {
+              if (payload.new && payload.new.current_event_id) {
+                const { data: eventData } = await supabase
+                  .from("events")
+                  .select("title")
+                  .eq("id", payload.new.current_event_id)
+                  .single();
+                if (eventData) {
+                  setActiveEventTitle(eventData.title);
+                }
+              } else {
+                setActiveEventTitle("No Active Event");
+              }
+            }
+          )
+          .subscribe();
       } catch (err) {
         console.error("Navbar error:", err);
       }
     };
     fetchNavbarData();
+
+    return () => {
+      if (settingsChannel) {
+        supabase.removeChannel(settingsChannel);
+      }
+    };
   }, [user]);
 
   const getInitials = (name: string) =>
@@ -116,7 +148,13 @@ export default function FacultyNavbar({ isCollapsed, onSearchChange }: FacultyNa
                   <p className="text-xs font-bold text-white">{fullName}</p>
                   <p className="text-[10px] text-white/40 mt-0.5">Faculty Account</p>
                 </div>
-                <button className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-all text-left">
+                <button
+                  onClick={() => {
+                    onProfileClick();
+                    setDropdownOpen(false);
+                  }}
+                  className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-all text-left font-semibold"
+                >
                   <User className="h-4 w-4 text-white/40" />
                   My Profile
                 </button>

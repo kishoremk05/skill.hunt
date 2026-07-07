@@ -91,17 +91,6 @@ export default function FacultyReviewsPanel() {
     fetchData();
   }, [user]);
 
-  const staticRubrics = [
-    { criterion: "Innovation", score: 95, weight: 30 },
-    { criterion: "Technical Implementation", score: 92, weight: 25 },
-    { criterion: "UI/UX", score: 90, weight: 15 },
-    { criterion: "Documentation", score: 88, weight: 15 },
-    { criterion: "Presentation", score: 94, weight: 15 },
-  ];
-
-  const displayScores = scores.length > 0 ? scores : staticRubrics;
-  const displayOverall = overallScore !== "—" ? overallScore : "92.8";
-
   return (
     <div className="bg-[#1a1a1a] backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-white/12 shadow-sm">
       {/* Header */}
@@ -112,7 +101,7 @@ export default function FacultyReviewsPanel() {
         </div>
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold bg-white/5 text-white border border-white/12">
           <Star className="h-3.5 w-3.5 fill-current text-white" />
-          Overall: {displayOverall} / 100
+          Overall: {overallScore !== "—" ? `${overallScore} / 100` : "— / 100"}
         </div>
       </div>
 
@@ -120,11 +109,19 @@ export default function FacultyReviewsPanel() {
         <div className="flex items-center justify-center h-40">
           <RefreshCw className="h-6 w-6 animate-spin text-white" />
         </div>
+      ) : scores.length === 0 ? (
+        <div className="text-center py-10 space-y-2.5">
+          <Star className="h-8 w-8 text-white/20 mx-auto" />
+          <h4 className="font-bold text-white text-sm">No Evaluations Yet</h4>
+          <p className="text-xs text-white/40 max-w-xs mx-auto leading-relaxed">
+            Your project has not been graded by the faculty members yet. Scores and feedback will appear here as soon as they are submitted.
+          </p>
+        </div>
       ) : (
         <>
           {/* Rubric Scores */}
           <div className="space-y-4 mb-7">
-            {displayScores.map((rubric: any, idx: number) => {
+            {scores.map((rubric: any, idx: number) => {
               const colorKey = Object.keys(rubricColors).find(k =>
                 (rubric.criterion || "").toLowerCase().includes(k.toLowerCase().split(" ")[0])
               );
@@ -156,32 +153,29 @@ export default function FacultyReviewsPanel() {
               <MessageSquare className="h-4 w-4" />
               Reviewer Comments
             </h4>
-            {(feedback.length > 0 ? feedback : [
-              {
-                reviewer: "Dr. Evelyn Harper",
-                comment: "Outstanding mechanical design and flight stability. The ROS integration for mapping works flawlessly. Consider refining the edge processing latency on telemetry files.",
-                date: "2 days ago",
-                role: "Lead Evaluator",
-              }
-            ]).map((item: any, idx: number) => (
-              <div
-                key={idx}
-                className="p-4 rounded-2xl bg-white/5 border border-white/12 mb-3 last:mb-0"
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <span className="text-xs font-bold text-white">{item.reviewer}</span>
-                    {item.role && (
-                      <span className="ml-1.5 text-[10px] text-white/40">({item.role})</span>
-                    )}
+            {feedback.length > 0 ? (
+              feedback.map((item: any, idx: number) => (
+                <div
+                  key={idx}
+                  className="p-4 rounded-2xl bg-white/5 border border-white/12 mb-3 last:mb-0"
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <span className="text-xs font-bold text-white">{item.reviewer}</span>
+                      {item.role && (
+                        <span className="ml-1.5 text-[10px] text-white/40">({item.role})</span>
+                      )}
+                    </div>
+                    <span className="text-[10px] text-white/40 shrink-0 ml-2">{item.date}</span>
                   </div>
-                  <span className="text-[10px] text-white/40 shrink-0 ml-2">{item.date}</span>
+                  <p className="text-xs text-white/60 leading-relaxed italic">
+                    "{item.comment}"
+                  </p>
                 </div>
-                <p className="text-xs text-white/60 leading-relaxed italic">
-                  "{item.comment}"
-                </p>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="text-xs text-white/40 italic">No feedback comments posted yet.</p>
+            )}
           </div>
         </>
       )}
