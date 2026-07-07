@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Search, Filter, ShieldCheck, CheckSquare, MoreVertical, ShieldAlert, Ban, Trash2, Edit, CheckCircle, Plus, Copy, Check, Loader2 } from "lucide-react";
+import { Search, Filter, ShieldCheck, CheckSquare, MoreVertical, ShieldAlert, Ban, Trash2, Edit, CheckCircle, Plus, Copy, Check, Loader2, Mail } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { createClient } from "@supabase/supabase-js";
+import { useToast } from "@/components/ui/use-toast";
 
 export interface UserItem {
   id: string;
@@ -9,8 +10,9 @@ export interface UserItem {
   email: string;
   role: "student" | "faculty" | "admin";
   department: string;
-  status: "active" | "suspended";
+  status: "active" | "suspended" | "pending";
   createdDate: string;
+  tempPassword?: string;
 }
 
 interface UserManagementViewProps {
@@ -37,6 +39,104 @@ export default function UserManagementView({ initialRoleFilter = "all" }: UserMa
   const [copied, setCopied] = useState(false);
   const [modalError, setModalError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [sendingEmail, setSendingEmail] = useState(false);
+  const { toast } = useToast();
+
+  const handleSendEmail = async () => {
+    if (!inviteLink) return;
+    try {
+      setSendingEmail(true);
+      const res = await fetch("/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: facEmail,
+          name: facName,
+          inviteLink,
+          password: facPassword,
+        }),
+      });
+
+      let result;
+      try {
+        result = await res.json();
+      } catch {
+        throw new Error(`Server returned error status ${res.status}`);
+      }
+      if (!res.ok) {
+        throw new Error(result?.error || "Failed to send email");
+      }
+
+      toast({
+        title: "Invitation Sent",
+        description: `Successfully sent invitation email to ${facEmail}.`,
+      });
+    } catch (err: any) {
+      console.error(err);
+      toast({
+        title: "Send Email Failed",
+        description: err.message || "Could not dispatch invitation email.",
+        variant: "destructive",
+      });
+    } finally {
+      setSendingEmail(false);
+    }
+  };
+
+  const [resendingId, setResendingId] = useState<string | null>(null);
+
+  const handleResendInvite = async (user: UserItem) => {
+    try {
+      setResendingId(user.id);
+
+      const inviteLink = `${import.meta.env.VITE_APP_URL || window.location.origin}/login?email=${encodeURIComponent(user.email)}`;
+      const res = await fetch("/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: user.email,
+          name: user.name,
+          inviteLink,
+          password: "dummy", // Overridden by server password regeneration
+          regeneratePassword: true,
+          userId: user.id,
+          userRole: user.role,
+          userDept: user.department,
+        }),
+      });
+
+      let result;
+      try {
+        result = await res.json();
+      } catch {
+        throw new Error(`Server returned error status ${res.status}`);
+      }
+
+      if (!res.ok) {
+        throw new Error(result?.error || "Failed to send email");
+      }
+
+      toast({
+        title: "Invitation Resent",
+        description: `Successfully regenerated password and resent invitation link to ${user.email}.`,
+      });
+
+      fetchUsers();
+    } catch (err: any) {
+      console.error(err);
+      toast({
+        title: "Resend Failed",
+        description: err.message || "Could not dispatch invitation email.",
+        variant: "destructive",
+      });
+    } finally {
+      setResendingId(null);
+    }
+  };
 
   const generatePassword = () => {
     const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
@@ -76,6 +176,7 @@ export default function UserManagementView({ initialRoleFilter = "all" }: UserMa
             role: "faculty",
             department: facDept,
             status: "pending",
+            avatar_url: `__TEMP_PWD__:${facPassword}`,
           }
         }
       });
@@ -83,7 +184,13 @@ export default function UserManagementView({ initialRoleFilter = "all" }: UserMa
       if (error) throw error;
 
       if (data && data.user) {
-        const currentOrigin = window.location.origin;
+        // Explicitly update status in public.profiles to bypass any database trigger mismatches
+        await supabase
+          .from("profiles")
+          .update({ status: "pending" })
+          .eq("id", data.user.id);
+
+        const currentOrigin = import.meta.env.VITE_APP_URL || window.location.origin;
         setInviteLink(`${currentOrigin}/login?email=${encodeURIComponent(facEmail)}`);
         fetchUsers();
       }
@@ -128,15 +235,25 @@ Use these credentials to sign in.`;
       if (error) throw error;
 
       if (data) {
-        const mapped: UserItem[] = data.map((u: any) => ({
-          id: u.id,
-          name: u.full_name || "New User",
-          email: u.email,
-          role: u.role,
-          department: u.department || "",
-          status: (u.status || "active") as any,
-          createdDate: u.created_at ? u.created_at.split("T")[0] : "",
-        }));
+        // Filter out duplicate email addresses to display unique real profiles
+        const uniqueData = data.filter((v: any, i: number, a: any[]) => a.findIndex((t: any) => t.email === v.email) === i);
+        const mapped: UserItem[] = uniqueData.map((u: any) => {
+          let tempPassword = "";
+          const avatar = u.avatar_url;
+          if (avatar && avatar.startsWith("__TEMP_PWD__:")) {
+            tempPassword = avatar.substring("__TEMP_PWD__:".length);
+          }
+          return {
+            id: u.id,
+            name: u.full_name || "New User",
+            email: u.email,
+            role: u.role,
+            department: u.department || "",
+            status: (u.status || "active") as any,
+            createdDate: u.created_at ? u.created_at.split("T")[0] : "",
+            tempPassword,
+          };
+        });
         setUsers(mapped);
       }
     } catch (err: any) {
@@ -402,6 +519,20 @@ Use these credentials to sign in.`;
                 </td>
                 <td className="py-4 px-5 text-white/40">{user.createdDate}</td>
                 <td className="py-4 px-5 text-right flex items-center justify-end gap-1.5">
+                  {user.status === "pending" && (
+                    <button
+                      onClick={() => handleResendInvite(user)}
+                      disabled={resendingId === user.id}
+                      className="p-2 rounded-xl text-emerald-400 hover:bg-emerald-500/10 transition-all disabled:opacity-50"
+                      title="Resend Invite Link"
+                    >
+                      {resendingId === user.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Mail className="h-4 w-4" />
+                      )}
+                    </button>
+                  )}
                   <button
                     onClick={() => handleSuspend(user.id)}
                     className="p-2 rounded-xl text-white/40 hover:text-white hover:bg-white/5 transition-all"
@@ -489,30 +620,48 @@ Use these credentials to sign in.`;
             </div>
 
             {inviteLink && (
-              <div className="p-4 bg-white/5 border border-white/12 rounded-2xl space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-bold text-white/40 uppercase">Invite Credentials Details</span>
-                  <button
-                    onClick={handleCopyInvite}
-                    className="inline-flex items-center gap-1 text-[10px] text-white/65 hover:text-white font-bold"
-                  >
-                    {copied ? (
-                      <>
-                        <Check className="h-3 w-3 text-emerald-400" /> Copied!
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="h-3 w-3" /> Copy Info
-                      </>
-                    )}
-                  </button>
+              <div className="space-y-3">
+                <div className="p-4 bg-white/5 border border-white/12 rounded-2xl space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-bold text-white/40 uppercase">Invite Credentials Details</span>
+                    <button
+                      onClick={handleCopyInvite}
+                      className="inline-flex items-center gap-1 text-[10px] text-white/65 hover:text-white font-bold"
+                    >
+                      {copied ? (
+                        <>
+                          <Check className="h-3 w-3 text-emerald-400" /> Copied!
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-3 w-3" /> Copy Info
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <textarea
+                    readOnly
+                    rows={4}
+                    value={inviteDetailsText()}
+                    className="w-full bg-transparent border-0 text-[10px] text-white/70 font-mono resize-none focus:ring-0 p-0"
+                  />
                 </div>
-                <textarea
-                  readOnly
-                  rows={4}
-                  value={inviteDetailsText()}
-                  className="w-full bg-transparent border-0 text-[10px] text-white/70 font-mono resize-none focus:ring-0 p-0"
-                />
+
+                <button
+                  onClick={handleSendEmail}
+                  disabled={sendingEmail}
+                  className="w-full py-2.5 rounded-xl bg-white hover:bg-white/90 text-black text-xs font-bold transition-all disabled:opacity-50 inline-flex items-center justify-center gap-1.5 active:scale-95 shadow-md"
+                >
+                  {sendingEmail ? (
+                    <>
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" /> Sending Email...
+                    </>
+                  ) : (
+                    <>
+                      <Mail className="h-3.5 w-3.5" /> Send Invitation Email
+                    </>
+                  )}
+                </button>
               </div>
             )}
 

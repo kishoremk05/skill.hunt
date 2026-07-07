@@ -20,19 +20,22 @@ export default function ReportsView() {
     async function fetchCounts() {
       try {
         setLoading(true);
-        const { count: studentCount } = await supabase
+        const { data: students } = await supabase
           .from("profiles")
-          .select("*", { count: "exact", head: true })
+          .select("email")
           .eq("role", "student");
+        const studentCount = students ? new Set(students.map((s) => s.email)).size : 0;
 
-        const { count: facultyCount } = await supabase
+        const { data: faculty } = await supabase
           .from("profiles")
-          .select("*", { count: "exact", head: true })
+          .select("email")
           .eq("role", "faculty");
+        const facultyCount = faculty ? new Set(faculty.map((f) => f.email)).size : 0;
 
-        const { count: projectCount } = await supabase
+        const { data: projects } = await supabase
           .from("projects")
-          .select("*", { count: "exact", head: true });
+          .select("title");
+        const projectCount = projects ? new Set(projects.map((p) => p.title)).size : 0;
 
         const { count: evalCount } = await supabase
           .from("evaluations")
@@ -43,9 +46,9 @@ export default function ReportsView() {
           .select("*", { count: "exact", head: true });
 
         setReports([
-          { id: "r1", name: "Student Enrolment Ledger", description: "All active student profiles, linked emails, and submissions status count.", recordsCount: studentCount || 0 },
-          { id: "r2", name: "Faculty Grading Ledger", description: "Assigned projects allocation list and pending review counts.", recordsCount: facultyCount || 0 },
-          { id: "r3", name: "Showcase Project Abstracts", description: "Full tech stacks, descriptions, and repository URLs.", recordsCount: projectCount || 0 },
+          { id: "r1", name: "Student Enrolment Ledger", description: "All active student profiles, linked emails, and submissions status count.", recordsCount: studentCount },
+          { id: "r2", name: "Faculty Grading Ledger", description: "Assigned projects allocation list and pending review counts.", recordsCount: facultyCount },
+          { id: "r3", name: "Showcase Project Abstracts", description: "Full tech stacks, descriptions, and repository URLs.", recordsCount: projectCount },
           { id: "r4", name: "Rubrics Evaluation Ledger", description: "Detailed weighted scores breakdowns and written comments.", recordsCount: evalCount || 0 },
           { id: "r5", name: "Peer Voting Standings", description: "Raw vote records, duplicate attempts warnings, and timestamps.", recordsCount: votesCount || 0 },
         ]);
@@ -74,8 +77,9 @@ export default function ReportsView() {
           .order("full_name");
         
         if (data) {
+          const uniqueData = data.filter((v, i, a) => a.findIndex(t => t.email === v.email) === i);
           const headers = ["Full Name", "Email Address", "Department", "Status", "Enrollment Date"];
-          const rows = data.map((r) => [
+          const rows = uniqueData.map((r) => [
             r.full_name,
             r.email,
             r.department || "N/A",
@@ -93,8 +97,9 @@ export default function ReportsView() {
           .order("full_name");
         
         if (data) {
+          const uniqueData = data.filter((v, i, a) => a.findIndex(t => t.email === v.email) === i);
           const headers = ["Full Name", "Email Address", "Department", "Status", "Joined Date"];
-          const rows = data.map((r) => [
+          const rows = uniqueData.map((r) => [
             r.full_name,
             r.email,
             r.department || "N/A",
@@ -111,8 +116,9 @@ export default function ReportsView() {
           .order("created_at", { ascending: false });
         
         if (data) {
+          const uniqueData = data.filter((v, i, a) => a.findIndex(t => t.title === v.title) === i);
           const headers = ["Project Title", "Department", "Category", "Status", "Final Score", "Submitted Date"];
-          const rows = data.map((r) => [
+          const rows = uniqueData.map((r) => [
             r.title,
             r.department || "N/A",
             r.category || "N/A",

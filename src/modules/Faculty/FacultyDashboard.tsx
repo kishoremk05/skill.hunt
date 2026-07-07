@@ -26,6 +26,46 @@ export default function FacultyDashboard() {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
+  const [profileStatus, setProfileStatus] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      if (!user) return;
+      try {
+        const { data } = await supabase
+          .from("profiles")
+          .select("status")
+          .eq("id", user.id)
+          .single();
+        if (data) {
+          setProfileStatus(data.status);
+          if (data.status === "pending") {
+            setActiveTab("settings");
+            toast({
+              title: "Temporary Password Warning",
+              description: "Please update your password to activate your account.",
+            });
+          }
+        }
+      } catch (err) {
+        console.error("Error checking profile status:", err);
+      }
+    };
+    fetchStatus();
+  }, [user]);
+
+  const handleSetTab = (tab: string) => {
+    if (profileStatus === "pending") {
+      toast({
+        title: "Action Required",
+        description: "You must change your password to activate your account.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setActiveTab(tab);
+  };
+
   const fetchAssignedProjects = async () => {
     if (!user) return;
     try {
@@ -216,7 +256,7 @@ export default function FacultyDashboard() {
       {/* Collapsible Left Sidebar */}
       <FacultySidebar
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={handleSetTab}
         isCollapsed={sidebarCollapsed}
         setIsCollapsed={setSidebarCollapsed}
       />
@@ -224,7 +264,7 @@ export default function FacultyDashboard() {
       {/* Main content container shifting left on desktop to give room for the fixed sidebar */}
       <div className={`min-h-screen flex flex-col transition-all duration-300 ease-in-out ${sidebarCollapsed ? "md:pl-20" : "md:pl-64"}`}>
         {/* Top Navbar */}
-        <FacultyNavbar isCollapsed={sidebarCollapsed} onProfileClick={() => setActiveTab("profile")} />
+        <FacultyNavbar isCollapsed={sidebarCollapsed} onProfileClick={() => handleSetTab("profile")} />
 
         {/* Content view body */}
         <main className="flex-1 p-5 sm:p-7 pt-20 sm:pt-24 max-w-[1600px] w-full mx-auto space-y-8">
@@ -232,7 +272,7 @@ export default function FacultyDashboard() {
             <DashboardOverview
               projects={projects}
               onSelectProject={handleSelectProject}
-              setActiveTab={setActiveTab}
+              setActiveTab={handleSetTab}
             />
           )}
 
