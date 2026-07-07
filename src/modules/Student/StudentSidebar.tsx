@@ -82,15 +82,53 @@ export default function StudentSidebar({ activeTab, setActiveTab, isCollapsed, s
       {/* Logo Header */}
       <div className={`h-16 flex items-center border-b border-white/12 shrink-0 ${isCollapsed ? "justify-center px-0" : "justify-between px-5"}`}>
         {isCollapsed ? (
-          <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center shadow-lg border border-white/12">
-            <span className="text-black font-black text-sm">SH</span>
+          <div className="w-9 h-9 flex items-center justify-center">
+            <svg className="w-8 h-8" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="studentSidebarLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#06B6D4" />
+                  <stop offset="50%" stopColor="#3B82F6" />
+                  <stop offset="100%" stopColor="#8B5CF6" />
+                </linearGradient>
+              </defs>
+              <circle cx="50" cy="48" r="40" stroke="url(#studentSidebarLogoGrad)" strokeWidth="4" strokeDasharray="12 12" opacity="0.4" />
+              <circle cx="50" cy="48" r="28" stroke="url(#studentSidebarLogoGrad)" strokeWidth="3" strokeDasharray="8 8" opacity="0.6" />
+              <line x1="50" y1="4" x2="50" y2="12" stroke="url(#studentSidebarLogoGrad)" strokeWidth="5" strokeLinecap="round" />
+              <line x1="50" y1="84" x2="50" y2="92" stroke="url(#studentSidebarLogoGrad)" strokeWidth="5" strokeLinecap="round" />
+              <line x1="8" y1="48" x2="16" y2="48" stroke="url(#studentSidebarLogoGrad)" strokeWidth="5" strokeLinecap="round" />
+              <line x1="84" y1="48" x2="92" y2="48" stroke="url(#studentSidebarLogoGrad)" strokeWidth="5" strokeLinecap="round" />
+              <path d="M34 32 C20 32, 20 54, 34 54" stroke="url(#studentSidebarLogoGrad)" strokeWidth="8" strokeLinecap="round" />
+              <path d="M66 32 C80 32, 80 54, 66 54" stroke="url(#studentSidebarLogoGrad)" strokeWidth="8" strokeLinecap="round" />
+              <path d="M34 26 H66 L60 56 C60 66, 40 66, 40 56 Z" fill="url(#studentSidebarLogoGrad)" />
+              <path d="M47 62 H53 V74 H47 Z" fill="url(#studentSidebarLogoGrad)" />
+              <path d="M36 76 H64 C66 76, 66 82, 64 82 H36 C34 82, 34 76, 36 76 Z" fill="url(#studentSidebarLogoGrad)" />
+              <path d="M50 36 L52 41 L57 41.5 L53 45 L54 50 L50 47.5 L46 50 L47 45 L43 41.5 L48 41 Z" fill="#FFFFFF" />
+            </svg>
           </div>
         ) : (
           <>
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center shadow-lg border border-white/12">
-                <span className="text-black font-black text-xs">SH</span>
-              </div>
+              <svg className="w-8 h-8 shrink-0" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="studentSidebarLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#06B6D4" />
+                    <stop offset="50%" stopColor="#3B82F6" />
+                    <stop offset="100%" stopColor="#8B5CF6" />
+                  </linearGradient>
+                </defs>
+                <circle cx="50" cy="48" r="40" stroke="url(#studentSidebarLogoGrad)" strokeWidth="4" strokeDasharray="12 12" opacity="0.4" />
+                <circle cx="50" cy="48" r="28" stroke="url(#studentSidebarLogoGrad)" strokeWidth="3" strokeDasharray="8 8" opacity="0.6" />
+                <line x1="50" y1="4" x2="50" y2="12" stroke="url(#studentSidebarLogoGrad)" strokeWidth="5" strokeLinecap="round" />
+                <line x1="50" y1="84" x2="50" y2="92" stroke="url(#studentSidebarLogoGrad)" strokeWidth="5" strokeLinecap="round" />
+                <line x1="8" y1="48" x2="16" y2="48" stroke="url(#studentSidebarLogoGrad)" strokeWidth="5" strokeLinecap="round" />
+                <line x1="84" y1="48" x2="92" y2="48" stroke="url(#studentSidebarLogoGrad)" strokeWidth="5" strokeLinecap="round" />
+                <path d="M34 32 C20 32, 20 54, 34 54" stroke="url(#studentSidebarLogoGrad)" strokeWidth="8" strokeLinecap="round" />
+                <path d="M66 32 C80 32, 80 54, 66 54" stroke="url(#studentSidebarLogoGrad)" strokeWidth="8" strokeLinecap="round" />
+                <path d="M34 26 H66 L60 56 C60 66, 40 66, 40 56 Z" fill="url(#studentSidebarLogoGrad)" />
+                <path d="M47 62 H53 V74 H47 Z" fill="url(#studentSidebarLogoGrad)" />
+                <path d="M36 76 H64 C66 76, 66 82, 64 82 H36 C34 82, 34 76, 36 76 Z" fill="url(#studentSidebarLogoGrad)" />
+                <path d="M50 36 L52 41 L57 41.5 L53 45 L54 50 L50 47.5 L46 50 L47 45 L43 41.5 L48 41 Z" fill="#FFFFFF" />
+              </svg>
               <span className="text-sm font-black tracking-[0.12em] uppercase text-white">
                 SKILL HUNT
               </span>
