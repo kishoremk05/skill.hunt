@@ -1,5 +1,6 @@
 import React from "react";
 import { Github, Twitter, Linkedin, Mail } from "lucide-react";
+import { Link } from "react-router-dom";
 import { FadeUp } from "./components/FadeUp";
 
 export default function Footer() {
@@ -53,19 +54,19 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5">
               <li>
-                <a href="#docs" className="text-[13px] text-white/70 hover:text-white transition-colors uppercase tracking-wider font-semibold">
+                <Link to="/documentation" className="text-[13px] text-white/70 hover:text-white transition-colors uppercase tracking-wider font-semibold">
                   Documentation
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#guidelines" className="text-[13px] text-white/70 hover:text-white transition-colors uppercase tracking-wider font-semibold">
+                <Link to="/guidelines" className="text-[13px] text-white/70 hover:text-white transition-colors uppercase tracking-wider font-semibold">
                   Guidelines
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#rubrics" className="text-[13px] text-white/70 hover:text-white transition-colors uppercase tracking-wider font-semibold">
+                <Link to="/rubrics" className="text-[13px] text-white/70 hover:text-white transition-colors uppercase tracking-wider font-semibold">
                   Evaluation Rubrics
-                </a>
+                </Link>
               </li>
             </ul>
           </FadeUp>

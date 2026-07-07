@@ -1,54 +1,180 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from "recharts";
-import { BarChart3, TrendingUp, Award, Users } from "lucide-react";
+import { BarChart3, TrendingUp, Award, Users, Loader2, Info } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/context/AuthContext";
 
-const DEPARTMENT_SCORES = [
-  { name: "Computer Science", avgScore: 88, maxScore: 98 },
-  { name: "Electrical Eng.", avgScore: 82, maxScore: 94 },
-  { name: "Data Science", avgScore: 85, maxScore: 96 },
-  { name: "Information Tech.", avgScore: 79, maxScore: 90 },
-  { name: "Mechanical Eng.", avgScore: 74, maxScore: 88 },
-];
+interface CardItem {
+  label: string;
+  value: string;
+  change: string;
+  icon: any;
+  color: string;
+}
 
-const RUBRIC_CRITERIA_DISTRIBUTION = [
-  { subject: "Innovation", A: 8.5, fullMark: 10 },
-  { subject: "Technical", A: 7.9, fullMark: 10 },
-  { subject: "UI/UX", A: 8.1, fullMark: 10 },
-  { subject: "Documentation", A: 9.0, fullMark: 10 },
-  { subject: "Impact", A: 7.4, fullMark: 10 },
-];
+interface DeptChartItem {
+  name: string;
+  avgScore: number;
+  maxScore: number;
+}
+
+interface RadarChartItem {
+  subject: string;
+  A: number;
+  fullMark: number;
+}
 
 export default function AnalyticsView() {
-  const cards = [
-    {
-      label: "Total Projects Evaluated",
-      value: "42 / 50",
-      change: "84% Completed",
-      icon: Users,
-      color: "text-violet-600 bg-violet-50 dark:bg-violet-950/40",
-    },
-    {
-      label: "Average Project Score",
-      value: "82.6 / 100",
-      change: "+1.8% vs last year",
-      icon: TrendingUp,
-      color: "text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40",
-    },
-    {
-      label: "Highest Score Awarded",
-      value: "98.5 / 100",
-      change: "Computer Science Dept",
-      icon: Award,
-      color: "text-amber-500 bg-amber-50 dark:bg-amber-950/40",
-    },
-  ];
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(true);
+
+  // Stats cards state
+  const [cards, setCards] = useState<CardItem[]>([]);
+  const [deptScores, setDeptScores] = useState<DeptChartItem[]>([]);
+  const [rubricScores, setRubricScores] = useState<RadarChartItem[]>([]);
+
+  useEffect(() => {
+    const fetchAnalyticsData = async () => {
+      if (!user) return;
+      try {
+        setLoading(true);
+
+        // 1. Fetch assigned reviewers for this faculty
+        const { data: assigned } = await supabase
+          .from("project_reviewers")
+          .select("project_id")
+          .eq("faculty_id", user.id);
+
+        // 2. Fetch submitted evaluations by this faculty
+        const { data: evaluated } = await supabase
+          .from("evaluations")
+          .select("project_id, total_score")
+          .eq("faculty_id", user.id)
+          .eq("status", "submitted");
+
+        const assignedCount = assigned?.length || 0;
+        const evaluatedCount = evaluated?.length || 0;
+        const completionRate = assignedCount > 0 ? Math.round((evaluatedCount / assignedCount) * 100) : 0;
+
+        // Calculate average and highest score awarded by this faculty
+        const totalScoreSum = evaluated?.reduce((sum, e) => sum + Number(e.total_score || 0), 0) || 0;
+        const avgScore = evaluatedCount > 0 ? totalScoreSum / evaluatedCount : 0;
+        const maxScore = evaluated?.reduce((max, e) => Math.max(max, Number(e.total_score || 0)), 0) || 0;
+
+        setCards([
+          {
+            label: "Total Projects Evaluated",
+            value: `${evaluatedCount} / ${assignedCount}`,
+            change: `${completionRate}% Completed`,
+            icon: Users,
+            color: "text-violet-600 bg-violet-50 dark:bg-violet-950/40",
+          },
+          {
+            label: "Average Project Score",
+            value: `${avgScore.toFixed(1)} / 100`,
+            change: "Based on your evaluations",
+            icon: TrendingUp,
+            color: "text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40",
+          },
+          {
+            label: "Highest Score Awarded",
+            value: `${maxScore.toFixed(1)} / 100`,
+            change: "Highest grade given by you",
+            icon: Award,
+            color: "text-amber-500 bg-amber-50 dark:bg-amber-950/40",
+          },
+        ]);
+
+        // 3. Fetch global evaluations to show Department Comparisons
+        const { data: allEvals } = await supabase
+          .from("evaluations")
+          .select(`
+            total_score,
+            projects (
+              department
+            )
+          `)
+          .eq("status", "submitted");
+
+        const deptMap: Record<string, { sum: number; count: number; max: number }> = {};
+        allEvals?.forEach((ev: any) => {
+          const dept = ev.projects?.department || "General";
+          const score = Number(ev.total_score || 0);
+          if (!deptMap[dept]) {
+            deptMap[dept] = { sum: 0, count: 0, max: 0 };
+          }
+          deptMap[dept].sum += score;
+          deptMap[dept].count += 1;
+          if (score > deptMap[dept].max) {
+            deptMap[dept].max = score;
+          }
+        });
+
+        const mappedDepts = Object.entries(deptMap).map(([name, stats]) => ({
+          name,
+          avgScore: Math.round(stats.sum / stats.count),
+          maxScore: stats.max,
+        }));
+        setDeptScores(mappedDepts);
+
+        // 4. Fetch rubric score attributes breakdown for this faculty
+        const { data: scoreDetails } = await supabase
+          .from("evaluation_scores")
+          .select(`
+            score,
+            criteria_id,
+            evaluation_criteria (
+              name
+            ),
+            evaluations!inner (
+              faculty_id
+            )
+          `)
+          .eq("evaluations.faculty_id", user.id);
+
+        const criteriaMap: Record<string, { sum: number; count: number }> = {};
+        scoreDetails?.forEach((sd: any) => {
+          const name = sd.evaluation_criteria?.name || "Criteria";
+          const val = Number(sd.score || 0) / 10; // Scale 0-100 down to 0-10 for radar markup
+          if (!criteriaMap[name]) {
+            criteriaMap[name] = { sum: 0, count: 0 };
+          }
+          criteriaMap[name].sum += val;
+          criteriaMap[name].count += 1;
+        });
+
+        const mappedRadar = Object.entries(criteriaMap).map(([subject, stats]) => ({
+          subject,
+          A: parseFloat((stats.sum / stats.count).toFixed(1)),
+          fullMark: 10,
+        }));
+        setRubricScores(mappedRadar);
+
+      } catch (err) {
+        console.error("Error fetching analytics data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnalyticsData();
+  }, [user]);
+
+  if (loading) {
+    return (
+      <div className="min-h-[400px] flex flex-col items-center justify-center gap-2">
+        <Loader2 className="h-8 w-8 animate-spin text-violet-555" />
+        <span className="text-xs text-slate-500 font-semibold">Calculating analytics...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
       {/* Page Header */}
       <div>
         <h2 className="text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-          <BarChart3 className="h-5.5 w-5.5 text-violet-500" /> Departmental Analytics
+          <BarChart3 className="h-5.5 w-5.5 text-violet-555" /> Departmental Analytics
         </h2>
         <p className="text-xs text-slate-500 mt-0.5">Explore grading distributions, score breakdowns, and performance analytics.</p>
       </div>
@@ -60,12 +186,12 @@ export default function AnalyticsView() {
           return (
             <div
               key={idx}
-              className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 shadow-sm flex items-center justify-between"
+              className="bg-white dark:bg-[#1a1a1a] p-6 rounded-3xl border border-slate-200/50 dark:border-white/12 shadow-sm flex items-center justify-between"
             >
               <div className="space-y-2">
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{card.label}</p>
+                <p className="text-xs font-bold text-slate-400 dark:text-white/40 uppercase tracking-wider">{card.label}</p>
                 <h4 className="text-2xl font-black text-slate-900 dark:text-white">{card.value}</h4>
-                <p className="text-xs text-slate-450 dark:text-slate-500 font-semibold">{card.change}</p>
+                <p className="text-xs text-slate-450 dark:text-white/30 font-semibold">{card.change}</p>
               </div>
               <div className={`p-4 rounded-2xl ${card.color}`}>
                 <Icon className="h-6 w-6" />
@@ -78,62 +204,76 @@ export default function AnalyticsView() {
       {/* Charts Grid */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         {/* Chart 1: Department Averages */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 p-6 sm:p-8 space-y-6">
+        <div className="bg-white dark:bg-[#1a1a1a] rounded-3xl border border-slate-200/50 dark:border-white/12 p-6 sm:p-8 space-y-6">
           <div>
             <h3 className="text-base font-black text-slate-900 dark:text-white">Department Performance Comparison</h3>
-            <p className="text-xs text-slate-500 mt-0.5">Compare the average and maximum scores across participating departments.</p>
+            <p className="text-xs text-slate-500 dark:text-white/40 mt-0.5">Compare the average and maximum scores across participating departments.</p>
           </div>
 
-          <div className="h-80 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={DEPARTMENT_SCORES} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" className="dark:hidden" />
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1E293B" className="hidden dark:block" />
-                <XAxis dataKey="name" stroke="#94A3B8" fontSize={10} tickLine={false} axisLine={false} />
-                <YAxis stroke="#94A3B8" fontSize={10} tickLine={false} axisLine={false} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#0F172A",
-                    borderColor: "#334155",
-                    borderRadius: "12px",
-                    color: "#fff",
-                    fontSize: "12px",
-                  }}
-                />
-                <Legend iconType="circle" wrapperStyle={{ fontSize: '11px', fontWeight: 600 }} />
-                <Bar dataKey="avgScore" name="Average Score" fill="#8b5cf6" radius={[4, 4, 0, 0]} barSize={24} />
-                <Bar dataKey="maxScore" name="Maximum Score" fill="#6366f1" radius={[4, 4, 0, 0]} barSize={24} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          {deptScores.length === 0 ? (
+            <div className="h-80 w-full flex flex-col items-center justify-center gap-2 border border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-6 bg-slate-50/50 dark:bg-white/2">
+              <Info className="h-5 w-5 text-slate-400" />
+              <span className="text-xs text-slate-400 font-semibold">No graded department scores available yet.</span>
+            </div>
+          ) : (
+            <div className="h-80 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={deptScores} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" className="dark:hidden" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1E293B" className="hidden dark:block" />
+                  <XAxis dataKey="name" stroke="#94A3B8" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#94A3B8" fontSize={10} tickLine={false} axisLine={false} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#0F172A",
+                      borderColor: "#334155",
+                      borderRadius: "12px",
+                      color: "#fff",
+                      fontSize: "12px",
+                    }}
+                  />
+                  <Legend iconType="circle" wrapperStyle={{ fontSize: '11px', fontWeight: 600 }} />
+                  <Bar dataKey="avgScore" name="Average Score" fill="#8b5cf6" radius={[4, 4, 0, 0]} barSize={24} />
+                  <Bar dataKey="maxScore" name="Maximum Score" fill="#6366f1" radius={[4, 4, 0, 0]} barSize={24} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
         </div>
 
         {/* Chart 2: Radar Criteria Distribution */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/50 dark:border-slate-800/80 p-6 sm:p-8 space-y-6">
+        <div className="bg-white dark:bg-[#1a1a1a] rounded-3xl border border-slate-200/50 dark:border-white/12 p-6 sm:p-8 space-y-6">
           <div>
             <h3 className="text-base font-black text-slate-900 dark:text-white">Rubric Attribute Breakdown</h3>
-            <p className="text-xs text-slate-500 mt-0.5">Understand how average submissions score across each of the 5 criteria.</p>
+            <p className="text-xs text-slate-500 dark:text-white/40 mt-0.5">Understand how average submissions score across each of the criteria.</p>
           </div>
 
-          <div className="h-80 w-full flex items-center justify-center">
-            <ResponsiveContainer width="100%" height="100%">
-              <RadarChart cx="50%" cy="50%" outerRadius="80%" data={RUBRIC_CRITERIA_DISTRIBUTION}>
-                <PolarGrid stroke="#94A3B8" strokeOpacity={0.2} />
-                <PolarAngleAxis dataKey="subject" stroke="#94A3B8" fontSize={11} />
-                <PolarRadiusAxis angle={30} domain={[0, 10]} stroke="#94A3B8" fontSize={10} />
-                <Radar name="Average Rubric Score" dataKey="A" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.25} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#0F172A",
-                    borderColor: "#334155",
-                    borderRadius: "12px",
-                    color: "#fff",
-                    fontSize: "12px",
-                  }}
-                />
-              </RadarChart>
-            </ResponsiveContainer>
-          </div>
+          {rubricScores.length === 0 ? (
+            <div className="h-80 w-full flex flex-col items-center justify-center gap-2 border border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-6 bg-slate-50/50 dark:bg-white/2">
+              <Info className="h-5 w-5 text-slate-400" />
+              <span className="text-xs text-slate-400 font-semibold">No graded rubric metrics available yet.</span>
+            </div>
+          ) : (
+            <div className="h-80 w-full flex items-center justify-center">
+              <ResponsiveContainer width="100%" height="100%">
+                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={rubricScores}>
+                  <PolarGrid stroke="#94A3B8" strokeOpacity={0.2} />
+                  <PolarAngleAxis dataKey="subject" stroke="#94A3B8" fontSize={11} />
+                  <PolarRadiusAxis angle={30} domain={[0, 10]} stroke="#94A3B8" fontSize={10} />
+                  <Radar name="Average Rubric Score" dataKey="A" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.25} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#0F172A",
+                      borderColor: "#334155",
+                      borderRadius: "12px",
+                      color: "#fff",
+                      fontSize: "12px",
+                    }}
+                  />
+                </RadarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
         </div>
       </div>
     </div>

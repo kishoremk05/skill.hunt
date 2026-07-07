@@ -12,6 +12,9 @@ import NotFound from "./pages/NotFound";
 import StudentDashboard from "./modules/Student/StudentDashboard";
 import FacultyDashboard from "./modules/Faculty/FacultyDashboard";
 import AdminDashboard from "./modules/Admin/AdminDashboard";
+import Documentation from "./pages/Documentation";
+import Guidelines from "./pages/Guidelines";
+import Rubrics from "./pages/Rubrics";
 
 // Auth Pages
 import Signin from "./auth/Signin";
@@ -38,6 +41,11 @@ const App = () => (
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/activate-faculty" element={<FacultyActivation />} />
+
+            {/* Public Resource Pages */}
+            <Route path="/documentation" element={<Documentation />} />
+            <Route path="/guidelines" element={<Guidelines />} />
+            <Route path="/rubrics" element={<Rubrics />} />
 
             {/* Protected Dashboard Routes */}
             <Route element={<ProtectedRoute allowedRoles={["student"]} />}>
