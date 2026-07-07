@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 import {
   Home,
   Users,
@@ -26,6 +27,7 @@ interface AdminSidebarProps {
 }
 
 export default function AdminSidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }: AdminSidebarProps) {
+  const { signOut } = useAuth();
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: Home },
     { id: "users", label: "User Management", icon: Users },
@@ -146,7 +148,7 @@ export default function AdminSidebar({ activeTab, setActiveTab, isCollapsed, set
       {/* Footer / Logout */}
       <div className="p-4 border-t border-white/12 bg-[#121212]">
         <button
-          onClick={() => console.log("Logout triggered")}
+          onClick={() => signOut()}
           className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-red-400 hover:bg-red-500/10 hover:text-red-400 transition-all duration-200"
         >
           <LogOut className="h-4.5 w-4.5 text-red-400" />
