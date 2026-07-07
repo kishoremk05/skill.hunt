@@ -31,26 +31,28 @@ export default function LandingPage() {
       {/* Main Contents */}
       <main className="relative z-[1]">
         {/* Section 1: Hero */}
-        <HeroSection />
+        <div id="home">
+          <HeroSection />
+        </div>
 
         {/* Section 2: Statement (Transparent bg over video) */}
         <StatementSection />
 
         {/* Section 3 & Beyond: Alternating Themes */}
-        <div id="features" className="relative z-[2]">
+        <div className="relative z-[2]">
           <div className="bg-[#C5C5C5] text-[#1a1a1a]">
             <TrustBar />
           </div>
-          <div className="bg-[#121212] text-white">
+          <div id="features" className="bg-[#121212] text-white">
             <FeaturesGrid />
           </div>
           <div className="bg-[#C5C5C5] text-[#1a1a1a]">
             <HowItWorks />
           </div>
-          <div className="bg-[#121212] text-white">
+          <div id="projects" className="bg-[#121212] text-white">
             <FeaturedProjects />
           </div>
-          <div className="bg-[#C5C5C5] text-[#1a1a1a]">
+          <div id="leaderboard" className="bg-[#C5C5C5] text-[#1a1a1a]">
             <LeaderboardPreview />
           </div>
           <div className="bg-[#121212] text-white">

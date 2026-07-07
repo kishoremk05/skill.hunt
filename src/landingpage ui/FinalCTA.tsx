@@ -1,5 +1,6 @@
 import React from "react";
 import { ArrowRight, Trophy } from "lucide-react";
+import { Link } from "react-router-dom";
 import { FadeUp } from "./components/FadeUp";
 
 interface FinalCTAProps {
@@ -29,13 +30,19 @@ export default function FinalCTA({ id }: FinalCTAProps) {
         </FadeUp>
 
         <FadeUp delay={0.4} className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
-          <button className="w-full sm:w-auto bg-white text-black border border-white rounded-full px-[36px] py-[12px] text-[11px] font-bold tracking-[0.08em] uppercase transition-all duration-200 hover:opacity-85 max-md:px-[22px] max-md:py-[11px] max-md:text-[10px] text-center inline-flex items-center justify-center gap-2">
+          <Link
+            to="/register"
+            className="w-full sm:w-auto bg-white text-black border border-white rounded-full px-[36px] py-[12px] text-[11px] font-bold tracking-[0.08em] uppercase transition-all duration-200 hover:opacity-85 max-md:px-[22px] max-md:py-[11px] max-md:text-[10px] text-center inline-flex items-center justify-center gap-2"
+          >
             Submit Your Project
             <ArrowRight className="h-3.5 w-3.5" />
-          </button>
-          <button className="w-full sm:w-auto bg-transparent text-white border border-white/20 rounded-full px-[36px] py-[12px] text-[11px] font-bold tracking-[0.08em] uppercase transition-all duration-200 hover:bg-white/10 hover:border-white max-md:px-[22px] max-md:py-[11px] max-md:text-[10px] text-center inline-flex items-center justify-center gap-2">
+          </Link>
+          <a
+            href="#leaderboard"
+            className="w-full sm:w-auto bg-transparent text-white border border-white/20 rounded-full px-[36px] py-[12px] text-[11px] font-bold tracking-[0.08em] uppercase transition-all duration-200 hover:bg-white/10 hover:border-white max-md:px-[22px] max-md:py-[11px] max-md:text-[10px] text-center inline-flex items-center justify-center gap-2"
+          >
             <Trophy className="h-3.5 w-3.5" /> Explore Leaderboard
-          </button>
+          </a>
         </FadeUp>
       </div>
     </section>
