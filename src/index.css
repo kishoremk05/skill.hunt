@@ -1,0 +1,174 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import url('https://db.onlinewebfonts.com/c/e66905e07608167a84e6ad52f638c3c6?family=Helvetica+Now+Var');
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
+
+    --card: 210 40% 98%;
+    --card-foreground: 222.2 47.4% 11.2%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 243.4 75.4% 58.6%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 215.4 16.3% 46.9%;
+    --muted-foreground: 215.4 25% 40%;
+
+    --accent: 159.6 84.5% 39.4%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+
+    --radius: 1.25rem; /* Spacious rounded corners (20px) */
+
+    --sidebar-background: 210 40% 98%;
+    --sidebar-foreground: 222.2 47.4% 11.2%;
+    --sidebar-primary: 221.2 83.2% 53.3%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 210 40% 96.1%;
+    --sidebar-accent-foreground: 222.2 47.4% 11.2%;
+    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-ring: 221.2 83.2% 53.3%;
+  }
+
+  .dark {
+    --background: 222.2 47.4% 11.2%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 47.4% 9.6%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 47.4% 9.6%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 243.4 75.4% 58.6%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 215.4 16.3% 56.9%;
+    --muted-foreground: 215.4 16.3% 76.9%;
+
+    --accent: 159.6 84.5% 39.4%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 19% 27%;
+    --input: 217.2 19% 27%;
+    --ring: 224.3 76.3% 48%;
+
+    --sidebar-background: 222.2 47.4% 11.2%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 217.2 91.2% 59.8%;
+    --sidebar-primary-foreground: 222.2 47.4% 11.2%;
+    --sidebar-accent: 217.2 19% 27%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217.2 19% 27%;
+    --sidebar-ring: 224.3 76.3% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Helvetica Now Var', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+@keyframes fade-up {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s ease-out forwards;
+}
+
+.animation-delay-100 { animation-delay: 0.1s; }
+.animation-delay-200 { animation-delay: 0.2s; }
+.animation-delay-300 { animation-delay: 0.3s; }
+.animation-delay-400 { animation-delay: 0.4s; }
+
+/* Global animated cloud backgrounds */
+@keyframes cloud-drift-1 {
+  0% { transform: translateX(0) translateY(0); }
+  50% { transform: translateX(80px) translateY(-15px); }
+  100% { transform: translateX(0) translateY(0); }
+}
+
+@keyframes cloud-drift-2 {
+  0% { transform: translateX(0) translateY(0); }
+  50% { transform: translateX(-60px) translateY(10px); }
+  100% { transform: translateX(0) translateY(0); }
+}
+
+@keyframes cloud-drift-3 {
+  0% { transform: translateX(0) translateY(0); }
+  50% { transform: translateX(50px) translateY(12px); }
+  100% { transform: translateX(0) translateY(0); }
+}
+
+.animate-cloud-drift-1 {
+  animation: cloud-drift-1 40s ease-in-out infinite;
+}
+
+.animate-cloud-drift-2 {
+  animation: cloud-drift-2 35s ease-in-out infinite;
+}
+
+.animate-cloud-drift-3 {
+  animation: cloud-drift-3 45s ease-in-out infinite;
+}
+
+@keyframes scrollBounce {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, 6px); }
+}
+
+.animate-scroll-bounce {
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+
