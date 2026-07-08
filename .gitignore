@@ -25,3 +25,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Project documentation
+handover.md
+client changes.md
+project prd.md
+
