@@ -1,6 +1,6 @@
 export async function fetchGithubMetadata(githubUrl: string) {
   try {
-    const regex = /github\.com\/([^\/]+)\/([^\/]+)/;
+    const regex = /github\.com\/([^/]+)\/([^/]+)/;
     const match = githubUrl.match(regex);
     if (!match) return null;
 
