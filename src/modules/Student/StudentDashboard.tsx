@@ -6,9 +6,8 @@ import StudentNavbar from "./StudentNavbar";
 import WelcomeCard from "./WelcomeCard";
 import StatsGrid from "./StatsGrid";
 import FacultyReviewsPanel from "./FacultyReviewsPanel";
-import LeaderboardPreview from "./LeaderboardPreview";
-import RecentActivity from "./RecentActivity";
-import UpcomingEvents from "./UpcomingEvents";
+import ProjectOverview from "./ProjectOverview";
+import RightSidebar from "./RightSidebar";
 
 // Views
 import MyProjects from "./views/MyProjects";
@@ -46,7 +45,7 @@ export default function StudentDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#121212] text-white dark">
+    <div className="min-h-screen bg-[#e5e5e5] text-slate-900 relative overflow-hidden">
       {/* Sidebar */}
       <StudentSidebar
         activeTab={activeTab}
@@ -61,32 +60,32 @@ export default function StudentDashboard() {
         <StudentNavbar isCollapsed={sidebarCollapsed} />
 
         {/* Page content */}
-        <main className="flex-1 p-5 sm:p-7 pt-20 sm:pt-24 max-w-[1500px] w-full mx-auto">
+        <main className="flex-1 p-5 sm:p-7 pt-20 sm:pt-24 max-w-[1500px] w-full mx-auto relative z-10">
           {activeTab === "dashboard" && (
             <div className="space-y-6">
               {/* Hero Welcome Banner */}
               <WelcomeCard setActiveTab={setActiveTab} />
 
               {/* Stats Row */}
-              <StatsGrid />
+              <StatsGrid setActiveTab={setActiveTab} />
 
-              {/* Main 3-column grid */}
-              <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
-                {/* Left - Faculty Evaluation (full-width section) */}
-                <div className="xl:col-span-8">
-                  <FacultyReviewsPanel />
+              {/* Main columns grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                {/* Left - 8 cols */}
+                <div className="lg:col-span-8 space-y-6">
+                  {/* My Project summary */}
+                  <ProjectOverview
+                    onEditProject={handleEditProject}
+                    onViewDetails={handleViewDetails}
+                    setActiveTab={setActiveTab}
+                  />
+                  {/* Faculty Evaluation reviews */}
+                  <FacultyReviewsPanel setActiveTab={setActiveTab} />
                 </div>
 
-                {/* Right column */}
-                <div className="xl:col-span-4 flex flex-col gap-4">
-                  <LeaderboardPreview />
-
-                  {/* Compact popup triggers */}
-                  <div className="flex items-center gap-4 px-1">
-                    <RecentActivity />
-                    <span className="text-slate-700">·</span>
-                    <UpcomingEvents />
-                  </div>
+                {/* Right - 4 cols */}
+                <div className="lg:col-span-4">
+                  <RightSidebar setActiveTab={setActiveTab} />
                 </div>
               </div>
             </div>

@@ -47,12 +47,20 @@ export default function PeerVoting() {
         // 2. Fetch all eligible projects (exclude current user's projects)
         const { data: projData, error: projError } = await supabase
           .from("projects")
-          .select("*")
+          .select("*, project_members(email)")
           .neq("student_id", user.id)
           .in("status", ["verified", "voting", "reviewing", "published"]);
 
         if (projError) throw projError;
-        setProjects(projData || []);
+        
+        // Filter out projects where the user is a team member
+        const userEmail = user.email || "";
+        const filteredProjData = (projData || []).filter((p: any) => {
+          const members = p.project_members || [];
+          return !members.some((m: any) => m.email?.toLowerCase() === userEmail.toLowerCase());
+        });
+        
+        setProjects(filteredProjData);
 
         // 3. Fetch user's votes
         const { data: voteData, error: voteError } = await supabase
@@ -141,33 +149,33 @@ export default function PeerVoting() {
   });
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 text-left">
       {/* Header view */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-black text-white tracking-tight">Peer Voting</h2>
-          <p className="text-xs text-white/40 mt-1">
+          <h2 className="text-2xl font-black text-slate-900 tracking-tight">Peer Voting</h2>
+          <p className="text-xs text-slate-500 mt-1 font-semibold">
             Cast votes for the best project showcases. You have up to 3 votes.
           </p>
         </div>
         {isVotingEnabled && (
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 text-white rounded-2xl text-xs font-bold border border-white/12">
-            <CheckSquare className="h-4.5 w-4.5" /> Votes Cast: {myVotes.length} / 3
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white text-slate-800 rounded-2xl text-xs font-bold border border-slate-300 shadow-sm">
+            <CheckSquare className="h-4.5 w-4.5 text-slate-500" /> Votes Cast: {myVotes.length} / 3
           </div>
         )}
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center items-center py-20">
-          <RefreshCw className="h-8 w-8 animate-spin text-white" />
+        <div className="flex justify-center items-center py-20 bg-white border border-slate-300 shadow-sm rounded-2xl">
+          <RefreshCw className="h-8 w-8 animate-spin text-blue-600" />
         </div>
       ) : !isVotingEnabled ? (
-        <div className="bg-[#1a1a1a] rounded-3xl p-12 text-center border border-white/12 min-h-[300px] flex flex-col items-center justify-center">
-          <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/12 text-white/70 flex items-center justify-center mb-4">
+        <div className="bg-white rounded-2xl p-12 text-center border border-slate-300 min-h-[300px] flex flex-col items-center justify-center">
+          <div className="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-200 text-slate-500 flex items-center justify-center mb-4">
             <Info className="h-8 w-8" />
           </div>
-          <h3 className="text-lg font-bold text-white mb-1">Voting Disabled</h3>
-          <p className="text-sm text-white/40 max-w-sm">
+          <h3 className="text-lg font-bold text-slate-900 mb-1">Voting Disabled</h3>
+          <p className="text-sm text-slate-500 max-w-sm font-semibold leading-relaxed">
             Peer voting is currently disabled. Standings and rankings are locked or pending review by organizers.
           </p>
         </div>
@@ -177,14 +185,14 @@ export default function PeerVoting() {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
             <div className="md:col-span-8 relative">
               <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-4.5 w-4.5 text-white/40" />
+                <Search className="h-4.5 w-4.5 text-slate-400" />
               </span>
               <input
                 type="text"
                 placeholder="Search showcases by name, department or keyword..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-white/12 rounded-2xl bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-white/30 text-xs text-white"
+                className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-2xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 text-xs text-slate-800 font-semibold shadow-sm transition-all"
               />
             </div>
 
@@ -192,55 +200,55 @@ export default function PeerVoting() {
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="w-full px-4 py-3 border border-white/12 rounded-2xl bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-white/30 text-xs text-white/70 cursor-pointer appearance-none font-bold"
+                className="w-full px-4 py-3 border border-slate-300 rounded-2xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 text-xs text-slate-800 cursor-pointer appearance-none font-bold shadow-sm"
               >
-                <option value="all" className="bg-[#121212] text-white">All Categories</option>
+                <option value="all" className="bg-white text-slate-800">All Categories</option>
                 {categories.filter((c) => c !== "all").map((cat) => (
-                  <option key={cat} value={cat} className="bg-[#121212] text-white">
+                  <option key={cat} value={cat} className="bg-white text-slate-800">
                     {cat}
                   </option>
                 ))}
               </select>
-              <span className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-white/40">
+              <span className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
                 <Filter className="h-4 w-4" />
               </span>
             </div>
           </div>
 
           {filteredProjects.length === 0 ? (
-            <div className="bg-[#1a1a1a] rounded-3xl p-12 text-center border border-white/12 min-h-[250px] flex flex-col items-center justify-center">
-              <p className="text-sm font-bold text-white/40">No project showcases match your search criteria.</p>
+            <div className="bg-white rounded-2xl p-12 text-center border border-slate-300 min-h-[250px] flex flex-col items-center justify-center shadow-sm">
+              <p className="text-sm font-bold text-slate-500">No project showcases match your search criteria.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {filteredProjects.map((project) => {
                 const isVoted = myVotes.includes(project.id);
                 return (
                   <div
                     key={project.id}
-                    className="bg-[#1a1a1a] rounded-3xl border border-white/12 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden"
+                    className="bg-white rounded-2xl border border-slate-300 shadow-sm hover:border-slate-800 transition-all flex flex-col justify-between overflow-hidden hover:-translate-y-0.5 duration-200"
                   >
-                    <div className="p-6 sm:p-8 space-y-6">
+                    <div className="p-6 sm:p-8 space-y-4">
                       <div className="flex justify-between items-start gap-4">
                         <div className="space-y-1">
-                          <span className="text-[10px] uppercase font-bold tracking-widest text-white/40">
+                          <span className="text-[10px] uppercase font-bold tracking-widest text-slate-450">
                             {project.category}
                           </span>
-                          <h3 className="text-lg font-black text-white leading-tight">
+                          <h3 className="text-lg font-black text-slate-800 leading-tight">
                             {project.title}
                           </h3>
                         </div>
                       </div>
 
-                      <p className="text-sm text-white/60 line-clamp-3 font-semibold">
+                      <p className="text-xs text-slate-500 line-clamp-3 font-semibold leading-relaxed">
                         {project.short_description || "No description provided."}
                       </p>
 
-                      <div className="flex flex-wrap gap-1.5">
+                      <div className="flex flex-wrap gap-1.5 pt-1">
                         {project.technologies?.slice(0, 4).map((tech, idx) => (
                           <span
                             key={idx}
-                            className="inline-flex items-center text-xs px-2.5 py-1 rounded-xl bg-white/5 text-white/70 border border-white/12 font-bold"
+                            className="inline-flex items-center text-[10px] px-2.5 py-1 rounded-lg bg-slate-50 text-slate-500 border border-slate-200 font-bold"
                           >
                             {tech}
                           </span>
@@ -248,16 +256,16 @@ export default function PeerVoting() {
                       </div>
                     </div>
 
-                    <div className="px-6 py-4 bg-white/5 border-t border-white/12 flex items-center justify-between">
-                      <span className="text-xs text-white/40 font-bold">Dept: {project.department}</span>
+                    <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-200 flex items-center justify-between">
+                      <span className="text-xs text-slate-500 font-bold">Dept: {project.department}</span>
 
                       <button
                         onClick={() => handleVote(project.id)}
                         disabled={isSubmitting !== null}
                         className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm ${
                           isVoted
-                            ? "bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20"
-                            : "bg-white hover:bg-white/85 text-black"
+                            ? "bg-red-50 text-red-500 hover:bg-red-100/55 border border-red-200"
+                            : "bg-black hover:bg-[#222222] text-white uppercase tracking-wider"
                         }`}
                       >
                         {isSubmitting === project.id ? (

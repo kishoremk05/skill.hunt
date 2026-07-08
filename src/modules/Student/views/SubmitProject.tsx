@@ -290,378 +290,403 @@ export default function SubmitProject({ projectId, onBack, setActiveTab }: Submi
   };
 
   return (
-    <div className="bg-[#1a1a1a] rounded-3xl border border-white/12 shadow-md p-6 sm:p-8 space-y-8">
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <button
-          onClick={onBack}
-          className="p-2.5 rounded-xl border border-white/12 bg-white/5 text-white/60 hover:text-white hover:bg-white/10 transition-all"
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </button>
-        <div>
-          <h2 className="text-xl font-black text-white">
-            {projectId ? "Edit Project Showcase" : "New Showcase Submission"}
-          </h2>
-          <p className="text-xs text-white/40 mt-0.5">
-            Fill in details to showcase your project at the active exposition event.
-          </p>
+    <div className="space-y-6 text-left">
+      {/* Header Panel */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={onBack}
+            className="p-2.5 rounded-xl border border-slate-200 bg-white text-slate-500 hover:text-slate-700 hover:bg-slate-50 transition-all shadow-sm focus:outline-none"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </button>
+          <div>
+            <h2 className="text-xl font-extrabold text-slate-800 tracking-tight">
+              {projectId ? "Edit Project Showcase" : "New Showcase Submission"}
+            </h2>
+            <p className="text-xs text-slate-450 mt-0.5 font-medium">
+              Fill in details to showcase your project at the active exposition event.
+            </p>
+          </div>
         </div>
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center items-center py-20">
-          <RefreshCw className="h-8 w-8 animate-spin text-white" />
+        <div className="flex justify-center items-center py-20 bg-white rounded-2xl border border-slate-200 shadow-sm">
+          <RefreshCw className="h-8 w-8 animate-spin text-blue-600" />
         </div>
       ) : (
         <form onSubmit={(e) => handleSubmit(e, "submitted")} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Project Title */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-white/40 uppercase tracking-wider">
-                Project Title *
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. AI-Powered Drone Map Builder"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-                className="w-full px-4 py-3 border border-white/12 rounded-2xl bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-white/30 text-sm text-white"
-              />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            {/* Left Column: Core Fields */}
+            <div className="lg:col-span-7 space-y-6">
+              
+              {/* Project Details Card */}
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-5">
+                <h3 className="text-sm font-extrabold text-slate-800 uppercase tracking-widest border-b border-slate-100 pb-3">
+                  Project Details
+                </h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Title */}
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">
+                      Project Title *
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. AI-Powered Drone Map Builder"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      required
+                      className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 text-sm text-slate-800 placeholder-slate-450 hover:border-slate-350 transition-all font-semibold"
+                    />
+                  </div>
+
+                  {/* Department */}
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">
+                      Academic Department *
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Computer Science / Electrical Eng."
+                      value={department}
+                      onChange={(e) => setDepartment(e.target.value)}
+                      required
+                      className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 text-sm text-slate-800 placeholder-slate-450 hover:border-slate-350 transition-all font-semibold"
+                    />
+                  </div>
+
+                  {/* Category */}
+                  <div className="space-y-1.5 md:col-span-2">
+                    <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">
+                      Category *
+                    </label>
+                    <select
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      required
+                      className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 text-sm text-slate-700 cursor-pointer hover:border-slate-355 transition-all font-semibold"
+                    >
+                      <option value="" className="text-slate-800">Select Category</option>
+                      <option value="Artificial Intelligence" className="text-slate-800">Artificial Intelligence</option>
+                      <option value="Blockchain" className="text-slate-800">Blockchain</option>
+                      <option value="Internet of Things" className="text-slate-800">Internet of Things</option>
+                      <option value="Smart Energy" className="text-slate-800">Smart Energy</option>
+                      <option value="Software Engineering" className="text-slate-800">Software Engineering</option>
+                      <option value="Hardware / Robotics" className="text-slate-800">Hardware / Robotics</option>
+                      <option value="Other" className="text-slate-800">Other</option>
+                    </select>
+                  </div>
+
+                  {/* Short Description */}
+                  <div className="space-y-1.5 md:col-span-2">
+                    <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">
+                      Short Elevator Pitch (1-2 sentences)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. LSTM demand spike forecasting model to optimize grid distribution."
+                      value={shortDesc}
+                      onChange={(e) => setShortDesc(e.target.value)}
+                      className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 text-sm text-slate-800 placeholder-slate-450 hover:border-slate-350 transition-all font-semibold"
+                    />
+                  </div>
+
+                  {/* Full Description */}
+                  <div className="space-y-1.5 md:col-span-2">
+                    <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">
+                      Detailed Project Description
+                    </label>
+                    <textarea
+                      rows={5}
+                      placeholder="Explain details of the architecture, implementation methodology, challenges solved, results and future scope..."
+                      value={fullDesc}
+                      onChange={(e) => setFullDesc(e.target.value)}
+                      className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 text-sm text-slate-800 placeholder-slate-450 hover:border-slate-350 transition-all font-semibold"
+                    />
+                  </div>
+
+                  {/* Tech Tags Input */}
+                  <div className="space-y-1.5 md:col-span-2">
+                    <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">
+                      Technologies Used (Type and press Enter)
+                    </label>
+                    <div className="flex flex-col gap-2">
+                      <input
+                        type="text"
+                        placeholder="e.g. PyTorch, React, Docker"
+                        value={techInput}
+                        onChange={(e) => setTechInput(e.target.value)}
+                        onKeyDown={handleAddTech}
+                        className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 text-sm text-slate-800 placeholder-slate-450 hover:border-slate-350 transition-all font-semibold"
+                      />
+                      {technologies.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 pt-1.5">
+                          {technologies.map((tech) => (
+                            <span
+                              key={tech}
+                              className="inline-flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-xl bg-slate-50 text-slate-655 border border-slate-200 font-extrabold"
+                            >
+                              <Tag className="h-3 w-3 text-slate-400" />
+                              {tech}
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveTech(tech)}
+                                className="ml-1 text-slate-400 hover:text-red-500 font-extrabold focus:outline-none"
+                              >
+                                &times;
+                              </button>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Resource Links Card */}
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-5">
+                <h3 className="text-sm font-extrabold text-slate-800 uppercase tracking-widest border-b border-slate-100 pb-3">
+                  Project Links
+                </h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* GitHub Link */}
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">
+                      GitHub Repository URL
+                    </label>
+                    <input
+                      type="url"
+                      placeholder="https://github.com/username/project"
+                      value={githubUrl}
+                      onChange={(e) => setGithubUrl(e.target.value)}
+                      className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 text-sm text-slate-800 placeholder-slate-450 hover:border-slate-350 transition-all font-semibold"
+                    />
+                  </div>
+
+                  {/* Demo Link */}
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">
+                      Live Demo Link
+                    </label>
+                    <input
+                      type="url"
+                      placeholder="https://project.demo.dev"
+                      value={demoUrl}
+                      onChange={(e) => setDemoUrl(e.target.value)}
+                      className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 text-sm text-slate-800 placeholder-slate-450 hover:border-slate-350 transition-all font-semibold"
+                    />
+                  </div>
+
+                  {/* Video Link */}
+                  <div className="space-y-1.5 md:col-span-2">
+                    <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">
+                      Project Presentation Video URL
+                    </label>
+                    <input
+                      type="url"
+                      placeholder="https://youtube.com/watch?v=your-video"
+                      value={videoUrl}
+                      onChange={(e) => setVideoUrl(e.target.value)}
+                      className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 text-sm text-slate-800 placeholder-slate-450 hover:border-slate-350 transition-all font-semibold"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Department */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-white/40 uppercase tracking-wider">
-                Academic Department *
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. Computer Science / Electrical Eng."
-                value={department}
-                onChange={(e) => setDepartment(e.target.value)}
-                required
-                className="w-full px-4 py-3 border border-white/12 rounded-2xl bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-white/30 text-sm text-white"
-              />
-            </div>
+            {/* Right Column: Collaborators & Attachments */}
+            <div className="lg:col-span-5 space-y-6">
+              
+              {/* Group Members Card */}
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-5">
+                <div>
+                  <h3 className="text-sm font-extrabold text-slate-800 uppercase tracking-widest border-b border-slate-100 pb-3">
+                    Group Team Members
+                  </h3>
+                  <p className="text-[10px] text-slate-450 mt-1 font-semibold leading-relaxed">Add other contributors to your project team.</p>
+                </div>
 
-            {/* Category */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-white/40 uppercase tracking-wider">
-                Category *
-              </label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                required
-                className="w-full px-4 py-3 border border-white/12 rounded-2xl bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-white/30 text-sm text-white/70 cursor-pointer"
-              >
-                <option value="" className="bg-[#121212] text-white">Select Category</option>
-                <option value="Artificial Intelligence" className="bg-[#121212] text-white">Artificial Intelligence</option>
-                <option value="Blockchain" className="bg-[#121212] text-white">Blockchain</option>
-                <option value="Internet of Things" className="bg-[#121212] text-white">Internet of Things</option>
-                <option value="Smart Energy" className="bg-[#121212] text-white">Smart Energy</option>
-                <option value="Software Engineering" className="bg-[#121212] text-white">Software Engineering</option>
-                <option value="Hardware / Robotics" className="bg-[#121212] text-white">Hardware / Robotics</option>
-                <option value="Other" className="bg-[#121212] text-white">Other</option>
-              </select>
-            </div>
+                <div className="space-y-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-bold text-slate-450 uppercase">Member Name</label>
+                    <input
+                      type="text"
+                      placeholder="John Doe"
+                      value={newMember.member_name}
+                      onChange={(e) => setNewMember({ ...newMember, member_name: e.target.value })}
+                      className="w-full px-3 py-2 border border-slate-200 rounded-xl bg-slate-50/50 text-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all font-semibold"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-bold text-slate-450 uppercase">Email Address</label>
+                    <input
+                      type="email"
+                      placeholder="jdoe@univ.edu"
+                      value={newMember.email}
+                      onChange={(e) => setNewMember({ ...newMember, email: e.target.value })}
+                      className="w-full px-3 py-2 border border-slate-200 rounded-xl bg-slate-50/50 text-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all font-semibold"
+                    />
+                  </div>
+                  <div className="flex gap-2 items-center">
+                    <div className="space-y-1.5 flex-1">
+                      <label className="text-[9px] font-bold text-slate-450 uppercase">Roll Number</label>
+                      <input
+                        type="text"
+                        placeholder="CS-2026-084"
+                        value={newMember.roll_number}
+                        onChange={(e) => setNewMember({ ...newMember, roll_number: e.target.value })}
+                        className="w-full px-3 py-2 border border-slate-200 rounded-xl bg-slate-50/50 text-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all font-semibold"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleAddMember}
+                      className="p-2.5 mt-5 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 hover:bg-blue-100/70 hover:text-blue-750 flex items-center justify-center font-bold transition-all shrink-0"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
 
-            {/* Short Description */}
-            <div className="space-y-2 md:col-span-2">
-              <label className="text-xs font-bold text-white/40 uppercase tracking-wider">
-                Short Elevator Pitch (1-2 sentences)
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. LSTM demand spike forecasting model to optimize grid distribution."
-                value={shortDesc}
-                onChange={(e) => setShortDesc(e.target.value)}
-                className="w-full px-4 py-3 border border-white/12 rounded-2xl bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-white/30 text-sm text-white"
-              />
-            </div>
+                {teamMembers.length > 0 && (
+                  <div className="overflow-hidden border border-slate-100 rounded-xl mt-4">
+                    <table className="w-full text-left text-xs">
+                      <thead>
+                        <tr className="bg-slate-50 text-slate-450 uppercase tracking-wider font-bold">
+                          <th className="py-2.5 px-3">Name</th>
+                          <th className="py-2.5 px-3">Roll No.</th>
+                          <th className="py-2.5 px-3 text-right">Delete</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 font-semibold">
+                        {teamMembers.map((member, idx) => (
+                          <tr key={idx} className="hover:bg-slate-50/30">
+                            <td className="py-2.5 px-3 text-slate-700">{member.member_name}</td>
+                            <td className="py-2.5 px-3 text-slate-500">{member.roll_number || "-"}</td>
+                            <td className="py-2.5 px-3 text-right">
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveMember(idx)}
+                                className="p-1 rounded text-slate-400 hover:text-red-500 hover:bg-red-50"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
 
-            {/* Full Description */}
-            <div className="space-y-2 md:col-span-2">
-              <label className="text-xs font-bold text-white/40 uppercase tracking-wider">
-                Detailed Project Description
-              </label>
-              <textarea
-                rows={5}
-                placeholder="Explain details of the architecture, implementation methodology, challenges solved, results and future scope..."
-                value={fullDesc}
-                onChange={(e) => setFullDesc(e.target.value)}
-                className="w-full px-4 py-3 border border-white/12 rounded-2xl bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-white/30 text-sm text-white"
-              />
-            </div>
+              {/* Attachments Card */}
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-5">
+                <div>
+                  <h3 className="text-sm font-extrabold text-slate-800 uppercase tracking-widest border-b border-slate-100 pb-3">
+                    Files & Attachments
+                  </h3>
+                  <p className="text-[10px] text-slate-450 mt-1 font-semibold leading-relaxed">Attach documents, PDFs, presentation slides or designs.</p>
+                </div>
 
-            {/* Tech Tags Input */}
-            <div className="space-y-2 md:col-span-2">
-              <label className="text-xs font-bold text-white/40 uppercase tracking-wider">
-                Technologies Used (Type and press Enter)
-              </label>
-              <div className="flex flex-col gap-2">
-                <input
-                  type="text"
-                  placeholder="e.g. PyTorch, React, Docker"
-                  value={techInput}
-                  onChange={(e) => setTechInput(e.target.value)}
-                  onKeyDown={handleAddTech}
-                  className="w-full px-4 py-3 border border-white/12 rounded-2xl bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-white/30 text-sm text-white"
-                />
-                {technologies.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 pt-2">
-                    {technologies.map((tech) => (
-                      <span
-                        key={tech}
-                        className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-xl bg-white/10 text-white/90 border border-white/12 font-bold"
+                <div className="space-y-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-bold text-slate-450 uppercase">File Name / Label</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Project Architecture PDF"
+                      value={newFile.file_name}
+                      onChange={(e) => setNewFile({ ...newFile, file_name: e.target.value })}
+                      className="w-full px-3 py-2 border border-slate-200 rounded-xl bg-slate-50/50 text-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all font-semibold"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-bold text-slate-450 uppercase">Attachment Link / URL</label>
+                    <input
+                      type="url"
+                      placeholder="https://drive.google.com/..."
+                      value={newFile.file_url}
+                      onChange={(e) => setNewFile({ ...newFile, file_url: e.target.value })}
+                      className="w-full px-3 py-2 border border-slate-200 rounded-xl bg-slate-50/50 text-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all font-semibold"
+                    />
+                  </div>
+                  <div className="flex gap-2 items-center">
+                    <div className="space-y-1.5 flex-1">
+                      <label className="text-[9px] font-bold text-slate-450 uppercase">File Type</label>
+                      <select
+                        value={newFile.file_type}
+                        onChange={(e) => setNewFile({ ...newFile, file_type: e.target.value as any })}
+                        className="w-full px-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50/50 text-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all font-semibold cursor-pointer"
                       >
-                        <Tag className="h-3 w-3 text-white/40" />
-                        {tech}
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveTech(tech)}
-                          className="ml-1.5 text-white/40 hover:text-red-400 font-extrabold focus:outline-none"
-                        >
-                          &times;
-                        </button>
-                      </span>
-                    ))}
+                        <option value="document" className="text-slate-800">Document</option>
+                        <option value="pdf" className="text-slate-800">PDF File</option>
+                        <option value="ppt" className="text-slate-800">Slideshow (PPT)</option>
+                        <option value="image" className="text-slate-800">Screenshot Image</option>
+                      </select>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleAddFile}
+                      className="p-2.5 mt-5 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 hover:bg-blue-100/70 hover:text-blue-750 flex items-center justify-center font-bold transition-all shrink-0"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+
+                {projectFiles.length > 0 && (
+                  <div className="overflow-hidden border border-slate-100 rounded-xl mt-4">
+                    <table className="w-full text-left text-xs">
+                      <thead>
+                        <tr className="bg-slate-50 text-slate-450 uppercase tracking-wider font-bold">
+                          <th className="py-2.5 px-3">File Label</th>
+                          <th className="py-2.5 px-3">Type</th>
+                          <th className="py-2.5 px-3 text-right">Delete</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 font-semibold">
+                        {projectFiles.map((file, idx) => (
+                          <tr key={idx} className="hover:bg-slate-50/30">
+                            <td className="py-2.5 px-3 text-blue-600 truncate max-w-[150px]">
+                              <a href={file.file_url} target="_blank" rel="noreferrer" className="hover:underline">
+                                {file.file_name}
+                              </a>
+                            </td>
+                            <td className="py-2.5 px-3 text-slate-500 uppercase text-[10px]">{file.file_type}</td>
+                            <td className="py-2.5 px-3 text-right">
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveFile(idx)}
+                                className="p-1 rounded text-slate-400 hover:text-red-500 hover:bg-red-50"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Resource Links */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-white/40 uppercase tracking-wider">
-                GitHub Repository URL
-              </label>
-              <input
-                type="url"
-                placeholder="https://github.com/username/project"
-                value={githubUrl}
-                onChange={(e) => setGithubUrl(e.target.value)}
-                className="w-full px-4 py-3 border border-white/12 rounded-2xl bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-white/30 text-sm text-white"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-white/40 uppercase tracking-wider">
-                Live Demo Link
-              </label>
-              <input
-                type="url"
-                placeholder="https://project.demo.dev"
-                value={demoUrl}
-                onChange={(e) => setDemoUrl(e.target.value)}
-                className="w-full px-4 py-3 border border-white/12 rounded-2xl bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-white/30 text-sm text-white"
-              />
-            </div>
-
-            <div className="space-y-2 md:col-span-2">
-              <label className="text-xs font-bold text-white/40 uppercase tracking-wider">
-                Project Presentation Video URL
-              </label>
-              <input
-                type="url"
-                placeholder="https://youtube.com/watch?v=your-video"
-                value={videoUrl}
-                onChange={(e) => setVideoUrl(e.target.value)}
-                className="w-full px-4 py-3 border border-white/12 rounded-2xl bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-white/30 text-sm text-white"
-              />
-            </div>
           </div>
 
-          <hr className="border-white/12" />
-
-          {/* Team Members Section */}
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                Group Team Members
-              </h3>
-              <p className="text-xs text-white/40 mt-0.5">Add other contributors to your project team.</p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold text-white/40 uppercase">Member Name</label>
-                <input
-                  type="text"
-                  placeholder="John Doe"
-                  value={newMember.member_name}
-                  onChange={(e) => setNewMember({ ...newMember, member_name: e.target.value })}
-                  className="w-full px-3 py-2 border border-white/12 rounded-xl bg-white/5 text-white text-xs focus:outline-none focus:ring-2 focus:ring-white/10"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold text-white/40 uppercase">Email Address</label>
-                <input
-                  type="email"
-                  placeholder="jdoe@univ.edu"
-                  value={newMember.email}
-                  onChange={(e) => setNewMember({ ...newMember, email: e.target.value })}
-                  className="w-full px-3 py-2 border border-white/12 rounded-xl bg-white/5 text-white text-xs focus:outline-none focus:ring-2 focus:ring-white/10"
-                />
-              </div>
-              <div className="flex gap-2 items-center">
-                <div className="space-y-1 flex-1">
-                  <label className="text-[10px] font-bold text-white/40 uppercase">Roll Number</label>
-                  <input
-                    type="text"
-                    placeholder="CS-2026-084"
-                    value={newMember.roll_number}
-                    onChange={(e) => setNewMember({ ...newMember, roll_number: e.target.value })}
-                    className="w-full px-3 py-2 border border-white/12 rounded-xl bg-white/5 text-white text-xs focus:outline-none focus:ring-2 focus:ring-white/10"
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={handleAddMember}
-                  className="p-2.5 mt-5 rounded-xl bg-white/5 text-white border border-white/12 hover:bg-white/10 flex items-center justify-center font-bold"
-                >
-                  <Plus className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-
-            {teamMembers.length > 0 && (
-              <div className="overflow-hidden border border-white/12 rounded-xl">
-                <table className="w-full text-left text-xs">
-                  <thead>
-                    <tr className="bg-white/5 text-white/40 uppercase tracking-wider font-bold">
-                      <th className="py-2.5 px-4">Name</th>
-                      <th className="py-2.5 px-4">Email</th>
-                      <th className="py-2.5 px-4">Roll Number</th>
-                      <th className="py-2.5 px-4 text-right">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/10 font-semibold">
-                    {teamMembers.map((member, idx) => (
-                      <tr key={idx} className="hover:bg-white/5">
-                        <td className="py-2 px-4 text-white">{member.member_name}</td>
-                        <td className="py-2 px-4 text-white/60">{member.email || "-"}</td>
-                        <td className="py-2 px-4 text-white/60">{member.roll_number || "-"}</td>
-                        <td className="py-2 px-4 text-right">
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveMember(idx)}
-                            className="p-1 rounded text-red-400 hover:bg-red-500/10"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-
-          <hr className="border-white/12" />
-
-          {/* Files / Attachments Section */}
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                Project Files & Attachments
-              </h3>
-              <p className="text-xs text-white/40 mt-0.5">Attach documents, PDFs, presentation slides or designs.</p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold text-white/40 uppercase">File Name / Label</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Project Architecture PDF"
-                  value={newFile.file_name}
-                  onChange={(e) => setNewFile({ ...newFile, file_name: e.target.value })}
-                  className="w-full px-3 py-2 border border-white/12 rounded-xl bg-white/5 text-white text-xs focus:outline-none focus:ring-2 focus:ring-white/10"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold text-white/40 uppercase">Attachment Link / URL</label>
-                <input
-                  type="url"
-                  placeholder="https://drive.google.com/your-doc-link"
-                  value={newFile.file_url}
-                  onChange={(e) => setNewFile({ ...newFile, file_url: e.target.value })}
-                  className="w-full px-3 py-2 border border-white/12 rounded-xl bg-white/5 text-white text-xs focus:outline-none focus:ring-2 focus:ring-white/10"
-                />
-              </div>
-              <div className="flex gap-2 items-center">
-                <div className="space-y-1 flex-1">
-                  <label className="text-[10px] font-bold text-white/40 uppercase">File Type</label>
-                  <select
-                    value={newFile.file_type}
-                    onChange={(e) => setNewFile({ ...newFile, file_type: e.target.value as any })}
-                    className="w-full px-3 py-2 border border-white/12 rounded-xl bg-white/5 text-white text-xs focus:outline-none focus:ring-2 focus:ring-white/10 cursor-pointer"
-                  >
-                    <option value="document" className="bg-[#121212] text-white">Document</option>
-                    <option value="pdf" className="bg-[#121212] text-white">PDF File</option>
-                    <option value="ppt" className="bg-[#121212] text-white">Slideshow (PPT)</option>
-                    <option value="image" className="bg-[#121212] text-white">Screenshot Image</option>
-                  </select>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleAddFile}
-                  className="p-2.5 mt-5 rounded-xl bg-white/5 text-white border border-white/12 hover:bg-white/10 flex items-center justify-center font-bold"
-                >
-                  <Plus className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-
-            {projectFiles.length > 0 && (
-              <div className="overflow-hidden border border-white/12 rounded-xl">
-                <table className="w-full text-left text-xs">
-                  <thead>
-                    <tr className="bg-white/5 text-white/40 uppercase tracking-wider font-bold">
-                      <th className="py-2.5 px-4">Label</th>
-                      <th className="py-2.5 px-4">Link URL</th>
-                      <th className="py-2.5 px-4">Type</th>
-                      <th className="py-2.5 px-4 text-right">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/10 font-semibold">
-                    {projectFiles.map((file, idx) => (
-                      <tr key={idx} className="hover:bg-white/5">
-                        <td className="py-2 px-4 text-white">{file.file_name}</td>
-                        <td className="py-2 px-4 text-blue-400 truncate max-w-xs">
-                          <a href={file.file_url} target="_blank" rel="noreferrer" className="hover:underline">
-                            {file.file_url}
-                          </a>
-                        </td>
-                        <td className="py-2 px-4 text-white/60 uppercase">{file.file_type}</td>
-                        <td className="py-2 px-4 text-right">
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveFile(idx)}
-                            className="p-1 rounded text-red-400 hover:bg-red-500/10"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-
-          {/* Form Actions */}
-          <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-6 border-t border-white/12">
+          {/* Form Actions Footer Panel */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 flex flex-col sm:flex-row items-center justify-end gap-3">
             <button
               type="button"
               onClick={onBack}
               disabled={isSubmitting}
-              className="w-full sm:w-auto px-5 py-3 rounded-2xl border border-white/12 text-xs font-bold text-white/70 hover:bg-white/5 transition-all disabled:opacity-50"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all disabled:opacity-50"
             >
               Cancel
             </button>
@@ -669,18 +694,18 @@ export default function SubmitProject({ projectId, onBack, setActiveTab }: Submi
               type="button"
               onClick={(e) => handleSubmit(e, "draft")}
               disabled={isSubmitting}
-              className="w-full sm:w-auto px-5 py-3 rounded-2xl border border-white/12 text-xs font-bold text-white bg-white/5 hover:bg-white/10 transition-all disabled:opacity-50 flex items-center justify-center gap-1.5"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-800 bg-white hover:bg-slate-50 transition-all disabled:opacity-50 flex items-center justify-center gap-1.5 uppercase tracking-wider"
             >
-              {isSubmitting ? <RefreshCw className="h-4.5 w-4.5 animate-spin" /> : <Save className="h-4.5 w-4.5" />}
+              {isSubmitting ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
               Save Draft
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full sm:w-auto px-6 py-3 rounded-2xl text-xs font-bold text-black bg-white hover:bg-white/85 transition-all disabled:opacity-50 flex items-center justify-center gap-1.5 shadow-lg shadow-white/5"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-black hover:bg-[#222222] transition-all disabled:opacity-50 flex items-center justify-center gap-1.5 shadow-sm uppercase tracking-wider"
             >
-              {isSubmitting ? <RefreshCw className="h-4.5 w-4.5 animate-spin" /> : <Save className="h-4.5 w-4.5" />}
-              Submit for Review
+              {isSubmitting ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+              Submit Showcase
             </button>
           </div>
         </form>

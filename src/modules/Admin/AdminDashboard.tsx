@@ -118,7 +118,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#121212] text-white dark">
+    <div className="min-h-screen bg-slate-50 text-slate-800 relative overflow-hidden">
       {/* Sidebar navigation */}
       <AdminSidebar
         activeTab={activeTab}
@@ -138,8 +138,8 @@ export default function AdminDashboard() {
           onProfileClick={() => setActiveTab("profile")}
         />
 
-        {/* Content Body Grid */}
-        <main className="flex-1 p-6 sm:p-8 mt-16 max-w-[1600px] w-full mx-auto space-y-8">
+        {/* Page content */}
+        <main className="flex-1 p-5 sm:p-7 pt-20 sm:pt-24 max-w-[1500px] w-full mx-auto relative z-10 space-y-8">
           {activeTab === "dashboard" && (
             <AdminDashboardOverview
               stats={stats}

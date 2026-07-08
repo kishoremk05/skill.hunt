@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { ArrowLeft, Github, Globe, Video, ShieldCheck, ShieldAlert, RefreshCw, XCircle, Tag, Users, FileText, Calendar } from "lucide-react";
+import { ArrowLeft, Github, Globe, Video, ShieldCheck, ShieldAlert, RefreshCw, XCircle, Tag, Users, FileText, Calendar, Star, GitFork, Activity } from "lucide-react";
+import { fetchGithubMetadata, checkUrlHealth } from "@/lib/api-helpers";
 
 interface Member {
   member_name: string;
@@ -38,6 +39,9 @@ interface ProjectDetailsProps {
 export default function ProjectDetails({ project, onBack }: ProjectDetailsProps) {
   const [members, setMembers] = useState<Member[]>([]);
   const [files, setFiles] = useState<ProjectFile[]>([]);
+  const [githubData, setGithubData] = useState<any>(null);
+  const [demoHealth, setDemoHealth] = useState<boolean | null>(null);
+  const [evaluations, setEvaluations] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -59,6 +63,25 @@ export default function ProjectDetails({ project, onBack }: ProjectDetailsProps)
           .eq("project_id", project.id);
 
         setFiles(fileData || []);
+
+        // Fetch evaluations for feedback
+        const { data: evalData } = await supabase
+          .from("evaluations")
+          .select("total_score, overall_feedback, profiles(full_name)")
+          .eq("project_id", project.id)
+          .eq("status", "submitted");
+        
+        setEvaluations(evalData || []);
+
+        // Fetch external metadata
+        if (project.github_url) {
+          const gh = await fetchGithubMetadata(project.github_url);
+          setGithubData(gh);
+        }
+        if (project.demo_url) {
+          const ok = await checkUrlHealth(project.demo_url);
+          setDemoHealth(ok);
+        }
       } catch (err) {
         console.error(err);
       } finally {
@@ -111,30 +134,30 @@ export default function ProjectDetails({ project, onBack }: ProjectDetailsProps)
   };
 
   return (
-    <div className="bg-[#1a1a1a] rounded-3xl border border-white/12 shadow-md p-6 sm:p-8 space-y-8">
+    <div className="bg-white rounded-2xl border border-slate-300 shadow-sm p-6 sm:p-8 space-y-6 text-left">
       {/* Header */}
       <div className="flex items-center gap-4">
         <button
           onClick={onBack}
-          className="p-2.5 rounded-xl border border-white/12 bg-white/5 text-white/60 hover:text-white hover:bg-white/10 transition-all"
+          className="p-2.5 rounded-xl border border-slate-300 bg-white text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all shadow-sm"
         >
           <ArrowLeft className="h-4 w-4" />
         </button>
         <div>
-          <h2 className="text-xl font-black text-white">Project Details</h2>
-          <p className="text-xs text-white/40 mt-0.5">Comprehensive view of your submitted showcase.</p>
+          <h2 className="text-xl font-black text-slate-900 uppercase tracking-wider">Project Details</h2>
+          <p className="text-xs text-slate-500 mt-0.5 font-semibold">Comprehensive view of your submitted showcase.</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
         {/* Main Details (8/12) */}
         <div className="xl:col-span-8 space-y-6">
           <div className="flex justify-between items-start gap-4">
             <div className="space-y-1">
-              <span className="text-[10px] uppercase font-bold tracking-widest text-white/40">
+              <span className="text-[10px] uppercase font-bold tracking-widest text-slate-450">
                 {project.category}
               </span>
-              <h3 className="text-2xl font-black text-white leading-tight">
+              <h3 className="text-2xl font-black text-slate-800 leading-tight">
                 {project.title}
               </h3>
             </div>
@@ -142,55 +165,73 @@ export default function ProjectDetails({ project, onBack }: ProjectDetailsProps)
           </div>
 
           <div className="space-y-1">
-            <h4 className="text-xs font-bold text-white/40 uppercase tracking-wider">Elevator Pitch</h4>
-            <p className="text-sm text-white/90 leading-relaxed font-semibold">
+            <h4 className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Elevator Pitch</h4>
+            <p className="text-sm text-slate-500 leading-relaxed font-semibold">
               {project.short_description || "No description provided."}
             </p>
           </div>
 
           <div className="space-y-1">
-            <h4 className="text-xs font-bold text-white/40 uppercase tracking-wider">Project Scope & Details</h4>
-            <p className="text-sm text-white/70 whitespace-pre-line leading-relaxed">
+            <h4 className="text-[10px] font-bold text-slate-455 uppercase tracking-wider">Project Scope & Details</h4>
+            <p className="text-sm text-slate-500 whitespace-pre-line leading-relaxed font-semibold">
               {project.full_description || "No full description provided."}
             </p>
           </div>
 
           {/* Tech tags */}
           <div className="space-y-2 pt-2">
-            <h4 className="text-xs font-bold text-white/40 uppercase tracking-wider">Technologies Used</h4>
+            <h4 className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Technologies Used</h4>
             <div className="flex flex-wrap gap-1.5">
               {project.technologies?.map((tech) => (
                 <span
                   key={tech}
-                  className="inline-flex items-center gap-1 text-xs px-3 py-1 rounded-xl bg-white/5 text-white/70 border border-white/12 font-bold"
+                  className="inline-flex items-center gap-1 text-[10px] px-3 py-1 rounded-lg bg-slate-50 text-slate-500 border border-slate-200 font-bold"
                 >
-                  <Tag className="h-3.5 w-3.5 text-white/40" />
+                  <Tag className="h-3.5 w-3.5 text-slate-400" />
                   {tech}
                 </span>
               ))}
               {(!project.technologies || project.technologies.length === 0) && (
-                <span className="text-xs text-white/40">No tech tags registered.</span>
+                <span className="text-xs text-slate-400">No tech tags registered.</span>
               )}
             </div>
           </div>
+
+          {/* Faculty Feedback */}
+          {evaluations.length > 0 && (
+            <div className="space-y-3 pt-4 border-t border-slate-250">
+              <h4 className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Faculty Feedback</h4>
+              <div className="space-y-4">
+                {evaluations.map((ev, idx) => (
+                  <div key={idx} className="p-4 bg-slate-50/50 border border-slate-200 rounded-xl text-sm text-slate-700 space-y-2">
+                    <p className="whitespace-pre-line leading-relaxed font-semibold">"{ev.overall_feedback}"</p>
+                    <div className="flex justify-between items-center text-[10px] text-slate-450 font-bold border-t border-slate-200/60 pt-2 mt-2">
+                      <span>- {ev.profiles?.full_name || "Faculty Member"}</span>
+                      <span className="font-extrabold text-slate-800">Score: {ev.total_score}/100</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Info Sidebar (4/12) */}
-        <div className="xl:col-span-4 space-y-6 xl:border-l xl:border-white/12 xl:pl-8">
+        <div className="xl:col-span-4 space-y-6 xl:border-l xl:border-slate-200 xl:pl-6">
           {/* Metadata Card */}
-          <div className="p-5 bg-white/5 border border-white/12 rounded-2xl space-y-3.5 text-xs text-white/70">
+          <div className="p-5 bg-slate-50 border border-slate-200 rounded-xl space-y-3.5 text-xs text-slate-600 font-bold">
             <div className="flex items-center gap-2.5">
-              <Calendar className="h-4.5 w-4.5 text-white/40" />
+              <Calendar className="h-4.5 w-4.5 text-slate-400" />
               <span>Created on {new Date(project.created_at).toLocaleDateString()}</span>
             </div>
             <div className="flex items-center gap-2.5">
-              <span className="font-bold text-white/40 uppercase tracking-wider">Dept:</span>
+              <span className="font-bold text-slate-450 uppercase tracking-wider">Dept:</span>
               <span>{project.department}</span>
             </div>
             {project.final_score !== undefined && project.final_score !== null && (
-              <div className="flex items-center gap-2.5 pt-2 border-t border-white/10">
-                <span className="font-bold text-white/40 uppercase tracking-wider">Overall Grade:</span>
-                <span className="font-black text-white text-sm">
+              <div className="flex items-center gap-2.5 pt-2 border-t border-slate-200">
+                <span className="font-bold text-slate-455 uppercase tracking-wider">Overall Grade:</span>
+                <span className="font-black text-slate-900 text-sm">
                   {project.final_score}/100
                 </span>
               </div>
@@ -199,19 +240,27 @@ export default function ProjectDetails({ project, onBack }: ProjectDetailsProps)
 
           {/* Code / Demo Links */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold text-white/40 uppercase tracking-wider">Project Links</h4>
+            <h4 className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Project Links</h4>
             <div className="space-y-2">
               {project.github_url && (
                 <a
                   href={project.github_url}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-full inline-flex items-center justify-between px-4 py-2.5 rounded-xl border border-white/12 bg-white/5 text-white/70 hover:bg-white/10 text-xs font-bold transition-all"
+                  className="w-full flex flex-col px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-all gap-2 shadow-sm hover:border-slate-350"
                 >
-                  <span className="flex items-center gap-2">
-                    <Github className="h-4.5 w-4.5 text-white/40" /> GitHub Repository
-                  </span>
-                  <span className="text-[10px] text-white/40">View Source</span>
+                  <div className="flex items-center justify-between font-bold text-xs">
+                    <span className="flex items-center gap-2">
+                      <Github className="h-4.5 w-4.5 text-slate-400" /> GitHub Repository
+                    </span>
+                    <span className="text-[10px] text-slate-400">View Source</span>
+                  </div>
+                  {githubData && (
+                    <div className="flex items-center gap-3 text-[10px] text-slate-500 font-bold">
+                      <span className="flex items-center gap-1"><Star className="h-3 w-3" /> {githubData.stars}</span>
+                      <span className="flex items-center gap-1"><GitFork className="h-3 w-3" /> {githubData.forks}</span>
+                    </div>
+                  )}
                 </a>
               )}
 
@@ -220,12 +269,19 @@ export default function ProjectDetails({ project, onBack }: ProjectDetailsProps)
                   href={project.demo_url}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-full inline-flex items-center justify-between px-4 py-2.5 rounded-xl border border-white/12 bg-white/5 text-white/70 hover:bg-white/10 text-xs font-bold transition-all"
+                  className="w-full flex flex-col px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-all gap-2 shadow-sm hover:border-slate-350"
                 >
-                  <span className="flex items-center gap-2">
-                    <Globe className="h-4.5 w-4.5 text-white/40" /> Live Demo
-                  </span>
-                  <span className="text-[10px] text-white/40">Visit Web</span>
+                  <div className="flex items-center justify-between font-bold text-xs">
+                    <span className="flex items-center gap-2">
+                      <Globe className="h-4.5 w-4.5 text-slate-400" /> Live Demo
+                    </span>
+                    <span className="text-[10px] text-slate-400">Visit Web</span>
+                  </div>
+                  {demoHealth !== null && (
+                    <div className={`flex items-center gap-1 text-[10px] font-bold ${demoHealth ? "text-emerald-700" : "text-red-655"}`}>
+                      <Activity className="h-3 w-3" /> {demoHealth ? "Status: Online" : "Status: Unreachable"}
+                    </div>
+                  )}
                 </a>
               )}
 
@@ -234,17 +290,17 @@ export default function ProjectDetails({ project, onBack }: ProjectDetailsProps)
                   href={project.video_url}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-full inline-flex items-center justify-between px-4 py-2.5 rounded-xl border border-white/12 bg-white/5 text-white/70 hover:bg-white/10 text-xs font-bold transition-all"
+                  className="w-full inline-flex items-center justify-between px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-xs font-bold transition-all shadow-sm hover:border-slate-350"
                 >
                   <span className="flex items-center gap-2">
-                    <Video className="h-4.5 w-4.5 text-white/40" /> Presentation Video
+                    <Video className="h-4.5 w-4.5 text-slate-400" /> Presentation Video
                   </span>
-                  <span className="text-[10px] text-white/40">Watch Reel</span>
+                  <span className="text-[10px] text-slate-400">Watch Reel</span>
                 </a>
               )}
 
               {!project.github_url && !project.demo_url && !project.video_url && (
-                <span className="text-xs text-white/40 block pt-1">No links registered for this project.</span>
+                <span className="text-xs text-slate-455 block pt-1">No links registered for this project.</span>
               )}
             </div>
           </div>
@@ -252,27 +308,27 @@ export default function ProjectDetails({ project, onBack }: ProjectDetailsProps)
           {/* Roster & files */}
           {isLoading ? (
             <div className="flex justify-center items-center py-4">
-              <RefreshCw className="h-6 w-6 animate-spin text-white" />
+              <RefreshCw className="h-6 w-6 animate-spin text-blue-600" />
             </div>
           ) : (
             <>
               {/* Group Roster */}
               <div className="space-y-3">
-                <h4 className="text-xs font-bold text-white/40 uppercase tracking-wider flex items-center gap-1.5">
+                <h4 className="text-[10px] font-bold text-slate-455 uppercase tracking-wider flex items-center gap-1.5">
                   <Users className="h-4.5 w-4.5" /> Group Contributors ({members.length})
                 </h4>
                 {members.length === 0 ? (
-                  <span className="text-xs text-white/40 block pl-1">No collaborators added.</span>
+                  <span className="text-xs text-slate-400 block pl-1">No collaborators added.</span>
                 ) : (
                   <div className="space-y-2">
                     {members.map((m, idx) => (
-                      <div key={idx} className="p-3 bg-white/5 border border-white/12 rounded-xl space-y-1 text-xs">
-                        <span className="font-extrabold text-white block">{m.member_name}</span>
+                      <div key={idx} className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1 text-xs">
+                        <span className="font-extrabold text-slate-800 block">{m.member_name}</span>
                         {m.roll_number && (
-                          <span className="text-[10px] text-white/40 block">Roll No: {m.roll_number}</span>
+                          <span className="text-[10px] text-slate-450 block">Roll No: {m.roll_number}</span>
                         )}
                         {m.email && (
-                          <span className="text-[10px] text-white/40 block truncate">{m.email}</span>
+                          <span className="text-[10px] text-slate-455 block truncate">{m.email}</span>
                         )}
                       </div>
                     ))}
@@ -282,11 +338,11 @@ export default function ProjectDetails({ project, onBack }: ProjectDetailsProps)
 
               {/* Files */}
               <div className="space-y-3">
-                <h4 className="text-xs font-bold text-white/40 uppercase tracking-wider flex items-center gap-1.5">
+                <h4 className="text-[10px] font-bold text-slate-450 uppercase tracking-wider flex items-center gap-1.5">
                   <FileText className="h-4.5 w-4.5" /> Project Attachments ({files.length})
                 </h4>
                 {files.length === 0 ? (
-                  <span className="text-xs text-white/40 block pl-1">No attached files.</span>
+                  <span className="text-xs text-slate-400 block pl-1">No attached files.</span>
                 ) : (
                   <div className="space-y-2">
                     {files.map((f, idx) => (
@@ -295,10 +351,10 @@ export default function ProjectDetails({ project, onBack }: ProjectDetailsProps)
                         href={f.file_url}
                         target="_blank"
                         rel="noreferrer"
-                        className="w-full flex items-center justify-between p-3 rounded-xl border border-white/12 bg-white/5 text-white/70 hover:bg-white/10 text-xs font-bold transition-all"
+                        className="w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-xs font-bold transition-all shadow-sm hover:border-slate-350"
                       >
                         <span className="truncate pr-2">{f.file_name}</span>
-                        <span className="text-[9px] uppercase bg-white/10 text-white/60 px-1.5 py-0.5 rounded font-extrabold border border-white/5">
+                        <span className="text-[9px] uppercase bg-slate-50 text-slate-600 px-1.5 py-0.5 rounded font-extrabold border border-slate-200">
                           {f.file_type}
                         </span>
                       </a>

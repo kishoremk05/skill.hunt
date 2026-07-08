@@ -206,13 +206,13 @@ export default function ReportsView() {
   };
 
   return (
-    <div className="bg-[#1a1a1a] rounded-3xl border border-white/12 shadow-md p-6 sm:p-8 space-y-6">
+    <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6 text-slate-800 animate-fade-in">
       {/* Header */}
       <div>
-        <h2 className="text-xl font-black text-white flex items-center gap-2">
-          <FileSpreadsheet className="h-5.5 w-5.5 text-white/40" /> Administrative Reporting
+        <h2 className="text-xl font-black text-slate-800 flex items-center gap-2">
+          <FileSpreadsheet className="h-5.5 w-5.5 text-slate-400" /> Administrative Reporting
         </h2>
-        <p className="text-xs text-white/40 mt-0.5 font-semibold">Generate and download official PDF, CSV or Excel summaries.</p>
+        <p className="text-xs text-slate-500 mt-0.5 font-semibold">Generate and download official PDF, CSV or Excel summaries.</p>
       </div>
 
       {/* Reports Grid List */}
@@ -220,14 +220,14 @@ export default function ReportsView() {
         {reports.map((rep) => (
           <div
             key={rep.id}
-            className="p-5 bg-white/5 border border-white/12 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+            className="p-5 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
           >
             <div className="space-y-1">
-              <h3 className="text-xs font-bold text-white/90 flex items-center gap-1.5">
-                <FileText className="h-4 w-4 text-white/40" /> {rep.name}
+              <h3 className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <FileText className="h-4 w-4 text-slate-450" /> {rep.name}
               </h3>
-              <p className="text-[11px] text-white/40 max-w-xl leading-relaxed">{rep.description}</p>
-              <span className="text-[10px] text-white/40 font-bold block">
+              <p className="text-[11px] text-slate-550 max-w-xl leading-relaxed font-semibold">{rep.description}</p>
+              <span className="text-[10px] text-slate-450 font-bold block">
                 Estimated records: {rep.recordsCount} items
               </span>
             </div>
@@ -241,7 +241,7 @@ export default function ReportsView() {
                     key={format}
                     onClick={() => handleDownload(rep.id, rep.name, format)}
                     disabled={downloading !== null}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-white/12 text-[10px] font-bold text-white hover:bg-white hover:text-black transition-all disabled:opacity-50"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-[10px] font-bold text-slate-800 hover:bg-slate-100 transition-all disabled:opacity-50 active:scale-95 shadow-xs"
                   >
                     <Download className={`h-3 w-3 ${isCurrent ? "animate-bounce" : ""}`} /> {format}
                   </button>

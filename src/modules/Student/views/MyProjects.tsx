@@ -84,37 +84,37 @@ export default function MyProjects({ onEditProject, onViewDetails, setActiveTab 
     switch (status) {
       case "draft":
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/5 text-white/70 border border-white/12">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
             Draft
           </span>
         );
       case "submitted":
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/5 text-white border border-white/12">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-600 border border-blue-100">
             <ShieldAlert className="h-3.5 w-3.5" /> Submitted
           </span>
         );
       case "verified":
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-100">
             <ShieldCheck className="h-3.5 w-3.5" /> Verified
           </span>
         );
       case "reviewing":
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/5 text-white/70 border border-white/12">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-50 text-purple-600 border border-purple-100">
             <RefreshCw className="h-3 w-3 animate-spin" /> Reviewing
           </span>
         );
       case "revision":
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/5 text-orange-400 border border-orange-500/20">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-600 border border-orange-100">
             Revision Req.
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/20">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-600 border border-red-100">
             <XCircle className="h-3.5 w-3.5" /> {status}
           </span>
         );
@@ -122,16 +122,16 @@ export default function MyProjects({ onEditProject, onViewDetails, setActiveTab 
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 text-left">
       {/* Header view */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-black text-white tracking-tight">My Projects</h2>
-          <p className="text-xs text-white/40 mt-1">Manage and track submissions for your showcased projects.</p>
+          <h2 className="text-2xl font-black text-slate-900 tracking-tight">My Projects</h2>
+          <p className="text-xs text-slate-500 font-semibold mt-1">Manage and track submissions for your showcased projects.</p>
         </div>
         <button
           onClick={() => setActiveTab("submit-project")}
-          className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl text-xs font-bold text-black bg-white hover:bg-white/80 transition-all duration-200"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-black hover:bg-[#222222] transition-all shadow-sm uppercase tracking-wider"
         >
           <Plus className="h-4 w-4" /> Submit New Project
         </button>
@@ -139,20 +139,20 @@ export default function MyProjects({ onEditProject, onViewDetails, setActiveTab 
 
       {isLoading ? (
         <div className="flex justify-center items-center py-20">
-          <RefreshCw className="h-8 w-8 animate-spin text-white" />
+          <RefreshCw className="h-8 w-8 animate-spin text-blue-600" />
         </div>
       ) : projects.length === 0 ? (
-        <div className="bg-[#1a1a1a] rounded-3xl p-12 text-center border border-white/12 min-h-[350px] flex flex-col items-center justify-center">
-          <div className="w-16 h-16 rounded-2xl bg-white/5 text-white border border-white/12 flex items-center justify-center mb-4">
-            <Folder className="h-8 w-8" />
+        <div className="bg-white rounded-2xl p-12 text-center border border-slate-200 min-h-[350px] flex flex-col items-center justify-center shadow-sm">
+          <div className="w-16 h-16 rounded-2xl bg-slate-50 text-slate-500 border border-slate-200 flex items-center justify-center mb-4">
+            <Folder className="h-8 w-8 text-slate-500" />
           </div>
-          <h3 className="text-lg font-bold text-white mb-1">No Projects Found</h3>
-          <p className="text-sm text-white/40 max-w-sm mb-6">
+          <h3 className="text-lg font-bold text-slate-900 mb-1">No Projects Found</h3>
+          <p className="text-sm text-slate-500 max-w-sm mb-6">
             You haven't submitted any showcase projects for the active event yet.
           </p>
           <button
             onClick={() => setActiveTab("submit-project")}
-            className="px-5 py-2.5 rounded-xl text-xs font-bold text-black bg-white hover:bg-white/85 transition-all"
+            className="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-black hover:bg-[#222222] transition-all shadow-sm uppercase tracking-wider"
           >
             Create Your First Project
           </button>
@@ -162,37 +162,37 @@ export default function MyProjects({ onEditProject, onViewDetails, setActiveTab 
           {projects.map((project) => (
             <div
               key={project.id}
-              className="bg-[#1a1a1a] rounded-3xl border border-white/12 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden"
+              className="bg-white rounded-2xl border border-slate-300 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden"
             >
               <div className="p-6 sm:p-8 space-y-6">
                 <div className="flex justify-between items-start gap-4">
-                  <div className="space-y-1">
-                    <span className="text-[10px] uppercase font-bold tracking-widest text-white/40">
+                  <div className="space-y-1 text-left">
+                    <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400">
                       {project.category}
                     </span>
-                    <h3 className="text-lg font-black text-white leading-tight">
+                    <h3 className="text-lg font-black text-slate-800 leading-tight">
                       {project.title}
                     </h3>
                   </div>
                   {getStatusBadge(project.status)}
                 </div>
 
-                <p className="text-sm text-white/60 line-clamp-3">
+                <p className="text-xs text-slate-500 line-clamp-3 text-left">
                   {project.short_description || "No description provided."}
                 </p>
 
                 {project.technologies && project.technologies.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-1.5 pt-1">
                     {project.technologies.slice(0, 4).map((tech, idx) => (
                       <span
                         key={idx}
-                        className="inline-flex items-center text-xs px-2.5 py-1 rounded-xl bg-white/5 text-white/70 border border-white/12 font-semibold"
+                        className="inline-flex items-center text-xs px-2.5 py-1 rounded-xl bg-slate-50 text-slate-650 border border-slate-200 font-semibold"
                       >
                         {tech}
                       </span>
                     ))}
                     {project.technologies.length > 4 && (
-                      <span className="inline-flex items-center text-xs px-2.5 py-1 rounded-xl bg-white/5 text-white/40 border border-white/12 font-bold">
+                      <span className="inline-flex items-center text-xs px-2.5 py-1 rounded-xl bg-slate-50 text-slate-400 border border-slate-200 font-bold">
                         +{project.technologies.length - 4} more
                       </span>
                     )}
@@ -200,10 +200,10 @@ export default function MyProjects({ onEditProject, onViewDetails, setActiveTab 
                 )}
               </div>
 
-              <div className="px-6 py-4 bg-white/5 border-t border-white/12 flex items-center justify-between">
-                <div className="text-xs text-white/40 font-medium">
+              <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+                <div className="text-xs text-slate-500 font-bold">
                   {project.final_score ? (
-                    <span className="font-extrabold text-white">
+                    <span className="font-black text-slate-800">
                       Score: {project.final_score}/100
                     </span>
                   ) : (
@@ -214,22 +214,22 @@ export default function MyProjects({ onEditProject, onViewDetails, setActiveTab 
                 <div className="flex gap-2">
                   <button
                     onClick={() => onViewDetails(project)}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-white bg-white/5 border border-white/12 hover:bg-white/10 transition-all"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-all"
                   >
-                    <Eye className="h-3.5 w-3.5" /> Details
+                    <Eye className="h-3.5 w-3.5 text-slate-405" /> Details
                   </button>
 
                   {(project.status === "draft" || project.status === "revision") && (
                     <>
                       <button
                         onClick={() => onEditProject(project.id)}
-                        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-white bg-white/5 border border-white/12 hover:bg-white/10 transition-all"
+                        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-all"
                       >
-                        <Edit className="h-3.5 w-3.5" /> Edit
+                        <Edit className="h-3.5 w-3.5 text-slate-405" /> Edit
                       </button>
                       <button
                         onClick={() => handleDelete(project.id)}
-                        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-red-400 bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-all"
+                        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-red-600 bg-red-50 border border-red-100 hover:bg-red-100 transition-all"
                       >
                         <Trash2 className="h-3.5 w-3.5" /> Delete
                       </button>

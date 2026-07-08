@@ -362,26 +362,26 @@ Use these credentials to sign in.`;
   });
 
   return (
-    <div className="bg-[#1a1a1a] rounded-3xl border border-white/12 shadow-md p-6 sm:p-8 space-y-6">
+    <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6 text-slate-800">
       {/* Header operations */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-black text-white">User Directory</h2>
-          <p className="text-xs text-white/40 mt-0.5">Manage students, faculty members, and administrators.</p>
+          <h2 className="text-xl font-black text-slate-800">User Directory</h2>
+          <p className="text-xs text-slate-500 mt-0.5">Manage students, faculty members, and administrators.</p>
         </div>
         <button
           onClick={() => {
             setShowFacultyModal(true);
             generatePassword();
           }}
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-white hover:bg-white/85 text-black text-xs font-bold rounded-xl transition-all shadow-md shrink-0"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition-all shadow-md shrink-0 animate-fade-in"
         >
           <Plus className="h-3.5 w-3.5" /> Add Faculty Member
         </button>
       </div>
 
       {errorText && (
-        <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-xs font-semibold text-red-400">
+        <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-xs font-semibold text-red-650">
           Failed to load users: {errorText}
         </div>
       )}
@@ -390,14 +390,14 @@ Use these credentials to sign in.`;
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
         <div className="md:col-span-6 relative">
           <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search className="h-4.5 w-4.5 text-white/40" />
+            <Search className="h-4.5 w-4.5 text-slate-400" />
           </span>
           <input
             type="text"
             placeholder="Search users by name, email, department..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-white/12 rounded-xl bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-white/20 text-xs text-white placeholder:text-white/40"
+            className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-100 focus:border-slate-350 text-xs text-slate-800 placeholder:text-slate-450 font-medium"
           />
         </div>
 
@@ -406,14 +406,14 @@ Use these credentials to sign in.`;
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="w-full px-4 py-2.5 border border-white/12 rounded-xl bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-white/20 text-xs text-white appearance-none cursor-pointer font-semibold"
+              className="w-full px-4 py-2.5 border border-slate-200 rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-100 focus:border-slate-350 text-xs text-slate-800 appearance-none cursor-pointer font-semibold"
             >
-              <option value="all" className="bg-[#1a1a1a] text-white">All Roles</option>
-              <option value="student" className="bg-[#1a1a1a] text-white">Students</option>
-              <option value="faculty" className="bg-[#1a1a1a] text-white">Faculty</option>
-              <option value="admin" className="bg-[#1a1a1a] text-white">Administrators</option>
+              <option value="all">All Roles</option>
+              <option value="student">Students</option>
+              <option value="faculty">Faculty</option>
+              <option value="admin">Administrators</option>
             </select>
-            <span className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-white/40">
+            <span className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
               <Filter className="h-4 w-4" />
             </span>
           </div>
@@ -424,13 +424,13 @@ Use these credentials to sign in.`;
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-4 py-2.5 border border-white/12 rounded-xl bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-white/20 text-xs text-white appearance-none cursor-pointer font-semibold"
+              className="w-full px-4 py-2.5 border border-slate-200 rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-100 focus:border-slate-350 text-xs text-slate-800 appearance-none cursor-pointer font-semibold"
             >
-              <option value="all" className="bg-[#1a1a1a] text-white">All Statuses</option>
-              <option value="active" className="bg-[#1a1a1a] text-white">Active Only</option>
-              <option value="suspended" className="bg-[#1a1a1a] text-white">Suspended Only</option>
+              <option value="all">All Statuses</option>
+              <option value="active">Active Only</option>
+              <option value="suspended">Suspended Only</option>
             </select>
-            <span className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-white/40">
+            <span className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
               <Filter className="h-4 w-4" />
             </span>
           </div>
@@ -439,20 +439,20 @@ Use these credentials to sign in.`;
 
       {/* Bulk actions bar if items are selected */}
       {selectedUserIds.length > 0 && (
-        <div className="p-4 bg-white/5 border border-white/12 rounded-2xl flex items-center justify-between">
-          <span className="text-xs font-bold text-white">
+        <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between animate-fade-in">
+          <span className="text-xs font-bold text-slate-800">
             {selectedUserIds.length} users selected
           </span>
           <div className="flex items-center gap-2">
             <button
               onClick={handleBulkSuspend}
-              className="inline-flex items-center gap-1 px-3 py-2 bg-white hover:bg-white/85 text-black rounded-xl text-[10px] font-bold shadow transition-all"
+              className="inline-flex items-center gap-1 px-3 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-[10px] font-bold shadow transition-all active:scale-95"
             >
               <Ban className="h-3.5 w-3.5" /> Suspend Selected
             </button>
             <button
               onClick={handleBulkDelete}
-              className="inline-flex items-center gap-1 px-3 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 rounded-xl text-[10px] font-bold shadow transition-all"
+              className="inline-flex items-center gap-1 px-3 py-2 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 rounded-xl text-[10px] font-bold shadow transition-all active:scale-95"
             >
               <Trash2 className="h-3.5 w-3.5" /> Delete Selected
             </button>
@@ -461,16 +461,16 @@ Use these credentials to sign in.`;
       )}
 
       {/* Main Table */}
-      <div className="overflow-x-auto rounded-2xl border border-white/12">
+      <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-white/5 text-white/40 uppercase text-[10px] font-bold tracking-wider border-b border-white/12">
+            <tr className="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold tracking-wider border-b border-slate-200">
               <th className="py-4 px-5 w-12 text-center">
                 <input
                   type="checkbox"
                   checked={selectedUserIds.length === filteredUsers.length && filteredUsers.length > 0}
                   onChange={handleSelectAll}
-                  className="rounded border-white/12 bg-white/5 text-white focus:ring-white/10"
+                  className="rounded border-slate-350 bg-white text-blue-600 focus:ring-blue-500/20"
                 />
               </th>
               <th className="py-4 px-5">User Profile</th>
@@ -481,49 +481,49 @@ Use these credentials to sign in.`;
               <th className="py-4 px-5 text-right">Operations</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/12 text-xs text-white/70 font-semibold">
+          <tbody className="divide-y divide-slate-200 text-xs text-slate-700 font-semibold">
             {filteredUsers.map((user) => (
-              <tr key={user.id} className="hover:bg-white/5 transition-all border-b border-white/12">
+              <tr key={user.id} className="hover:bg-slate-50/50 transition-all border-b border-slate-200">
                 <td className="py-4 px-5 text-center">
                   <input
                     type="checkbox"
                     checked={selectedUserIds.includes(user.id)}
                     onChange={() => handleToggleSelect(user.id)}
-                    className="rounded border-white/12 bg-white/5 text-white focus:ring-white/10"
+                    className="rounded border-slate-350 bg-white text-blue-600 focus:ring-blue-500/20"
                   />
                 </td>
                 <td className="py-4 px-5">
                   <div className="space-y-0.5">
-                    <h4 className="font-bold text-white">{user.name}</h4>
-                    <p className="text-[10px] text-white/40">{user.email}</p>
+                    <h4 className="font-bold text-slate-800">{user.name}</h4>
+                    <p className="text-[10px] text-slate-500 font-medium">{user.email}</p>
                   </div>
                 </td>
                 <td className="py-4 px-5">
                   <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border ${
-                    user.role === "admin" ? "bg-red-500/10 text-red-400 border-red-500/20" :
-                    user.role === "faculty" ? "bg-purple-500/10 text-purple-400 border-purple-500/20" :
-                    "bg-white/5 text-white border-white/12"
+                    user.role === "admin" ? "bg-red-50 text-red-650 border-red-200" :
+                    user.role === "faculty" ? "bg-purple-50 text-purple-650 border-purple-200" :
+                    "bg-slate-50 text-slate-650 border-slate-200"
                   }`}>
                     {user.role}
                   </span>
                 </td>
-                <td className="py-4 px-5 text-white/80">{user.department}</td>
+                <td className="py-4 px-5 text-slate-700">{user.department}</td>
                 <td className="py-4 px-5">
                   <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
-                    user.status === "active" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
-                    "bg-orange-500/10 text-orange-400 border-orange-500/20"
+                    user.status === "active" ? "bg-emerald-50 text-emerald-600 border-emerald-200" :
+                    "bg-orange-50 text-orange-600 border-orange-200"
                   }`}>
                     {user.status === "active" ? <CheckCircle className="h-3 w-3" /> : <Ban className="h-3 w-3" />}
                     {user.status}
                   </span>
                 </td>
-                <td className="py-4 px-5 text-white/40">{user.createdDate}</td>
+                <td className="py-4 px-5 text-slate-500">{user.createdDate}</td>
                 <td className="py-4 px-5 text-right flex items-center justify-end gap-1.5">
                   {user.status === "pending" && (
                     <button
                       onClick={() => handleResendInvite(user)}
                       disabled={resendingId === user.id}
-                      className="p-2 rounded-xl text-emerald-400 hover:bg-emerald-500/10 transition-all disabled:opacity-50"
+                      className="p-2 rounded-xl text-emerald-650 hover:bg-emerald-50 transition-all disabled:opacity-50"
                       title="Resend Invite Link"
                     >
                       {resendingId === user.id ? (
@@ -535,14 +535,14 @@ Use these credentials to sign in.`;
                   )}
                   <button
                     onClick={() => handleSuspend(user.id)}
-                    className="p-2 rounded-xl text-white/40 hover:text-white hover:bg-white/5 transition-all"
+                    className="p-2 rounded-xl text-slate-450 hover:text-slate-800 hover:bg-slate-50 transition-all"
                     title={user.status === "active" ? "Suspend Account" : "Activate Account"}
                   >
                     <Ban className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(user.id)}
-                    className="p-2 rounded-xl text-red-400 hover:bg-red-500/10 transition-all"
+                    className="p-2 rounded-xl text-red-650 hover:bg-red-50 transition-all animate-fade-in"
                     title="Delete Account"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -552,7 +552,7 @@ Use these credentials to sign in.`;
             ))}
             {filteredUsers.length === 0 && (
               <tr>
-                <td colSpan={7} className="py-12 text-center text-white/40 font-medium">
+                <td colSpan={7} className="py-12 text-center text-slate-450 font-medium">
                   No users found in directory.
                 </td>
               </tr>
@@ -562,56 +562,56 @@ Use these credentials to sign in.`;
       </div>
 
       {showFacultyModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#1a1a1a] border border-white/12 rounded-3xl w-full max-w-md p-6 space-y-6 shadow-2xl relative">
-            <h3 className="text-lg font-black text-white">Add Faculty Member</h3>
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-3xl w-full max-w-md p-6 space-y-6 shadow-2xl relative text-slate-800 animate-in fade-in zoom-in-95 duration-200">
+            <h3 className="text-lg font-black text-slate-900">Add Faculty Member</h3>
             
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-white/40 uppercase">Full Name</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase">Full Name</label>
                 <input
                   type="text"
                   value={facName}
                   onChange={(e) => setFacName(e.target.value)}
                   placeholder="e.g. Dr. Sarah Connor"
-                  className="w-full px-3.5 py-2.5 border border-white/12 rounded-xl bg-white/5 text-xs text-white placeholder:text-white/40 font-semibold focus:outline-none focus:ring-2 focus:ring-white/10"
+                  className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-xs text-slate-800 placeholder:text-slate-450 font-semibold focus:outline-none focus:ring-2 focus:ring-slate-100"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-white/40 uppercase">Email Address</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase">Email Address</label>
                 <input
                   type="email"
                   value={facEmail}
                   onChange={(e) => setFacEmail(e.target.value)}
                   placeholder="e.g. sarah@university.edu"
-                  className="w-full px-3.5 py-2.5 border border-white/12 rounded-xl bg-white/5 text-xs text-white placeholder:text-white/40 font-semibold focus:outline-none focus:ring-2 focus:ring-white/10"
+                  className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-xs text-slate-800 placeholder:text-slate-450 font-semibold focus:outline-none focus:ring-2 focus:ring-slate-100"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-white/40 uppercase">Department</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase">Department</label>
                 <input
                   type="text"
                   value={facDept}
                   onChange={(e) => setFacDept(e.target.value)}
                   placeholder="e.g. Computer Science"
-                  className="w-full px-3.5 py-2.5 border border-white/12 rounded-xl bg-white/5 text-xs text-white placeholder:text-white/40 font-semibold focus:outline-none focus:ring-2 focus:ring-white/10"
+                  className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-xs text-slate-800 placeholder:text-slate-450 font-semibold focus:outline-none focus:ring-2 focus:ring-slate-100"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-white/40 uppercase">Generated Password</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase">Generated Password</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
                     readOnly
                     value={facPassword}
-                    className="flex-1 px-3.5 py-2.5 border border-white/12 rounded-xl bg-white/5 text-xs text-white/60 font-mono focus:outline-none"
+                    className="flex-1 px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-xs text-slate-650 font-mono focus:outline-none font-semibold"
                   />
                   <button
                     onClick={generatePassword}
-                    className="px-3 py-2.5 border border-white/12 rounded-xl bg-white/5 text-xs font-bold text-white hover:bg-white/10 transition-all animate-fade-in"
+                    className="px-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-xs font-bold text-slate-800 hover:bg-slate-100 transition-all active:scale-95 shrink-0"
                   >
                     Regen
                   </button>
@@ -621,16 +621,16 @@ Use these credentials to sign in.`;
 
             {inviteLink && (
               <div className="space-y-3">
-                <div className="p-4 bg-white/5 border border-white/12 rounded-2xl space-y-2">
+                <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-bold text-white/40 uppercase">Invite Credentials Details</span>
+                    <span className="text-[10px] font-bold text-slate-500 uppercase">Invite Credentials Details</span>
                     <button
                       onClick={handleCopyInvite}
-                      className="inline-flex items-center gap-1 text-[10px] text-white/65 hover:text-white font-bold"
+                      className="inline-flex items-center gap-1 text-[10px] text-slate-600 hover:text-slate-800 font-bold"
                     >
                       {copied ? (
                         <>
-                          <Check className="h-3 w-3 text-emerald-400" /> Copied!
+                          <Check className="h-3 w-3 text-emerald-600" /> Copied!
                         </>
                       ) : (
                         <>
@@ -643,14 +643,14 @@ Use these credentials to sign in.`;
                     readOnly
                     rows={4}
                     value={inviteDetailsText()}
-                    className="w-full bg-transparent border-0 text-[10px] text-white/70 font-mono resize-none focus:ring-0 p-0"
+                    className="w-full bg-transparent border-0 text-[10px] text-slate-700 font-mono resize-none focus:ring-0 p-0 focus:outline-none"
                   />
                 </div>
 
                 <button
                   onClick={handleSendEmail}
                   disabled={sendingEmail}
-                  className="w-full py-2.5 rounded-xl bg-white hover:bg-white/90 text-black text-xs font-bold transition-all disabled:opacity-50 inline-flex items-center justify-center gap-1.5 active:scale-95 shadow-md"
+                  className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all disabled:opacity-50 inline-flex items-center justify-center gap-1.5 active:scale-95 shadow-md"
                 >
                   {sendingEmail ? (
                     <>
@@ -666,7 +666,7 @@ Use these credentials to sign in.`;
             )}
 
             {modalError && (
-              <p className="text-[11px] text-red-400 font-semibold">{modalError}</p>
+              <p className="text-[11px] text-red-650 font-semibold">{modalError}</p>
             )}
 
             <div className="flex justify-end gap-3 pt-2">
@@ -679,7 +679,7 @@ Use these credentials to sign in.`;
                   setInviteLink("");
                   setModalError(null);
                 }}
-                className="px-4 py-2.5 rounded-xl border border-white/12 text-xs font-bold text-white hover:bg-white/5 transition-all"
+                className="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-800 hover:bg-slate-100 transition-all active:scale-95"
               >
                 Close
               </button>
@@ -687,7 +687,7 @@ Use these credentials to sign in.`;
                 <button
                   onClick={handleCreateFaculty}
                   disabled={submitting}
-                  className="px-4 py-2.5 rounded-xl bg-white hover:bg-white/85 text-black text-xs font-bold transition-all disabled:opacity-50 inline-flex items-center gap-1.5"
+                  className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all disabled:opacity-50 inline-flex items-center gap-1.5 active:scale-95 shadow-md"
                 >
                   {submitting && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                   Create & Invite

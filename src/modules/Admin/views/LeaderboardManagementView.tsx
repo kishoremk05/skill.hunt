@@ -61,6 +61,7 @@ export default function LeaderboardManagementView() {
           peerVotes: Number(item.peer_score) || 0,
           finalScore: Number(item.final_score) || 0,
           isPublished: item.published,
+          isUnranked: item.rank === null,
         }));
         setRankings(mapped);
         
@@ -132,7 +133,8 @@ export default function LeaderboardManagementView() {
       });
 
       const calculated = projects.map((p) => {
-        const avgFac = projectEvalCount[p.id] ? (projectEvalSum[p.id] / projectEvalCount[p.id]) : 0;
+        const evalCount = projectEvalCount[p.id] || 0;
+        const avgFac = evalCount > 0 ? (projectEvalSum[p.id] / evalCount) : 0;
         const voteCount = projectVotesCount[p.id] || 0;
         const normPeer = maxVotes > 0 ? (voteCount / maxVotes) * 100 : 0;
         const final = (avgFac * fWeight) / 100 + (normPeer * pWeight) / 100;
@@ -145,19 +147,32 @@ export default function LeaderboardManagementView() {
           peer_score: voteCount,
           final_score: Math.round(final * 10) / 10,
           published: existingPub,
+          isUnranked: evalCount < 3,
         };
       });
 
-      calculated.sort((a, b) => b.final_score - a.final_score);
+      const ranked = calculated.filter(c => !c.isUnranked).sort((a, b) => b.final_score - a.final_score);
+      const unranked = calculated.filter(c => c.isUnranked).sort((a, b) => b.final_score - a.final_score);
 
-      const upsertRows = calculated.map((item, idx) => ({
-        project_id: item.project_id,
-        faculty_score: item.faculty_score,
-        peer_score: item.peer_score,
-        final_score: item.final_score,
-        rank: idx + 1,
-        published: item.published,
-      }));
+      let currentRank = 1;
+      const upsertRows = [
+        ...ranked.map((item) => ({
+          project_id: item.project_id,
+          faculty_score: item.faculty_score,
+          peer_score: item.peer_score,
+          final_score: item.final_score,
+          rank: currentRank++,
+          published: item.published,
+        })),
+        ...unranked.map((item) => ({
+          project_id: item.project_id,
+          faculty_score: item.faculty_score,
+          peer_score: item.peer_score,
+          final_score: item.final_score,
+          rank: null,
+          published: item.published,
+        }))
+      ];
 
       const { error: upsertError } = await supabase
         .from("leaderboard")
@@ -219,18 +234,18 @@ export default function LeaderboardManagementView() {
   return (
     <div className="space-y-8">
       {/* Top Header Card */}
-      <div className="bg-[#1a1a1a] rounded-3xl border border-white/12 p-6 sm:p-8 shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs flex flex-col md:flex-row items-center justify-between gap-6 text-slate-800 animate-fade-in">
         <div>
-          <h2 className="text-xl font-black text-white flex items-center gap-2">
-            <Trophy className="h-5.5 w-5.5 text-white/40" /> Leaderboard Manager
+          <h2 className="text-xl font-black text-slate-800 flex items-center gap-2">
+            <Trophy className="h-5.5 w-5.5 text-slate-400" /> Leaderboard Manager
           </h2>
-          <p className="text-xs text-white/40 mt-0.5 font-semibold font-sans">Publish overall standings, recalculate weights, and download rankings.</p>
+          <p className="text-xs text-slate-500 mt-0.5 font-semibold font-sans">Publish overall standings, recalculate weights, and download rankings.</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={handleToggleGlobalPublish}
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-white/12 hover:bg-white/5 text-xs font-bold text-white transition-all shadow-sm"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-800 transition-all shadow-xs active:scale-95"
           >
             {globalPublished ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             {globalPublished ? "Hide Public Board" : "Publish Public Board"}
@@ -239,7 +254,7 @@ export default function LeaderboardManagementView() {
           <button
             onClick={handleRecalculate}
             disabled={isBusy}
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white hover:bg-white/85 text-black text-xs font-bold transition-all shadow-md disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-md active:scale-95 disabled:opacity-50"
           >
             <RefreshCw className={`h-4 w-4 ${isBusy ? "animate-spin" : ""}`} /> Recalculate Standings
           </button>
@@ -247,11 +262,11 @@ export default function LeaderboardManagementView() {
       </div>
 
       {/* Standings Grid Table */}
-      <div className="bg-[#1a1a1a] rounded-3xl border border-white/12 shadow-md overflow-hidden">
+      <div className="bg-white rounded-3xl border border-slate-200 shadow-xs overflow-hidden text-slate-800 animate-fade-in">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-white/5 text-white/40 uppercase text-[10px] font-bold tracking-wider border-b border-white/12">
+              <tr className="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold tracking-wider border-b border-slate-200">
                 <th className="py-4 px-5 text-center w-16">Rank</th>
                 <th className="py-4 px-5">Project Title</th>
                 <th className="py-4 px-5">Department</th>
@@ -261,34 +276,36 @@ export default function LeaderboardManagementView() {
                 <th className="py-4 px-5 text-right">Visibility</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/12 text-xs text-white/70 font-semibold">
+            <tbody className="divide-y divide-slate-200 text-xs text-slate-700 font-semibold">
               {rankings.map((row) => (
-                <tr key={row.id} className="hover:bg-white/5 transition-all border-b border-white/12">
+                <tr key={row.id} className={`hover:bg-slate-50/50 transition-all border-b border-slate-200 ${row.isUnranked ? "opacity-60" : ""}`}>
                   <td className="py-4 px-5 text-center font-black text-sm">
-                    {row.rank === 1 ? (
-                      <span className="w-6 h-6 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center mx-auto">1</span>
+                    {row.isUnranked ? (
+                      <span className="text-[9px] text-slate-400 uppercase tracking-wider block">Unranked<br/>(&lt;3 Reviews)</span>
+                    ) : row.rank === 1 ? (
+                      <span className="w-6 h-6 rounded-full bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center mx-auto">1</span>
                     ) : row.rank === 2 ? (
-                      <span className="w-6 h-6 rounded-full bg-white/10 border border-white/20 text-white/80 flex items-center justify-center mx-auto">2</span>
+                      <span className="w-6 h-6 rounded-full bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center mx-auto">2</span>
                     ) : (
-                      <span className="w-6 h-6 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center justify-center mx-auto">{row.rank}</span>
+                      <span className="w-6 h-6 rounded-full bg-orange-55/60 border border-orange-200 text-orange-600 flex items-center justify-center mx-auto">{row.rank}</span>
                     )}
                   </td>
-                  <td className="py-4 px-5 font-bold text-white max-w-[200px] truncate">
+                  <td className="py-4 px-5 font-bold text-slate-800 max-w-[200px] truncate">
                     {row.projectTitle}
                   </td>
-                  <td className="py-4 px-5 text-white/40">{row.department}</td>
-                  <td className="py-4 px-5 text-center font-bold text-white/80">{row.facultyScore} / 100</td>
-                  <td className="py-4 px-5 text-center font-bold text-white/80">{row.peerVotes} votes</td>
-                  <td className="py-4 px-5 text-center font-black text-sm text-white">
+                  <td className="py-4 px-5 text-slate-500 font-semibold">{row.department}</td>
+                  <td className="py-4 px-5 text-center font-bold text-slate-700">{row.facultyScore} / 100</td>
+                  <td className="py-4 px-5 text-center font-bold text-slate-700">{row.peerVotes} votes</td>
+                  <td className="py-4 px-5 text-center font-black text-sm text-slate-800">
                     {row.finalScore} / 100
                   </td>
                   <td className="py-4 px-5 text-right">
                     <button
                       onClick={() => togglePublishStatus(row.id)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[10px] font-bold transition-all ${
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[10px] font-bold transition-all active:scale-95 ${
                         row.isPublished
-                          ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400"
-                          : "bg-white/5 border border-white/12 text-white/40"
+                          ? "bg-emerald-50 border border-emerald-200 text-emerald-600"
+                          : "bg-slate-100 border border-slate-200 text-slate-500"
                       }`}
                     >
                       {row.isPublished ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}

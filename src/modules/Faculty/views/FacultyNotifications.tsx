@@ -106,13 +106,13 @@ export default function FacultyNotifications() {
   const getIcon = (title: string) => {
     const lower = title.toLowerCase();
     if (lower.includes("assign") || lower.includes("project") || lower.includes("alert")) {
-      return <ShieldAlert className="h-5 w-5 text-amber-500 dark:text-orange-400" />;
+      return <ShieldAlert className="h-5 w-5 text-amber-605" />;
     } else if (lower.includes("success") || lower.includes("verified") || lower.includes("complete") || lower.includes("publish")) {
-      return <CheckCircle2 className="h-5 w-5 text-emerald-550 dark:text-emerald-400" />;
+      return <CheckCircle2 className="h-5 w-5 text-emerald-600" />;
     } else if (lower.includes("comment") || lower.includes("message") || lower.includes("chat")) {
-      return <MessageSquare className="h-5 w-5 text-sky-500 dark:text-white/60" />;
+      return <MessageSquare className="h-5 w-5 text-blue-600" />;
     } else {
-      return <Clock className="h-5 w-5 text-violet-500 dark:text-white/40" />;
+      return <Clock className="h-5 w-5 text-slate-500" />;
     }
   };
 
@@ -132,18 +132,18 @@ export default function FacultyNotifications() {
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
   return (
-    <div className="bg-white dark:bg-[#1a1a1a] rounded-3xl border border-slate-200/50 dark:border-white/12 shadow-md p-6 sm:p-8 space-y-6">
+    <div className="bg-white rounded-2xl border border-slate-300 shadow-sm p-6 sm:p-8 space-y-6 text-left">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-            <Bell className="h-5.5 w-5.5 text-violet-500 dark:text-white/40" /> Notifications Inbox
+          <h2 className="text-xl font-black text-slate-900 flex items-center gap-2 uppercase tracking-wider">
+            <Bell className="h-5.5 w-5.5 text-slate-500" /> Notifications Inbox
           </h2>
-          <p className="text-xs text-slate-505 dark:text-white/40 mt-0.5">Stay updated on assignments, comments, and project updates.</p>
+          <p className="text-xs text-slate-500 mt-0.5 font-semibold">Stay updated on assignments, comments, and project updates.</p>
         </div>
         {unreadCount > 0 && (
           <button
             onClick={markAllRead}
-            className="text-xs font-bold text-violet-650 dark:text-white hover:underline transition-all"
+            className="text-xs font-bold text-slate-500 hover:text-slate-800 hover:underline transition-all"
           >
             Mark all as read
           </button>
@@ -152,41 +152,41 @@ export default function FacultyNotifications() {
 
       {isLoading ? (
         <div className="flex justify-center items-center py-12">
-          <RefreshCw className="h-6 w-6 animate-spin text-slate-400 dark:text-white/60" />
+          <RefreshCw className="h-6 w-6 animate-spin text-blue-600" />
         </div>
       ) : notifications.length === 0 ? (
-        <div className="text-center py-12 text-slate-400 dark:text-white/40 flex flex-col items-center justify-center">
-          <MailOpen className="h-10 w-10 text-slate-200 dark:text-white/10 mb-2" />
-          <p className="text-sm font-bold">No notifications to display</p>
-          <p className="text-xs">You are all caught up!</p>
+        <div className="text-center py-12 text-slate-400 flex flex-col items-center justify-center bg-slate-50/50 rounded-2xl border border-slate-200">
+          <MailOpen className="h-10 w-10 text-slate-300 mb-2" />
+          <p className="text-sm font-bold text-slate-800">No notifications to display</p>
+          <p className="text-xs font-semibold text-slate-500">You are all caught up!</p>
         </div>
       ) : (
-        <div className="divide-y divide-slate-100 dark:divide-white/12">
+        <div className="divide-y divide-slate-100">
           {notifications.map((n) => (
             <div
               key={n.id}
               onClick={() => !n.is_read && handleMarkAsRead(n.id)}
               className={`py-5 flex items-start gap-4 transition-all cursor-pointer ${
-                !n.is_read ? "bg-violet-50/10 dark:bg-white/5 px-2.5 rounded-2xl" : "opacity-75 hover:opacity-100"
+                !n.is_read ? "bg-slate-50/50 px-2.5 rounded-xl border border-slate-200" : "opacity-75 hover:opacity-100"
               }`}
             >
-              <div className="p-2.5 bg-slate-50 dark:bg-white/5 rounded-xl border border-slate-200/10 dark:border-white/12">
+              <div className="p-2.5 bg-white rounded-xl border border-slate-200 shadow-sm">
                 {getIcon(n.title)}
               </div>
 
-              <div className="flex-1 space-y-1">
+              <div className="flex-1 space-y-1 text-left">
                 <div className="flex items-center justify-between gap-4">
-                  <h4 className="text-sm font-bold text-slate-850 dark:text-white flex items-center gap-1.5">
+                  <h4 className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
                     {n.title}
                     {!n.is_read && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-violet-650 dark:bg-white animate-pulse" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
                     )}
                   </h4>
-                  <span className="text-[10px] text-slate-400 dark:text-white/40 whitespace-nowrap">
+                  <span className="text-[10px] text-slate-455 font-bold whitespace-nowrap">
                     {formatTime(n.created_at)}
                   </span>
                 </div>
-                <p className="text-xs text-slate-550 dark:text-white/40 leading-relaxed">
+                <p className="text-xs text-slate-500 font-semibold leading-relaxed">
                   {n.message}
                 </p>
               </div>
@@ -196,7 +196,7 @@ export default function FacultyNotifications() {
                   e.stopPropagation();
                   handleDelete(n.id);
                 }}
-                className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 dark:text-white/40 hover:text-red-500 dark:hover:text-red-400 transition-all shrink-0 self-center"
+                className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-red-655 transition-all shrink-0 self-center"
               >
                 <Trash2 className="h-3.5 w-3.5" />
               </button>

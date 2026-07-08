@@ -40,41 +40,41 @@ export default function LandingPage() {
 
         {/* Section 3 & Beyond: Alternating Themes */}
         <div className="relative z-[2]">
-          <div className="bg-[#C5C5C5] text-[#1a1a1a]">
+          <div className="bg-[#0B0F19] text-white">
             <TrustBar />
           </div>
-          <div id="features" className="bg-[#121212] text-white">
+          <div id="features" className="bg-slate-50 text-slate-800">
             <FeaturesGrid />
           </div>
-          <div className="bg-[#C5C5C5] text-[#1a1a1a]">
+          <div className="bg-[#0F172A] text-white">
             <HowItWorks />
           </div>
-          <div id="projects" className="bg-[#121212] text-white">
+          <div id="projects" className="bg-white text-slate-800">
             <FeaturedProjects />
           </div>
-          <div id="leaderboard" className="bg-[#C5C5C5] text-[#1a1a1a]">
+          <div id="leaderboard" className="bg-[#0B0F19] text-white">
             <LeaderboardPreview />
           </div>
-          <div className="bg-[#121212] text-white">
+          <div className="bg-slate-50 text-slate-800">
             <EventTimeline />
           </div>
-          <div className="bg-[#C5C5C5] text-[#1a1a1a]">
+          <div className="bg-[#0F172A] text-white">
             <Statistics />
           </div>
-          <div className="bg-[#121212] text-white">
+          <div className="bg-white text-slate-800">
             <Testimonials />
           </div>
-          <div className="bg-[#C5C5C5] text-[#1a1a1a]">
+          <div className="bg-[#0B0F19] text-white">
             <FAQSection />
           </div>
-          <div className="bg-[#121212] text-white">
+          <div className="bg-gradient-to-br from-[#0F172A] to-[#0A0E17] text-white">
             <FinalCTA id="connect" />
           </div>
         </div>
       </main>
 
       {/* Footer (part of the solid dark section flow) */}
-      <div className="relative z-[2] bg-[#0a0a0a] text-white">
+      <div className="relative z-[2] bg-[#0A0E17] text-white">
         <Footer />
       </div>
 

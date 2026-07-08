@@ -252,7 +252,7 @@ export default function FacultyDashboard() {
   const selectedProject = projects.find((p) => p.id === selectedProjectId);
 
   return (
-    <div className="min-h-screen bg-[#121212] text-white dark">
+    <div className="min-h-screen bg-[#e5e5e5] text-slate-900 relative overflow-hidden">
       {/* Collapsible Left Sidebar */}
       <FacultySidebar
         activeTab={activeTab}
@@ -267,7 +267,7 @@ export default function FacultyDashboard() {
         <FacultyNavbar isCollapsed={sidebarCollapsed} onProfileClick={() => handleSetTab("profile")} />
 
         {/* Content view body */}
-        <main className="flex-1 p-5 sm:p-7 pt-20 sm:pt-24 max-w-[1600px] w-full mx-auto space-y-8">
+        <main className="flex-1 p-5 sm:p-7 pt-20 sm:pt-24 max-w-[1600px] w-full mx-auto space-y-8 relative z-10">
           {activeTab === "dashboard" && (
             <DashboardOverview
               projects={projects}

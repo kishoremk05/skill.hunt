@@ -210,9 +210,9 @@ export default function AdminDashboardOverview({ stats, onQuickAction, setActive
 
       {/* Overview extra links */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-[#1a1a1a] p-6 sm:p-8 rounded-3xl border border-white/12 shadow-md">
-          <h3 className="text-base font-black text-white">Active Stage Checkpoints</h3>
-          <p className="text-xs text-white/40 mt-0.5">Timeline milestones for the active event.</p>
+        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs">
+          <h3 className="text-base font-black text-slate-800">Active Stage Checkpoints</h3>
+          <p className="text-xs text-slate-500 mt-0.5">Timeline milestones for the active event.</p>
           <div className="mt-4 space-y-3">
             {activeEventData ? (
               [
@@ -232,47 +232,47 @@ export default function AdminDashboardOverview({ stats, onQuickAction, setActive
                   time: `Ends ${new Date(activeEventData.voting_end).toLocaleDateString("en-US", { month: "short", day: "numeric" })}` 
                 },
               ].map((step, idx) => (
-                <div key={idx} className="flex items-center justify-between p-3 bg-white/5 rounded-2xl border border-white/12 text-xs">
+                <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-200 text-xs">
                   <div>
-                    <h4 className="font-bold text-white/90">{step.label}</h4>
-                    <p className="text-white/40 mt-0.5 text-[10px]">{step.time}</p>
+                    <h4 className="font-bold text-slate-800">{step.label}</h4>
+                    <p className="text-slate-500 mt-0.5 text-[10px]">{step.time}</p>
                   </div>
                   <span className={`px-2.5 py-0.5 rounded-lg font-bold text-[10px] border ${
-                    step.status === "Active" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
-                    step.status === "Ongoing" ? "bg-orange-500/10 text-orange-400 border-orange-500/20" :
-                    "bg-white/5 text-white/40 border-white/12"
+                    step.status === "Active" ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" :
+                    step.status === "Ongoing" ? "bg-orange-500/10 text-orange-600 border-orange-500/20" :
+                    "bg-slate-100 text-slate-500 border-slate-200"
                   }`}>
                     {step.status}
                   </span>
                 </div>
               ))
             ) : (
-              <div className="p-4 text-center text-white/40 border border-dashed border-white/12 rounded-2xl text-xs font-semibold">
+              <div className="p-4 text-center text-slate-400 border border-dashed border-slate-200 rounded-2xl text-xs font-semibold">
                 No active event selected. Configure settings to activate.
               </div>
             )}
           </div>
         </div>
 
-        <div className="bg-[#1a1a1a] p-6 sm:p-8 rounded-3xl border border-white/12 shadow-md">
-          <h3 className="text-base font-black text-white">Quick Shortcuts</h3>
-          <p className="text-xs text-white/40 mt-0.5">Direct shortcuts to admin operations.</p>
+        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs">
+          <h3 className="text-base font-black text-slate-800">Quick Shortcuts</h3>
+          <p className="text-xs text-slate-500 mt-0.5">Direct shortcuts to admin operations.</p>
           <div className="mt-4 grid grid-cols-2 gap-4">
-            <button onClick={() => setActiveTab("users")} className="p-4 bg-white/5 hover:bg-white/10 border border-white/12 rounded-2xl text-left transition-all">
-              <span className="text-xs font-bold text-white block">User Directory</span>
-              <span className="text-[10px] text-white/40 mt-1 block">Students & Faculty details</span>
+            <button onClick={() => setActiveTab("users")} className="p-4 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-2xl text-left transition-all shadow-xs">
+              <span className="text-xs font-bold text-slate-800 block">User Directory</span>
+              <span className="text-[10px] text-slate-500 mt-1 block">Students & Faculty details</span>
             </button>
-            <button onClick={() => setActiveTab("projects")} className="p-4 bg-white/5 hover:bg-white/10 border border-white/12 rounded-2xl text-left transition-all">
-              <span className="text-xs font-bold text-white block">Manage Submissions</span>
-              <span className="text-[10px] text-white/40 mt-1 block">Verify, edit or assign reviewer</span>
+            <button onClick={() => setActiveTab("projects")} className="p-4 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-2xl text-left transition-all shadow-xs">
+              <span className="text-xs font-bold text-slate-800 block">Manage Submissions</span>
+              <span className="text-[10px] text-slate-500 mt-1 block">Verify, edit or assign reviewer</span>
             </button>
-            <button onClick={() => setActiveTab("voting")} className="p-4 bg-white/5 hover:bg-white/10 border border-white/12 rounded-2xl text-left transition-all">
-              <span className="text-xs font-bold text-white block">Voting Controls</span>
-              <span className="text-[10px] text-white/40 mt-1 block">Toggle voting window & fraud alerts</span>
+            <button onClick={() => setActiveTab("voting")} className="p-4 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-2xl text-left transition-all shadow-xs">
+              <span className="text-xs font-bold text-slate-800 block">Voting Controls</span>
+              <span className="text-[10px] text-slate-500 mt-1 block">Toggle voting window & fraud alerts</span>
             </button>
-            <button onClick={() => setActiveTab("settings")} className="p-4 bg-white/5 hover:bg-white/10 border border-white/12 rounded-2xl text-left transition-all">
-              <span className="text-xs font-bold text-white block">Scoring Config</span>
-              <span className="text-[10px] text-white/40 mt-1 block">Modify weights & platforms</span>
+            <button onClick={() => setActiveTab("settings")} className="p-4 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-2xl text-left transition-all shadow-xs">
+              <span className="text-xs font-bold text-slate-800 block">Scoring Config</span>
+              <span className="text-[10px] text-slate-500 mt-1 block">Modify weights & platforms</span>
             </button>
           </div>
         </div>

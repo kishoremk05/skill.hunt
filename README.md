@@ -114,3 +114,22 @@ This project is fully configured for Vercel deployment (supporting client-side r
      - `VITE_SUPABASE_PUBLISHABLE_KEY` (Value from your `.env` file)
 4. Click **Deploy**. Vercel will build the project and serve it.
 5. Client-side routing is handled seamlessly by our custom `vercel.json` file.
+
+### 3. Deploying with Docker
+
+The project includes a multi-stage `Dockerfile` and `nginx.conf` for production deployments.
+
+1. Build the Docker image:
+   ```sh
+   docker build -t skill-hunt-app .
+   ```
+2. Run the container on port 8080:
+   ```sh
+   docker run -d -p 8080:80 skill-hunt-app
+   ```
+3. Your application is now running at `http://localhost:8080`.
+
+### Database Setup
+
+Run the migrations sequentially in your Supabase SQL editor to create the necessary tables, default rules, and Row Level Security policies. The migrations are stored in the `supabase/migrations` directory.
+

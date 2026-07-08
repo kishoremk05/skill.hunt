@@ -47,19 +47,19 @@ export default function Statistics() {
   ];
 
   return (
-    <section className="relative z-[2] bg-transparent text-[#1a1a1a] flex flex-col px-8 md:px-[32px] py-[80px] max-md:px-[18px] max-md:py-[32px]">
+    <section className="relative z-[2] bg-transparent text-white flex flex-col px-8 md:px-[32px] py-[80px] max-md:px-[18px] max-md:py-[32px]">
       <div className="max-w-7xl mx-auto w-full">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-[20px]">
           {stats.map((stat, index) => (
             <FadeUp
               key={index}
               delay={index * 0.1}
-              className="p-8 rounded-[20px] border border-black/18 text-center flex flex-col justify-center h-44 bg-transparent"
+              className="p-8 rounded-[20px] border border-white/10 text-center flex flex-col justify-center h-44 bg-white/5 backdrop-blur-md shadow-lg hover:border-blue-500/50 hover:shadow-[0_0_20px_rgba(37,99,235,0.2)] transition-all duration-300"
             >
-              <span className="text-4xl sm:text-5xl font-black text-[#1a1a1a] mb-2 tracking-tighter">
+              <span className="text-4xl sm:text-5xl font-black text-white mb-2 tracking-tighter">
                 <Counter value={stat.value} suffix={stat.suffix} />
               </span>
-              <span className="text-[10px] font-bold text-[#3a3a3a] uppercase tracking-wider">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                 {stat.label}
               </span>
             </FadeUp>

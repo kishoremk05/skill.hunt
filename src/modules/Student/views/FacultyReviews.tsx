@@ -110,47 +110,47 @@ export default function FacultyReviews() {
   }, [user]);
 
   const getVerdict = (score: number) => {
-    if (score >= 90) return { label: "Outstanding", color: "text-white bg-white/15 border border-white/20" };
-    if (score >= 80) return { label: "Excellent", color: "text-white bg-white/10 border border-white/12" };
-    if (score >= 70) return { label: "Good", color: "text-white/80 bg-white/5 border border-white/12" };
-    if (score >= 60) return { label: "Satisfactory", color: "text-white/60 bg-white/5 border border-white/12" };
-    return { label: "Needs Improvement", color: "text-red-400 bg-red-500/10 border border-red-500/20" };
+    if (score >= 90) return { label: "Outstanding", color: "text-slate-800 bg-slate-100 border border-slate-200" };
+    if (score >= 80) return { label: "Excellent", color: "text-slate-800 bg-slate-50 border border-slate-200" };
+    if (score >= 70) return { label: "Good", color: "text-slate-700 bg-slate-50 border border-slate-150" };
+    if (score >= 60) return { label: "Satisfactory", color: "text-slate-600 bg-slate-50 border border-slate-150" };
+    return { label: "Needs Improvement", color: "text-red-700 bg-red-50 border border-red-200" };
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 text-left">
       {/* Header view */}
       <div>
-        <h2 className="text-2xl font-black text-white tracking-tight">Faculty Reviews</h2>
-        <p className="text-xs text-white/40 mt-1">Detailed scores and qualitative feedback from designated evaluators.</p>
+        <h2 className="text-2xl font-black text-slate-900 tracking-tight">Faculty Reviews</h2>
+        <p className="text-xs text-slate-500 mt-1 font-semibold">Detailed scores and qualitative feedback from designated evaluators.</p>
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center items-center py-20">
-          <RefreshCw className="h-8 w-8 animate-spin text-white" />
+        <div className="flex justify-center items-center py-20 bg-white border border-slate-300 shadow-sm rounded-2xl">
+          <RefreshCw className="h-8 w-8 animate-spin text-blue-600" />
         </div>
       ) : !projectId ? (
-        <div className="bg-[#1a1a1a] rounded-3xl p-12 text-center border border-white/12 min-h-[300px] flex flex-col items-center justify-center">
-          <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/12 text-white flex items-center justify-center mb-4">
+        <div className="bg-white rounded-2xl p-12 text-center border border-slate-300 min-h-[300px] flex flex-col items-center justify-center">
+          <div className="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-200 text-slate-500 flex items-center justify-center mb-4">
             <Star className="h-8 w-8" />
           </div>
-          <h3 className="text-lg font-bold text-white mb-1">No Project Found</h3>
-          <p className="text-sm text-white/40 max-w-sm">
+          <h3 className="text-lg font-bold text-slate-900 mb-1">No Project Found</h3>
+          <p className="text-sm text-slate-500 max-w-sm font-semibold leading-relaxed">
             You must create and submit a project first before it can be reviewed by faculty members.
           </p>
         </div>
       ) : evaluations.length === 0 ? (
-        <div className="bg-[#1a1a1a] rounded-3xl p-12 text-center border border-white/12 min-h-[300px] flex flex-col items-center justify-center">
-          <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/12 text-white/70 flex items-center justify-center mb-4">
+        <div className="bg-white rounded-2xl p-12 text-center border border-slate-300 min-h-[300px] flex flex-col items-center justify-center">
+          <div className="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-200 text-slate-500 flex items-center justify-center mb-4">
             <AlertCircle className="h-8 w-8" />
           </div>
-          <h3 className="text-lg font-bold text-white mb-1">Pending Evaluation</h3>
-          <p className="text-sm text-white/40 max-w-sm">
+          <h3 className="text-lg font-bold text-slate-900 mb-1">Pending Evaluation</h3>
+          <p className="text-sm text-slate-500 max-w-sm font-semibold leading-relaxed">
             Your project "{projectTitle}" is submitted, but faculty reviewers haven't finalized their scores yet. Please check back later.
           </p>
         </div>
       ) : (
-        <div className="space-y-8">
+        <div className="space-y-6">
           {evaluations.map((ev) => {
             const evScores = scoresMap[ev.id] || [];
             const verdict = getVerdict(ev.total_score);
@@ -158,15 +158,15 @@ export default function FacultyReviews() {
             return (
               <div
                 key={ev.id}
-                className="bg-[#1a1a1a] rounded-3xl border border-white/12 shadow-md overflow-hidden"
+                className="bg-white rounded-2xl border border-slate-300 shadow-sm overflow-hidden"
               >
                 {/* Header score banner */}
-                <div className="p-6 sm:p-8 bg-white/5 border-b border-white/12 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="p-6 sm:p-8 bg-slate-50/50 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <div className="space-y-1">
-                    <h3 className="text-lg font-extrabold text-white">
+                    <h3 className="text-lg font-extrabold text-slate-800">
                       Evaluation by {ev.profiles?.full_name || "Faculty Evaluator"}
                     </h3>
-                    <p className="text-xs text-white/40">
+                    <p className="text-xs text-slate-500 font-semibold">
                       Submitted on {new Date(ev.submitted_at).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "long",
@@ -178,9 +178,9 @@ export default function FacultyReviews() {
                     <span className={`px-3.5 py-1 rounded-full text-xs font-bold ${verdict.color}`}>
                       {verdict.label}
                     </span>
-                    <span className="text-3xl font-black text-white">
+                    <span className="text-3xl font-black text-slate-900">
                       {ev.total_score}
-                      <span className="text-sm font-semibold text-white/40">/100</span>
+                      <span className="text-sm font-semibold text-slate-400">/100</span>
                     </span>
                   </div>
                 </div>
@@ -189,8 +189,8 @@ export default function FacultyReviews() {
                 <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 p-6 sm:p-8">
                   {/* Scores Progress Bars (7/12) */}
                   <div className="xl:col-span-7 space-y-6">
-                    <h4 className="text-xs font-black text-white/40 uppercase tracking-widest flex items-center gap-2">
-                      <Star className="h-4 w-4 text-white" /> Rubrics Evaluation Breakdown
+                    <h4 className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                      <Star className="h-4 w-4 text-slate-800" /> Rubrics Evaluation Breakdown
                     </h4>
 
                     <div className="space-y-4">
@@ -201,20 +201,20 @@ export default function FacultyReviews() {
                         return (
                           <div key={score.id} className="space-y-1.5">
                             <div className="flex justify-between items-center text-xs">
-                              <span className="font-bold text-white/90">
+                              <span className="font-bold text-slate-800">
                                 {score.evaluation_criteria.name}
                               </span>
-                              <span className="font-black text-white">
+                              <span className="font-black text-slate-900">
                                 {score.score}
-                                <span className="text-white/40 font-medium"> / {maxVal}</span>
-                                <span className="text-[10px] text-white/40 font-bold ml-1.5">
+                                <span className="text-slate-400 font-medium"> / {maxVal}</span>
+                                <span className="text-[10px] text-slate-400 font-bold ml-1.5">
                                   (Weighted: {score.weighted_score} / {score.evaluation_criteria.weight}%)
                                 </span>
                               </span>
                             </div>
-                            <div className="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
+                            <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
                               <div
-                                className="bg-white h-full rounded-full transition-all duration-500"
+                                className="bg-black h-full rounded-full transition-all duration-500"
                                 style={{ width: `${scorePercentage}%` }}
                               />
                             </div>
@@ -225,40 +225,40 @@ export default function FacultyReviews() {
                   </div>
 
                   {/* Feedback Comments (5/12) */}
-                  <div className="xl:col-span-5 space-y-6 xl:border-l xl:border-white/12 xl:pl-8">
-                    <h4 className="text-xs font-black text-white/40 uppercase tracking-widest flex items-center gap-2">
-                      <FileText className="h-4 w-4 text-white" /> Qualitative Feedback
+                  <div className="xl:col-span-5 space-y-6 xl:border-l xl:border-slate-200 xl:pl-8">
+                    <h4 className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                      <FileText className="h-4 w-4 text-slate-800" /> Qualitative Feedback
                     </h4>
 
                     <div className="space-y-4">
                       {ev.overall_feedback && (
-                        <div className="p-4 bg-white/5 border border-white/12 rounded-2xl space-y-1">
-                          <span className="text-[10px] font-bold text-white/40 uppercase tracking-wider">
+                        <div className="p-4 bg-slate-50/50 border border-slate-200 rounded-xl space-y-1">
+                          <span className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">
                             Overall Assessment
                           </span>
-                          <p className="text-xs text-white/90 leading-relaxed font-semibold">
+                          <p className="text-xs text-slate-800 leading-relaxed font-semibold">
                             {ev.overall_feedback}
                           </p>
                         </div>
                       )}
 
                       {ev.strengths && (
-                        <div className="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-2xl space-y-1">
-                          <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
-                            <CheckCircle2 className="h-3.5 w-3.5" /> Strengths & Highlights
+                        <div className="p-4 bg-emerald-50/50 border border-emerald-250 rounded-xl space-y-1">
+                          <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider flex items-center gap-1.5">
+                            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Strengths & Highlights
                           </span>
-                          <p className="text-xs text-white/90 leading-relaxed font-semibold">
+                          <p className="text-xs text-slate-800 leading-relaxed font-semibold">
                             {ev.strengths}
                           </p>
                         </div>
                       )}
 
                       {ev.improvements && (
-                        <div className="p-4 bg-orange-500/5 border border-orange-500/20 rounded-2xl space-y-1">
-                          <span className="text-[10px] font-bold text-orange-400 uppercase tracking-wider flex items-center gap-1.5">
-                            <MessageSquare className="h-3.5 w-3.5" /> Areas for Improvement
+                        <div className="p-4 bg-amber-50/50 border border-amber-250 rounded-xl space-y-1">
+                          <span className="text-[10px] font-bold text-amber-700 uppercase tracking-wider flex items-center gap-1.5">
+                            <MessageSquare className="h-3.5 w-3.5 text-amber-600" /> Areas for Improvement
                           </span>
-                          <p className="text-xs text-white/90 leading-relaxed font-semibold">
+                          <p className="text-xs text-slate-800 leading-relaxed font-semibold">
                             {ev.improvements}
                           </p>
                         </div>

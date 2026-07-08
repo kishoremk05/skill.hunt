@@ -22,7 +22,7 @@ export default function FeaturesGrid() {
     },
     {
       title: "Live Leaderboard",
-      description: "Real-time updates showing current project rankings dynamically computed using combined faculty (80%) and peer (20%) scores.",
+      description: "Real-time updates showing current project rankings dynamically computed using combined faculty (85%) and peer (15%) scores.",
       videoUrl: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260513_220333_48163edc-995f-4513-9f44-48dbb07a7329.mp4",
     },
   ];
@@ -30,10 +30,10 @@ export default function FeaturesGrid() {
   return (
     <section
       id="features"
-      className="relative z-[2] bg-transparent text-white flex flex-col px-8 md:px-[32px] py-[80px] pt-[70px] max-md:px-[18px] max-md:py-[32px] max-md:pt-[90px] min-h-auto"
+      className="relative z-[2] bg-white text-slate-800 flex flex-col px-8 md:px-[32px] py-[80px] max-md:px-[18px] max-md:py-[32px] max-md:pt-[90px] border-b border-slate-200"
     >
       {/* Counter */}
-      <FadeUp delay={0} className="text-[11px] tracking-[0.08em] uppercase text-white/40 mb-[20px]">
+      <FadeUp delay={0} className="text-[11px] tracking-[0.08em] uppercase text-slate-500 mb-[20px] font-bold">
         003 / 005
       </FadeUp>
 
@@ -41,7 +41,7 @@ export default function FeaturesGrid() {
       <div className="flex max-md:flex-col gap-[48px] max-md:gap-[16px] items-start mb-[32px]">
         {/* Left col */}
         <div className="w-[32%] max-md:w-full">
-          <h2 className="text-[clamp(26px,3vw,42px)] font-bold leading-[1.05] tracking-[-0.01em] uppercase text-white max-w-[320px] max-md:max-w-none flex flex-wrap gap-[0.25em]">
+          <h2 className="text-[clamp(26px,3vw,42px)] font-black leading-[1.05] tracking-[-0.01em] uppercase text-slate-900 max-w-[320px] max-md:max-w-none flex flex-wrap gap-[0.25em]">
             {headWords.map((word, i) => (
               <FadeUp key={i} as="span" delay={0.1 + i * 0.1} y={28}>
                 {word}
@@ -51,20 +51,20 @@ export default function FeaturesGrid() {
         </div>
 
         {/* Right col */}
-        <div className="flex-1 pt-[8px] max-md:pt-0">
-          <FadeUp as="p" delay={0.25} className="text-[14px] leading-[1.65] text-white/70 max-w-[320px] max-md:max-w-none">
+        <div className="flex-1 pt-[8px] max-md:pt-0 text-left">
+          <FadeUp as="p" delay={0.25} className="text-[14px] leading-[1.65] text-slate-550 font-semibold max-w-[320px] max-md:max-w-none">
             We provide all-in-one project submission, evaluation, and leaderboard rankings in one place.
           </FadeUp>
         </div>
       </div>
 
       {/* Cards grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[20px] max-md:gap-[16px] grid-auto-rows-1fr">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[20px] max-md:gap-[16px] grid-auto-rows-1fr text-left">
         {features.map((feature, idx) => (
           <FadeUp
             key={feature.title}
             delay={0.4 + idx * 0.15}
-            className="bg-[#1a1a1a]/40 border border-white/12 rounded-[20px] overflow-hidden flex flex-col pt-[16px] h-full"
+            className="bg-slate-50 border border-slate-200 rounded-[20px] overflow-hidden flex flex-col pt-[16px] h-full shadow-sm hover:border-slate-300 transition-all"
           >
             {/* Video Area */}
             <div className="w-full aspect-[4/3] relative overflow-hidden">
@@ -80,10 +80,10 @@ export default function FeaturesGrid() {
 
             {/* Text Area */}
             <div className="p-6 md:p-[28px] flex-1 flex flex-col">
-              <h3 className="text-[18px] font-semibold text-white mb-[14px]">
+              <h3 className="text-[16px] font-black text-slate-800 mb-[14px] uppercase tracking-wide">
                 {feature.title}
               </h3>
-              <p className="text-[13px] leading-[1.6] text-white/70">
+              <p className="text-[12px] leading-[1.6] text-slate-500 font-semibold">
                 {feature.description}
               </p>
             </div>

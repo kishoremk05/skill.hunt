@@ -1,20 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
-import { Trophy, Star, CheckSquare, TrendingUp, RefreshCw } from "lucide-react";
+import { Folder, ClipboardCheck, Users, Trophy, RefreshCw, ArrowRight } from "lucide-react";
 
-export default function StatsGrid() {
+interface StatsGridProps {
+  setActiveTab: (tab: string) => void;
+}
+
+export default function StatsGrid({ setActiveTab }: StatsGridProps) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [totalProjects, setTotalProjects] = useState<number>(0);
   const [avgScore, setAvgScore] = useState<string>("N/A");
-  const [rank, setRank] = useState<string>("N/A");
-  const [votes, setVotes] = useState<string>("0");
+  const [votesCast, setVotesCast] = useState<number>(0);
+  const [rank, setRank] = useState<string>("--");
+  const [rankSubtitle, setRankSubtitle] = useState<string>("Results not published");
 
   useEffect(() => {
     const fetchStats = async () => {
       if (!user) return;
       try {
         setLoading(true);
+
+        // 1. Total Projects count
+        const { count: projCount } = await supabase
+          .from("projects")
+          .select("*", { count: "exact", head: true })
+          .eq("student_id", user.id);
+        setTotalProjects(projCount || 0);
+
+        // 2. Votes cast by this student
+        const { count: vCast } = await supabase
+          .from("votes")
+          .select("*", { count: "exact", head: true })
+          .eq("student_id", user.id);
+        setVotesCast(vCast || 0);
+
+        // Fetch latest project for average score and rank
         const { data: project } = await supabase
           .from("projects")
           .select("id")
@@ -24,6 +46,7 @@ export default function StatsGrid() {
           .maybeSingle();
 
         if (project) {
+          // Average Score
           const { data: evals } = await supabase
             .from("evaluations")
             .select("total_score")
@@ -31,22 +54,26 @@ export default function StatsGrid() {
             .eq("status", "submitted");
 
           if (evals && evals.length > 0) {
-            const avg = evals.reduce((a: number, c: any) => a + parseFloat(c.total_score || 0), 0) / evals.length;
-            setAvgScore(avg.toFixed(1));
+            const avg = evals.reduce((sum: number, c: any) => sum + parseFloat(c.total_score || 0), 0) / evals.length;
+            setAvgScore(avg.toFixed(2));
           }
 
-          const { count: votesCount } = await supabase
-            .from("votes")
-            .select("*", { count: "exact", head: true })
-            .eq("project_id", project.id);
-          if (votesCount !== null) setVotes(votesCount.toString());
-
+          // Rank & Publication
           const { data: rankData } = await supabase
             .from("leaderboard")
-            .select("rank")
+            .select("rank, published")
             .eq("project_id", project.id)
             .maybeSingle();
-          if (rankData) setRank(`#${rankData.rank}`);
+
+          if (rankData) {
+            if (rankData.published) {
+              setRank(`#${rankData.rank}`);
+              setRankSubtitle("Among all submissions");
+            } else {
+              setRank("--");
+              setRankSubtitle("Results not published");
+            }
+          }
         }
       } catch (err) {
         console.error("StatsGrid error:", err);
@@ -59,74 +86,84 @@ export default function StatsGrid() {
 
   const cards = [
     {
-      label: "Current Rank",
-      value: rank,
-      icon: Trophy,
-      gradient: "from-white/20 to-white",
-      glow: "shadow-white/5",
-      bg: "bg-white/5",
-      iconColor: "text-white",
-      description: "Among all submissions",
+      label: "My Projects",
+      value: totalProjects.toString(),
+      subtitle: totalProjects > 0 ? "Submitted" : "No submissions",
+      icon: Folder,
+      iconBg: "bg-slate-50 border border-slate-200 text-slate-500",
+      linkText: "View all",
+      tab: "my-projects",
     },
     {
-      label: "Faculty Score",
+      label: "Average Score",
       value: avgScore,
-      icon: Star,
-      gradient: "from-white/20 to-white",
-      glow: "shadow-white/5",
-      bg: "bg-white/5",
-      iconColor: "text-white",
-      description: "Average rubric score",
+      subtitle: avgScore !== "N/A" ? "Out of 100" : "Not evaluated yet",
+      icon: ClipboardCheck,
+      iconBg: "bg-slate-50 border border-slate-200 text-slate-500",
+      linkText: "View results",
+      tab: "reviews",
     },
     {
-      label: "Votes Received",
-      value: votes,
-      icon: CheckSquare,
-      gradient: "from-white/20 to-white",
-      glow: "shadow-white/5",
-      bg: "bg-white/5",
-      iconColor: "text-white",
-      description: "From peer evaluation",
+      label: "My Votes",
+      value: `${votesCast} / 1`,
+      subtitle: votesCast > 0 ? "Vote used" : "Vote pending",
+      icon: Users,
+      iconBg: "bg-slate-50 border border-slate-200 text-slate-500",
+      linkText: "Manage votes",
+      tab: "voting",
+    },
+    {
+      label: "My Rank",
+      value: rank,
+      subtitle: rankSubtitle,
+      icon: Trophy,
+      iconBg: "bg-slate-50 border border-slate-200 text-slate-500",
+      linkText: "View leaderboard",
+      tab: "leaderboard",
     },
   ];
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="bg-[#1a1a1a] p-6 rounded-3xl border border-white/12 shadow-sm animate-pulse h-[130px]" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="bg-white p-6 rounded-2xl border border-slate-300 shadow-sm animate-pulse h-[135px]" />
         ))}
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 text-left">
       {cards.map((card, idx) => {
         const Icon = card.icon;
         return (
           <div
             key={idx}
-            className={`group relative bg-[#1a1a1a] backdrop-blur-sm p-6 rounded-3xl border border-white/12 shadow-sm hover:shadow-xl ${card.glow} transition-all duration-300 hover:-translate-y-1 overflow-hidden cursor-default`}
+            className="group bg-white p-5 rounded-2xl border border-slate-300 shadow-sm hover:border-slate-800 transition-all duration-300 flex flex-col justify-between h-[135px] hover:-translate-y-0.5"
           >
-            {/* Subtle top accent bar */}
-            <div className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${card.gradient} rounded-t-3xl opacity-40 group-hover:opacity-100 transition-opacity`} />
-
-            <div className="flex items-center justify-between mb-4">
-              <div className={`p-2.5 rounded-2xl ${card.bg} transition-all duration-300 group-hover:scale-110 border border-white/5`}>
-                <Icon className={`h-5 w-5 ${card.iconColor}`} />
+            <div className="flex justify-between items-start">
+              <div className="space-y-1">
+                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                  {card.label}
+                </p>
+                <h4 className="text-3xl font-black text-slate-900 tracking-tight">
+                  {card.value}
+                </h4>
               </div>
-              <TrendingUp className="h-4 w-4 text-white/20" />
+              <div className={`p-2 rounded-full font-bold shrink-0 shadow-sm ${card.iconBg}`}>
+                <Icon className="h-4 w-4" />
+              </div>
             </div>
 
-            <div>
-              <p className="text-[10px] sm:text-[11px] font-bold text-white/40 uppercase tracking-widest mb-1">
-                {card.label}
-              </p>
-              <h4 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                {card.value}
-              </h4>
-              <p className="text-[10px] text-white/40 mt-1">{card.description}</p>
+            <div className="flex items-center justify-between border-t border-slate-100 pt-3 mt-1">
+              <p className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">{card.subtitle}</p>
+              <button
+                onClick={() => setActiveTab(card.tab)}
+                className="text-[10px] font-black text-slate-900 hover:text-black uppercase tracking-widest inline-flex items-center gap-1 transition-all hover:underline"
+              >
+                {card.linkText} <ArrowRight className="h-3 w-3" />
+              </button>
             </div>
           </div>
         );

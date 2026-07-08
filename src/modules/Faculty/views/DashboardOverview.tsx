@@ -184,44 +184,38 @@ export default function DashboardOverview({ projects, onSelectProject, setActive
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 text-left">
       {/* Welcome Banner */}
-      <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-black/10">
-        <div className="absolute inset-0 bg-[#C5C5C5]" />
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute -top-16 -right-16 w-80 h-80 rounded-full bg-white/30 blur-[80px]" />
-          <div className="absolute bottom-0 left-1/3 w-64 h-64 rounded-full bg-black/5 blur-[60px]" />
-        </div>
-
-        <div className="relative z-10 p-8 sm:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8 text-[#1a1a1a]">
-          <div className="flex-1">
-            <div className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-full bg-black/5 border border-black/10">
-              <AlertCircle className="h-3.5 w-3.5 text-black/60" />
-              <span className="text-xs font-bold text-[#1a1a1a]">{eventName}</span>
+      <div className="relative rounded-2xl overflow-hidden border border-slate-300 bg-white shadow-sm">
+        <div className="p-8 sm:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8 text-slate-800">
+          <div className="flex-1 w-full">
+            <div className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200">
+              <AlertCircle className="h-3.5 w-3.5 text-slate-500" />
+              <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">{eventName}</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-[#1a1a1a] mb-2 leading-tight">
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 mb-2 leading-tight">
               Welcome back, {fullName} 👋
             </h2>
-            <p className="text-sm text-black/60 max-w-lg mb-7 leading-relaxed">
-              You are designated as evaluator for the <strong className="font-extrabold text-[#1a1a1a]">{eventName}</strong>. 
+            <p className="text-xs text-slate-500 font-semibold max-w-lg mb-7 leading-relaxed">
+              You are designated as evaluator for the <strong className="font-extrabold text-slate-800">{eventName}</strong>. 
               There are {pendingReviews} projects awaiting your weighted rubric grading.
             </p>
 
             <div className="flex flex-wrap items-center gap-6">
               <div className="flex flex-col text-left">
-                <span className="text-[10px] text-black/40 uppercase tracking-widest font-bold mb-1">
+                <span className="text-[9px] text-slate-450 uppercase tracking-widest font-bold mb-1">
                   Evaluations Progress
                 </span>
-                <span className="text-xl font-black text-[#1a1a1a] flex items-center gap-1.5">
+                <span className="text-xl font-black text-slate-850 flex items-center gap-1.5">
                   {completedReviews} / {totalAssigned} Evaluated
                 </span>
               </div>
 
-              <div className="h-10 w-px bg-black/10 hidden sm:block" />
+              <div className="h-10 w-px bg-slate-200 hidden sm:block" />
 
               <div className="flex-1 min-w-[200px]">
-                <div className="w-full bg-black/10 h-2.5 rounded-full overflow-hidden">
+                <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200">
                   <div
                     className="bg-black h-full transition-all duration-500 rounded-full"
                     style={{ width: `${totalAssigned > 0 ? (completedReviews / totalAssigned) * 100 : 0}%` }}
@@ -231,10 +225,10 @@ export default function DashboardOverview({ projects, onSelectProject, setActive
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row md:flex-col gap-3 w-full md:w-auto shrink-0">
+          <div className="flex flex-col sm:flex-row md:flex-col gap-3 w-full md:w-auto shrink-0 pt-2 md:pt-0">
             <button
               onClick={() => setActiveTab("assigned-projects")}
-              className="w-full md:w-48 inline-flex items-center justify-center gap-1.5 px-5 py-3.5 bg-black hover:bg-black/95 text-white text-xs font-bold rounded-2xl transition-all shadow-md active:scale-95"
+              className="w-full md:w-48 inline-flex items-center justify-center gap-1.5 px-5 py-3.5 bg-black hover:bg-[#222222] text-white text-xs font-bold rounded-xl transition-all shadow-sm uppercase tracking-wider"
             >
               Review Projects
             </button>
@@ -249,22 +243,22 @@ export default function DashboardOverview({ projects, onSelectProject, setActive
           return (
             <div
               key={idx}
-              className="group relative bg-[#1a1a1a] backdrop-blur-sm p-6 rounded-3xl border border-white/12 shadow-sm hover:shadow-xl shadow-white/5 transition-all duration-300 hover:-translate-y-1 overflow-hidden cursor-default"
+              className="group relative bg-white p-6 rounded-2xl border border-slate-300 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden cursor-default text-left"
             >
-              <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-white/20 to-white rounded-t-3xl opacity-40 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-slate-200 to-slate-400 opacity-40 group-hover:opacity-100 transition-opacity" />
 
               <div className="flex items-center justify-between mb-4">
-                <div className="p-2.5 rounded-2xl bg-white/5 transition-all duration-300 group-hover:scale-110 border border-white/5">
-                  <Icon className="h-5 w-5 text-white" />
+                <div className={`p-2.5 rounded-xl transition-all duration-300 group-hover:scale-105 border ${stat.color}`}>
+                  <Icon className="h-5 w-5" />
                 </div>
-                <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">{stat.trend}</span>
+                <span className="text-[10px] font-bold text-slate-455 uppercase tracking-widest">{stat.trend}</span>
               </div>
 
               <div>
-                <p className="text-[10px] sm:text-[11px] font-bold text-white/40 uppercase tracking-widest mb-1">
+                <p className="text-[10px] font-bold text-slate-450 uppercase tracking-widest mb-1">
                   {stat.label}
                 </p>
-                <h4 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                <h4 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight">
                   {stat.value}
                 </h4>
               </div>
@@ -274,17 +268,17 @@ export default function DashboardOverview({ projects, onSelectProject, setActive
       </div>
 
       {/* Main Grid: Pending Evaluation Tasks & Evaluation Trends */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
         {/* Left: Pending evaluation items list (8/12) */}
-        <div className="xl:col-span-7 bg-[#1a1a1a] rounded-3xl border border-white/12 shadow-sm p-6 sm:p-8 space-y-6">
+        <div className="xl:col-span-7 bg-white rounded-2xl border border-slate-300 shadow-sm p-6 sm:p-8 space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-black text-white">Urgent Actions</h3>
-              <p className="text-xs text-white/40 mt-0.5">Projects assigned to you that are pending review.</p>
+              <h3 className="text-sm font-extrabold text-slate-800 uppercase tracking-wider">Urgent Actions</h3>
+              <p className="text-xs text-slate-500 mt-0.5 font-semibold">Projects assigned to you that are pending review.</p>
             </div>
             <button
               onClick={() => setActiveTab("pending-reviews")}
-              className="text-xs font-bold text-white/60 hover:text-white hover:underline transition-all"
+              className="text-xs font-bold text-slate-500 hover:text-slate-800 hover:underline transition-all"
             >
               See All Pending
             </button>
@@ -297,45 +291,45 @@ export default function DashboardOverview({ projects, onSelectProject, setActive
               .map((project) => (
                 <div
                   key={project.id}
-                  className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/12 hover:border-white/20 transition-all"
+                  className="flex items-center justify-between p-4 rounded-xl bg-white border border-slate-200 hover:border-slate-300 shadow-sm transition-all"
                 >
                   <div className="space-y-1 pr-4">
-                    <h4 className="text-sm font-bold text-white line-clamp-1">
+                    <h4 className="text-sm font-bold text-slate-800 line-clamp-1">
                       {project.title}
                     </h4>
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-white/40">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-450 font-bold">
                       <span>{project.studentName}</span>
-                      <span className="w-1 h-1 rounded-full bg-white/10" />
-                      <span className="text-[10px] bg-white/5 border border-white/12 text-white/60 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
+                      <span className="w-1 h-1 rounded-full bg-slate-200" />
+                      <span className="text-[9px] bg-slate-50 border border-slate-200 text-slate-600 px-2 py-0.5 rounded font-extrabold uppercase tracking-wider">
                         {project.category}
                       </span>
                     </div>
                   </div>
                   <button
                     onClick={() => onSelectProject(project.id)}
-                    className="flex items-center gap-1 px-4 py-2 bg-white hover:bg-white/85 text-black rounded-xl text-xs font-bold shadow-md transition-all whitespace-nowrap active:scale-95"
+                    className="flex items-center gap-1 px-4 py-2 bg-black hover:bg-[#222222] text-white rounded-xl text-xs font-bold shadow-sm transition-all whitespace-nowrap uppercase tracking-wider"
                   >
                     Grade <ArrowUpRight className="h-3.5 w-3.5" />
                   </button>
                 </div>
               ))}
             {projects.filter((p) => p.status === "reviewing" || p.status === "submitted").length === 0 && (
-              <div className="p-8 text-center text-white/40 border-2 border-dashed border-white/12 rounded-3xl flex flex-col items-center justify-center">
-                <CheckCircle className="h-10 w-10 text-emerald-400 mb-2" />
+              <div className="p-8 text-center text-slate-450 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center bg-slate-50/50">
+                <CheckCircle className="h-10 w-10 text-emerald-600 mb-2" />
                 <p className="text-sm font-bold">All caught up!</p>
-                <p className="text-xs">No pending evaluations assigned to you at the moment.</p>
+                <p className="text-xs font-semibold">No pending evaluations assigned to you at the moment.</p>
               </div>
             )}
           </div>
         </div>
 
         {/* Right: Charts (5/12) */}
-        <div className="xl:col-span-5 bg-[#1a1a1a] rounded-3xl border border-white/12 shadow-sm p-6 sm:p-8 space-y-6">
+        <div className="xl:col-span-5 bg-white rounded-2xl border border-slate-300 shadow-sm p-6 sm:p-8 space-y-6">
           <div>
-            <h3 className="text-lg font-black text-white flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-white/60" /> Review Activity
+            <h3 className="text-sm font-extrabold text-slate-800 flex items-center gap-2 uppercase tracking-wider">
+              <TrendingUp className="h-5 w-5 text-slate-500" /> Review Activity
             </h3>
-            <p className="text-xs text-white/40 mt-0.5">Your evaluations output trends over the past week.</p>
+            <p className="text-xs text-slate-500 mt-0.5 font-semibold">Your evaluations output trends over the past week.</p>
           </div>
 
           <div className="h-56 w-full">
@@ -343,23 +337,24 @@ export default function DashboardOverview({ projects, onSelectProject, setActive
               <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="evalGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#ffffff" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="#ffffff" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#2563eb" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.06)" />
-                <XAxis dataKey="name" stroke="rgba(255,255,255,0.3)" fontSize={11} tickLine={false} axisLine={false} />
-                <YAxis stroke="rgba(255,255,255,0.3)" fontSize={11} tickLine={false} axisLine={false} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.06)" />
+                <XAxis dataKey="name" stroke="rgba(0,0,0,0.4)" fontSize={11} tickLine={false} axisLine={false} className="font-bold" />
+                <YAxis stroke="rgba(0,0,0,0.4)" fontSize={11} tickLine={false} axisLine={false} className="font-bold" />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#1a1a1a",
-                    borderColor: "rgba(255,255,255,0.12)",
+                    backgroundColor: "#ffffff",
+                    borderColor: "rgba(0,0,0,0.12)",
                     borderRadius: "12px",
-                    color: "#fff",
+                    color: "#1e293b",
                     fontSize: "12px",
+                    fontWeight: "bold",
                   }}
                 />
-                <Area type="monotone" dataKey="evaluations" stroke="#ffffff" strokeWidth={2} fillOpacity={1} fill="url(#evalGrad)" />
+                <Area type="monotone" dataKey="evaluations" stroke="#2563eb" strokeWidth={2} fillOpacity={1} fill="url(#evalGrad)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>

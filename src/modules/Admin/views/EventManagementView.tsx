@@ -173,16 +173,16 @@ export default function EventManagementView() {
   return (
     <div className="space-y-8">
       {/* Header section with CTA */}
-      <div className="bg-[#1a1a1a] rounded-3xl border border-white/12 shadow-md p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white rounded-3xl border border-slate-200 shadow-xs p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-slate-800">
         <div>
-          <h2 className="text-xl font-black text-white flex items-center gap-2">
-            <Calendar className="h-5.5 w-5.5 text-white/40" /> Event Showcases Management
+          <h2 className="text-xl font-black text-slate-800 flex items-center gap-2">
+            <Calendar className="h-5.5 w-5.5 text-slate-400" /> Event Showcases Management
           </h2>
-          <p className="text-xs text-white/40 mt-0.5 font-semibold">Configure active, upcoming, or archived grading terms and dates.</p>
+          <p className="text-xs text-slate-500 mt-0.5 font-semibold">Configure active, upcoming, or archived grading terms and dates.</p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white hover:bg-white/85 text-black text-xs font-bold transition-all shadow-md"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-md active:scale-95 shrink-0"
         >
           <Plus className="h-4 w-4" /> Create Showcase Event
         </button>
@@ -193,15 +193,15 @@ export default function EventManagementView() {
         {events.map((event) => (
           <div
             key={event.id}
-            className="bg-[#1a1a1a] rounded-3xl border border-white/12 p-6 sm:p-8 flex flex-col justify-between shadow-md hover:shadow-lg transition-all duration-300"
+            className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 flex flex-col justify-between shadow-xs hover:shadow-md transition-all duration-300 text-slate-800"
           >
             <div>
               {/* Event Badge Actions */}
               <div className="flex items-center justify-between gap-4 mb-4">
                 <span className={`px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${
-                  event.status === "active" ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" :
-                  event.status === "completed" ? "bg-white/5 border-white/12 text-white/40" :
-                  "bg-white/5 border-white/12 text-white/80"
+                  event.status === "active" ? "bg-emerald-50 border-emerald-200 text-emerald-600" :
+                  event.status === "completed" ? "bg-slate-100 border-slate-200 text-slate-500" :
+                  "bg-slate-50 border-slate-200 text-slate-655"
                 }`}>
                   {event.status}
                 </span>
@@ -210,7 +210,7 @@ export default function EventManagementView() {
                   {event.status !== "active" && (
                     <button
                       onClick={() => handleStatusUpdate(event.id, "active")}
-                      className="p-1.5 rounded-lg hover:bg-white/5 text-white/40 hover:text-white transition-colors"
+                      className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-450 hover:text-slate-850 transition-colors"
                       title="Activate Showcase"
                     >
                       <CheckCircle2 className="h-4 w-4" />
@@ -219,7 +219,7 @@ export default function EventManagementView() {
                   {event.status !== "completed" && (
                     <button
                       onClick={() => handleStatusUpdate(event.id, "completed")}
-                      className="p-1.5 rounded-lg hover:bg-white/5 text-white/40 hover:text-white transition-colors"
+                      className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-450 hover:text-slate-850 transition-colors"
                       title="Archive Showcase"
                     >
                       <Archive className="h-4 w-4" />
@@ -227,7 +227,7 @@ export default function EventManagementView() {
                   )}
                   <button
                     onClick={() => handleDelete(event.id)}
-                    className="p-1.5 rounded-lg hover:bg-red-500/10 text-red-400 transition-colors"
+                    className="p-1.5 rounded-lg hover:bg-red-50 text-red-650 transition-colors"
                     title="Delete Showcase"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -236,34 +236,34 @@ export default function EventManagementView() {
               </div>
 
               {/* Title & Description */}
-              <h3 className="text-base font-black text-white mb-2">{event.title}</h3>
-              <p className="text-xs text-white/40 leading-relaxed mb-6">
+              <h3 className="text-base font-black text-slate-800 mb-2">{event.title}</h3>
+              <p className="text-xs text-slate-500 leading-relaxed mb-6 font-medium">
                 {event.description}
               </p>
 
               {/* Grid of timelines */}
-              <div className="grid grid-cols-2 gap-4 text-xs font-semibold py-4 border-t border-white/12">
+              <div className="grid grid-cols-2 gap-4 text-xs font-semibold py-4 border-t border-slate-100">
                 <div>
-                  <p className="text-[10px] text-white/40 uppercase">Submissions Period</p>
-                  <p className="text-white/80 mt-0.5">
+                  <p className="text-[10px] text-slate-400 uppercase">Submissions Period</p>
+                  <p className="text-slate-700 mt-0.5">
                     {event.submissionStart} to {event.submissionEnd}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[10px] text-white/40 uppercase">Evaluation Period</p>
-                  <p className="text-white/80 mt-0.5">
+                  <p className="text-[10px] text-slate-400 uppercase">Evaluation Period</p>
+                  <p className="text-slate-700 mt-0.5">
                     {event.reviewStart} to {event.reviewEnd}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[10px] text-white/40 uppercase">Peer Voting Period</p>
-                  <p className="text-white/80 mt-0.5">
+                  <p className="text-[10px] text-slate-400 uppercase">Peer Voting Period</p>
+                  <p className="text-slate-700 mt-0.5">
                     {event.votingStart} to {event.votingEnd}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[10px] text-white/40 uppercase">Results Announcement</p>
-                  <p className="text-white/80 mt-0.5">{event.resultsDate}</p>
+                  <p className="text-[10px] text-slate-400 uppercase">Results Announcement</p>
+                  <p className="text-slate-700 mt-0.5">{event.resultsDate}</p>
                 </div>
               </div>
             </div>
@@ -273,119 +273,119 @@ export default function EventManagementView() {
 
       {/* Showcase Modal UI */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
           <form
             onSubmit={handleCreateEvent}
-            className="bg-[#1a1a1a] rounded-[24px] border border-white/10 shadow-2xl p-6 sm:p-8 max-w-lg w-full space-y-6"
+            className="bg-white rounded-[24px] border border-slate-200 shadow-2xl p-6 sm:p-8 max-w-lg w-full space-y-6 text-slate-800 animate-in fade-in zoom-in-95 duration-200"
           >
             <div>
-              <h3 className="text-base font-black text-white">Create Showcase Event</h3>
-              <p className="text-xs text-white/40 mt-0.5">Define metadata and scheduling boundaries.</p>
+              <h3 className="text-base font-black text-slate-900">Create Showcase Event</h3>
+              <p className="text-xs text-slate-500 mt-0.5">Define metadata and scheduling boundaries.</p>
             </div>
 
-            <div className="space-y-4 text-white">
+            <div className="space-y-4">
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-white/40 uppercase">Showcase Title</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase">Showcase Title</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. AI Innovation Expo 2026"
                   value={newEvent.title}
                   onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-                  className="w-full px-3.5 py-2.5 border border-white/12 rounded-xl bg-white/5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-white/20"
+                  className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-xs text-slate-850 placeholder:text-slate-450 font-semibold focus:outline-none focus:ring-2 focus:ring-slate-100"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-white/40 uppercase">Description</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase">Description</label>
                 <textarea
                   placeholder="Summarize the theme and expectations..."
                   rows={3}
                   value={newEvent.description}
                   onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
-                  className="w-full px-3.5 py-2.5 border border-white/12 rounded-xl bg-white/5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-white/20"
+                  className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-xs text-slate-850 placeholder:text-slate-450 font-semibold focus:outline-none focus:ring-2 focus:ring-slate-100"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-white/40 uppercase">Submission Start</label>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase">Submission Start</label>
                   <input
                     type="date"
                     value={newEvent.submissionStart}
                     onChange={(e) => setNewEvent({ ...newEvent, submissionStart: e.target.value })}
-                    className="w-full px-3.5 py-2 border border-white/12 rounded-xl bg-white/5 text-xs text-white [color-scheme:dark]"
+                    className="w-full px-3.5 py-2 border border-slate-200 rounded-xl bg-slate-50 text-xs text-slate-850 font-semibold focus:outline-none focus:ring-2 focus:ring-slate-100"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-white/40 uppercase">Submission End</label>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase">Submission End</label>
                   <input
                     type="date"
                     value={newEvent.submissionEnd}
                     onChange={(e) => setNewEvent({ ...newEvent, submissionEnd: e.target.value })}
-                    className="w-full px-3.5 py-2 border border-white/12 rounded-xl bg-white/5 text-xs text-white [color-scheme:dark]"
+                    className="w-full px-3.5 py-2 border border-slate-200 rounded-xl bg-slate-50 text-xs text-slate-850 font-semibold focus:outline-none focus:ring-2 focus:ring-slate-100"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-white/40 uppercase">Review Start</label>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase">Review Start</label>
                   <input
                     type="date"
                     value={newEvent.reviewStart}
                     onChange={(e) => setNewEvent({ ...newEvent, reviewStart: e.target.value })}
-                    className="w-full px-3.5 py-2 border border-white/12 rounded-xl bg-white/5 text-xs text-white [color-scheme:dark]"
+                    className="w-full px-3.5 py-2 border border-slate-200 rounded-xl bg-slate-50 text-xs text-slate-850 font-semibold focus:outline-none focus:ring-2 focus:ring-slate-100"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-white/40 uppercase">Review End</label>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase">Review End</label>
                   <input
                     type="date"
                     value={newEvent.reviewEnd}
                     onChange={(e) => setNewEvent({ ...newEvent, reviewEnd: e.target.value })}
-                    className="w-full px-3.5 py-2 border border-white/12 rounded-xl bg-white/5 text-xs text-white [color-scheme:dark]"
+                    className="w-full px-3.5 py-2 border border-slate-200 rounded-xl bg-slate-50 text-xs text-slate-850 font-semibold focus:outline-none focus:ring-2 focus:ring-slate-100"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-white/40 uppercase">Voting Start</label>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase">Voting Start</label>
                   <input
                     type="date"
                     value={newEvent.votingStart}
                     onChange={(e) => setNewEvent({ ...newEvent, votingStart: e.target.value })}
-                    className="w-full px-3.5 py-2 border border-white/12 rounded-xl bg-white/5 text-xs text-white [color-scheme:dark]"
+                    className="w-full px-3.5 py-2 border border-slate-200 rounded-xl bg-slate-50 text-xs text-slate-850 font-semibold focus:outline-none focus:ring-2 focus:ring-slate-100"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-white/40 uppercase">Voting End</label>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase">Voting End</label>
                   <input
                     type="date"
                     value={newEvent.votingEnd}
                     onChange={(e) => setNewEvent({ ...newEvent, votingEnd: e.target.value })}
-                    className="w-full px-3.5 py-2 border border-white/12 rounded-xl bg-white/5 text-xs text-white [color-scheme:dark]"
+                    className="w-full px-3.5 py-2 border border-slate-200 rounded-xl bg-slate-50 text-xs text-slate-850 font-semibold focus:outline-none focus:ring-2 focus:ring-slate-100"
                   />
                 </div>
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-white/40 uppercase">Results Announcement Date</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase">Results Announcement Date</label>
                 <input
                   type="date"
                   value={newEvent.resultsDate}
                   onChange={(e) => setNewEvent({ ...newEvent, resultsDate: e.target.value })}
-                  className="w-full px-3.5 py-2 border border-white/12 rounded-xl bg-white/5 text-xs text-white [color-scheme:dark]"
+                  className="w-full px-3.5 py-2 border border-slate-200 rounded-xl bg-slate-50 text-xs text-slate-850 font-semibold focus:outline-none focus:ring-2 focus:ring-slate-100"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end gap-3.5 pt-4 border-t border-white/12">
+            <div className="flex justify-end gap-3.5 pt-4 border-t border-slate-100">
               <button
                 type="button"
                 onClick={() => setShowCreateModal(false)}
-                className="px-4 py-2.5 rounded-xl border border-white/12 text-xs font-bold text-white hover:bg-white/5 transition-all"
+                className="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-800 hover:bg-slate-100 transition-all active:scale-95"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-5 py-2.5 bg-white hover:bg-white/85 text-black rounded-xl text-xs font-bold shadow-md transition-all"
+                className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold shadow-md transition-all active:scale-95"
               >
                 Save Showcase Event
               </button>

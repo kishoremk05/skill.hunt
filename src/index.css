@@ -8,83 +8,89 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 47.4% 11.2%;
+    --background: 210 33% 98%; /* Paper White #FAFBFC */
+    --foreground: 213 66% 17%; /* Deep Navy #0F2A4A */
 
-    --card: 210 40% 98%;
-    --card-foreground: 222.2 47.4% 11.2%;
+    --card: 0 0% 100%;
+    --card-foreground: 213 66% 17%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 47.4% 11.2%;
+    --popover-foreground: 213 66% 17%;
 
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 213 66% 17%; /* Deep Navy */
+    --primary-foreground: 210 33% 98%;
 
-    --secondary: 243.4 75.4% 58.6%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 188 72% 47%; /* Bright Cyan #22B8CF */
+    --secondary-foreground: 213 66% 17%;
 
-    --muted: 215.4 16.3% 46.9%;
-    --muted-foreground: 215.4 25% 40%;
+    --muted: 210 20% 90%;
+    --muted-foreground: 213 20% 40%;
 
-    --accent: 159.6 84.5% 39.4%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 37 90% 55%; /* Amber Gold #F5A623 */
+    --accent-foreground: 210 33% 98%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
+    --success: 131 54% 40%; /* Leaf Green #2F9E44 */
+    --success-foreground: 0 0% 100%;
+
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --ring: 188 72% 47%; /* Bright Cyan */
 
-    --radius: 1.25rem; /* Spacious rounded corners (20px) */
+    --radius: 1.25rem;
 
-    --sidebar-background: 210 40% 98%;
-    --sidebar-foreground: 222.2 47.4% 11.2%;
-    --sidebar-primary: 221.2 83.2% 53.3%;
-    --sidebar-primary-foreground: 210 40% 98%;
-    --sidebar-accent: 210 40% 96.1%;
-    --sidebar-accent-foreground: 222.2 47.4% 11.2%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 213 66% 17%;
+    --sidebar-primary: 213 66% 17%;
+    --sidebar-primary-foreground: 210 33% 98%;
+    --sidebar-accent: 210 20% 96%;
+    --sidebar-accent-foreground: 213 66% 17%;
     --sidebar-border: 214.3 31.8% 91.4%;
-    --sidebar-ring: 221.2 83.2% 53.3%;
+    --sidebar-ring: 188 72% 47%;
   }
 
   .dark {
-    --background: 222.2 47.4% 11.2%;
-    --foreground: 210 40% 98%;
+    --background: 213 66% 17%; /* Deep Navy */
+    --foreground: 210 33% 98%;
 
-    --card: 222.2 47.4% 9.6%;
-    --card-foreground: 210 40% 98%;
+    --card: 213 50% 20%;
+    --card-foreground: 210 33% 98%;
 
-    --popover: 222.2 47.4% 9.6%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 213 50% 20%;
+    --popover-foreground: 210 33% 98%;
 
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 188 72% 47%; /* Bright Cyan */
+    --primary-foreground: 213 66% 17%;
 
-    --secondary: 243.4 75.4% 58.6%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 213 40% 30%;
+    --secondary-foreground: 210 33% 98%;
 
-    --muted: 215.4 16.3% 56.9%;
-    --muted-foreground: 215.4 16.3% 76.9%;
+    --muted: 213 40% 30%;
+    --muted-foreground: 210 20% 70%;
 
-    --accent: 159.6 84.5% 39.4%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 37 90% 55%; /* Amber Gold */
+    --accent-foreground: 213 66% 17%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 19% 27%;
-    --input: 217.2 19% 27%;
-    --ring: 224.3 76.3% 48%;
+    --success: 131 54% 40%;
+    --success-foreground: 0 0% 100%;
 
-    --sidebar-background: 222.2 47.4% 11.2%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 217.2 91.2% 59.8%;
-    --sidebar-primary-foreground: 222.2 47.4% 11.2%;
-    --sidebar-accent: 217.2 19% 27%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217.2 19% 27%;
-    --sidebar-ring: 224.3 76.3% 48%;
+    --border: 213 40% 30%;
+    --input: 213 40% 30%;
+    --ring: 188 72% 47%;
+
+    --sidebar-background: 213 66% 17%;
+    --sidebar-foreground: 210 33% 98%;
+    --sidebar-primary: 188 72% 47%;
+    --sidebar-primary-foreground: 213 66% 17%;
+    --sidebar-accent: 213 40% 30%;
+    --sidebar-accent-foreground: 210 33% 98%;
+    --sidebar-border: 213 40% 30%;
+    --sidebar-ring: 188 72% 47%;
   }
 }
 
@@ -171,4 +177,120 @@
 .animate-scroll-bounce {
   animation: scrollBounce 2s ease-in-out infinite;
 }
+
+/* Student Dashboard Light Theme Overrides */
+.min-h-screen.bg-slate-50 {
+  --background: 210 33% 98%;
+  --foreground: 213 66% 17%;
+  --card: 0 0% 100%;
+  --card-foreground: 213 66% 17%;
+}
+
+/* Ensure these overrides ONLY apply inside main content container */
+.min-h-screen.bg-slate-50 main .bg-\[\#1a1a1a\],
+.min-h-screen.bg-slate-50 main .bg-\[\#121212\] {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05) !important;
+}
+
+.min-h-screen.bg-slate-50 main .bg-white\/5 {
+  background-color: #f8fafc !important;
+}
+
+.min-h-screen.bg-slate-50 main .bg-white\/10 {
+  background-color: #f1f5f9 !important;
+}
+
+.min-h-screen.bg-slate-50 main .border-white\/12,
+.min-h-screen.bg-slate-50 main .border-white\/10 {
+  border-color: #cbd5e1 !important;
+}
+
+.min-h-screen.bg-slate-50 main .divide-white\/10 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #e2e8f0 !important;
+}
+
+.min-h-screen.bg-slate-50 main .hover\:bg-white\/10:hover,
+.min-h-screen.bg-slate-50 main .hover\:bg-white\/5:hover {
+  background-color: #f1f5f9 !important;
+}
+
+/* Scoped text colors inside main container to prevent sidebar/navbar leakage */
+.min-h-screen.bg-slate-50 main .text-white,
+.min-h-screen.bg-slate-50 main [class*="text-slate-100"],
+.min-h-screen.bg-slate-50 main [class*="text-slate-200"],
+.min-h-screen.bg-slate-50 main [class*="text-slate-300"],
+.min-h-screen.bg-slate-50 main [class*="text-slate-350"],
+.min-h-screen.bg-slate-50 main [class*="text-neutral-100"],
+.min-h-screen.bg-slate-50 main [class*="text-neutral-200"],
+.min-h-screen.bg-slate-50 main [class*="text-white/90"],
+.min-h-screen.bg-slate-50 main [class*="text-white/80"] {
+  color: #0f172a !important; /* text-slate-900 */
+}
+
+.min-h-screen.bg-slate-50 main [class*="text-white/70"],
+.min-h-screen.bg-slate-50 main [class*="text-white/60"],
+.min-h-screen.bg-slate-50 main [class*="text-slate-400"],
+.min-h-screen.bg-slate-50 main [class*="text-slate-450"],
+.min-h-screen.bg-slate-50 main [class*="text-neutral-400"] {
+  color: #475569 !important; /* text-slate-600 */
+}
+
+.min-h-screen.bg-slate-50 main [class*="text-white/40"],
+.min-h-screen.bg-slate-50 main [class*="text-white/30"],
+.min-h-screen.bg-slate-50 main [class*="text-slate-500"],
+.min-h-screen.bg-slate-50 main [class*="text-neutral-500"] {
+  color: #64748b !important; /* text-slate-500 */
+}
+
+/* Maintain white text on buttons & tags */
+.min-h-screen.bg-slate-50 main .bg-blue-600,
+.min-h-screen.bg-slate-50 main .bg-blue-600 *,
+.min-h-screen.bg-slate-50 main .bg-blue-500,
+.min-h-screen.bg-slate-50 main .bg-blue-500 *,
+.min-h-screen.bg-slate-50 main .bg-red-600,
+.min-h-screen.bg-slate-50 main .bg-red-600 *,
+.min-h-screen.bg-slate-50 main .bg-red-500,
+.min-h-screen.bg-slate-50 main .bg-red-500 *,
+.min-h-screen.bg-slate-50 main .bg-emerald-500,
+.min-h-screen.bg-slate-50 main .bg-emerald-500 *,
+.min-h-screen.bg-slate-50 main .bg-emerald-600,
+.min-h-screen.bg-slate-50 main .bg-emerald-600 *,
+.min-h-screen.bg-slate-50 main .bg-indigo-600,
+.min-h-screen.bg-slate-50 main .bg-indigo-600 *,
+.min-h-screen.bg-slate-50 main .bg-indigo-500,
+.min-h-screen.bg-slate-50 main .bg-indigo-500 *,
+.min-h-screen.bg-slate-50 main button.text-white {
+  color: #ffffff !important;
+}
+
+/* Enforce clear input layouts */
+.min-h-screen.bg-slate-50 main input,
+.min-h-screen.bg-slate-50 main textarea,
+.min-h-screen.bg-slate-50 main select {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+.min-h-screen.bg-slate-50 main input::placeholder,
+.min-h-screen.bg-slate-50 main textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+.min-h-screen.bg-slate-50 main hr {
+  border-color: #e2e8f0 !important;
+}
+
+/* Hide sidebar scrollbar */
+aside nav {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important;  /* IE and Edge */
+}
+aside nav::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Opera */
+}
+
+
 

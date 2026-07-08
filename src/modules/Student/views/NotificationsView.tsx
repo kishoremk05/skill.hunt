@@ -112,17 +112,17 @@ export default function NotificationsView() {
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 text-left">
       {/* Header view */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-black text-white tracking-tight">Notifications</h2>
-          <p className="text-xs text-white/40 mt-1">Stay updated with reviews, standings, and project statuses.</p>
+          <h2 className="text-2xl font-black text-slate-900 tracking-tight">Notifications</h2>
+          <p className="text-xs text-slate-500 mt-1">Stay updated with reviews, standings, and project statuses.</p>
         </div>
         {unreadCount > 0 && (
           <button
             onClick={handleMarkAllAsRead}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/5 text-white rounded-xl text-xs font-bold border border-white/12 hover:bg-white/10 transition-all"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-bold border border-slate-200 hover:bg-slate-200/80 transition-all shadow-sm focus:outline-none"
           >
             <Check className="h-4 w-4" /> Mark all as read
           </button>
@@ -130,29 +130,29 @@ export default function NotificationsView() {
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center items-center py-20">
-          <RefreshCw className="h-8 w-8 animate-spin text-white" />
+        <div className="flex justify-center items-center py-20 bg-white border border-slate-200 shadow-sm rounded-2xl">
+          <RefreshCw className="h-8 w-8 animate-spin text-blue-600" />
         </div>
       ) : (
-        <div className="bg-[#1a1a1a] border border-white/12 shadow-md p-6 sm:p-8 space-y-6 rounded-3xl">
+        <div className="bg-white border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6 rounded-2xl">
           {/* Filters */}
-          <div className="flex border-b border-white/12 pb-px">
+          <div className="flex border-b border-slate-100 pb-px">
             <button
               onClick={() => setFilter("all")}
-              className={`px-4 py-2 text-xs font-bold border-b-2 transition-all -mb-px ${
+              className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-all -mb-px focus:outline-none ${
                 filter === "all"
-                  ? "border-white text-white"
-                  : "border-transparent text-white/40 hover:text-white"
+                  ? "border-blue-600 text-blue-600"
+                  : "border-transparent text-slate-400 hover:text-slate-600"
               }`}
             >
               All Notifications ({notifications.length})
             </button>
             <button
               onClick={() => setFilter("unread")}
-              className={`px-4 py-2 text-xs font-bold border-b-2 transition-all -mb-px ${
+              className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-all -mb-px focus:outline-none ${
                 filter === "unread"
-                  ? "border-white text-white"
-                  : "border-transparent text-white/40 hover:text-white"
+                  ? "border-blue-600 text-blue-600"
+                  : "border-transparent text-slate-400 hover:text-slate-600"
               }`}
             >
               Unread ({unreadCount})
@@ -160,10 +160,10 @@ export default function NotificationsView() {
           </div>
 
           {filteredNotifications.length === 0 ? (
-            <div className="text-center py-12 text-white/40 flex flex-col items-center justify-center">
-              <MailOpen className="h-10 w-10 text-white/20 mb-2" />
-              <p className="text-sm font-bold">No notifications to display</p>
-              <p className="text-xs">You are all caught up!</p>
+            <div className="text-center py-12 text-slate-400 flex flex-col items-center justify-center">
+              <MailOpen className="h-10 w-10 text-slate-300 mb-2" />
+              <p className="text-sm font-bold text-slate-700">No notifications to display</p>
+              <p className="text-xs text-slate-500">You are all caught up!</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -173,31 +173,31 @@ export default function NotificationsView() {
                   onClick={() => !notif.is_read && handleMarkAsRead(notif.id)}
                   className={`flex items-start justify-between p-4 rounded-2xl border transition-all cursor-pointer ${
                     notif.is_read
-                      ? "bg-[#1a1a1a] border-white/12 opacity-60 hover:opacity-85"
-                      : "bg-white/5 border-white/12 hover:bg-white/10 font-semibold"
+                      ? "bg-slate-50/40 border-slate-150 opacity-70 hover:opacity-100"
+                      : "bg-white border-slate-200 hover:border-slate-300 shadow-sm font-semibold"
                   }`}
                 >
                   <div className="flex gap-3">
                     <div
-                      className={`p-2.5 rounded-xl mt-0.5 ${
+                      className={`p-2.5 rounded-xl mt-0.5 shrink-0 ${
                         notif.is_read
-                          ? "bg-white/10 text-white/40"
-                          : "bg-white/10 text-white"
+                          ? "bg-slate-100 text-slate-400"
+                          : "bg-blue-50 text-blue-600 border border-blue-100"
                       }`}
                     >
                       <Bell className="h-4 w-4" />
                     </div>
-                    <div className="space-y-1 pr-4">
-                      <h4 className="text-sm font-extrabold text-white flex items-center gap-2">
+                    <div className="space-y-1 pr-4 text-left">
+                      <h4 className="text-sm font-extrabold text-slate-800 flex items-center gap-2">
                         {notif.title}
                         {!notif.is_read && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-blue-650 animate-pulse" />
                         )}
                       </h4>
-                      <p className="text-xs text-white/70 leading-relaxed">
+                      <p className="text-xs text-slate-600 leading-relaxed font-semibold">
                         {notif.message}
                       </p>
-                      <span className="text-[10px] text-white/40 block font-medium">
+                      <span className="text-[10px] text-slate-400 block font-bold tracking-wide">
                         {new Date(notif.created_at).toLocaleDateString("en-US", {
                           hour: "numeric",
                           minute: "numeric",
@@ -211,7 +211,7 @@ export default function NotificationsView() {
                       e.stopPropagation();
                       handleDelete(notif.id);
                     }}
-                    className="p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-red-400 transition-all shrink-0"
+                    className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-red-500 transition-all shrink-0"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>

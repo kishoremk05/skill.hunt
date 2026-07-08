@@ -67,21 +67,21 @@ export default function AnalyticsView() {
             value: `${evaluatedCount} / ${assignedCount}`,
             change: `${completionRate}% Completed`,
             icon: Users,
-            color: "text-violet-600 bg-violet-50 dark:bg-violet-950/40",
+            color: "text-violet-750 bg-violet-50 border-violet-100",
           },
           {
             label: "Average Project Score",
             value: `${avgScore.toFixed(1)} / 100`,
             change: "Based on your evaluations",
             icon: TrendingUp,
-            color: "text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40",
+            color: "text-blue-750 bg-blue-50 border-blue-100",
           },
           {
             label: "Highest Score Awarded",
             value: `${maxScore.toFixed(1)} / 100`,
             change: "Highest grade given by you",
             icon: Award,
-            color: "text-amber-500 bg-amber-50 dark:bg-amber-950/40",
+            color: "text-amber-750 bg-amber-50 border-amber-100",
           },
         ]);
 
@@ -163,20 +163,20 @@ export default function AnalyticsView() {
   if (loading) {
     return (
       <div className="min-h-[400px] flex flex-col items-center justify-center gap-2">
-        <Loader2 className="h-8 w-8 animate-spin text-violet-555" />
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
         <span className="text-xs text-slate-500 font-semibold">Calculating analytics...</span>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 text-left">
       {/* Page Header */}
       <div>
-        <h2 className="text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-          <BarChart3 className="h-5.5 w-5.5 text-violet-555" /> Departmental Analytics
+        <h2 className="text-xl font-black text-slate-900 flex items-center gap-2 uppercase tracking-wider">
+          <BarChart3 className="h-5.5 w-5.5 text-slate-500" /> Departmental Analytics
         </h2>
-        <p className="text-xs text-slate-500 mt-0.5">Explore grading distributions, score breakdowns, and performance analytics.</p>
+        <p className="text-xs text-slate-500 mt-0.5 font-semibold">Explore grading distributions, score breakdowns, and performance analytics.</p>
       </div>
 
       {/* Cards Row */}
@@ -186,15 +186,15 @@ export default function AnalyticsView() {
           return (
             <div
               key={idx}
-              className="bg-white dark:bg-[#1a1a1a] p-6 rounded-3xl border border-slate-200/50 dark:border-white/12 shadow-sm flex items-center justify-between"
+              className="bg-white p-6 rounded-2xl border border-slate-300 shadow-sm flex items-center justify-between text-left"
             >
-              <div className="space-y-2">
-                <p className="text-xs font-bold text-slate-400 dark:text-white/40 uppercase tracking-wider">{card.label}</p>
-                <h4 className="text-2xl font-black text-slate-900 dark:text-white">{card.value}</h4>
-                <p className="text-xs text-slate-450 dark:text-white/30 font-semibold">{card.change}</p>
+              <div className="space-y-1.5">
+                <p className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">{card.label}</p>
+                <h4 className="text-2xl font-black text-slate-800">{card.value}</h4>
+                <p className="text-[10px] text-slate-455 font-bold">{card.change}</p>
               </div>
-              <div className={`p-4 rounded-2xl ${card.color}`}>
-                <Icon className="h-6 w-6" />
+              <div className={`p-3.5 rounded-xl border ${card.color}`}>
+                <Icon className="h-5 w-5" />
               </div>
             </div>
           );
@@ -202,16 +202,16 @@ export default function AnalyticsView() {
       </div>
 
       {/* Charts Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Chart 1: Department Averages */}
-        <div className="bg-white dark:bg-[#1a1a1a] rounded-3xl border border-slate-200/50 dark:border-white/12 p-6 sm:p-8 space-y-6">
+        <div className="bg-white rounded-2xl border border-slate-300 shadow-sm p-6 sm:p-8 space-y-6">
           <div>
-            <h3 className="text-base font-black text-slate-900 dark:text-white">Department Performance Comparison</h3>
-            <p className="text-xs text-slate-500 dark:text-white/40 mt-0.5">Compare the average and maximum scores across participating departments.</p>
+            <h3 className="text-sm font-extrabold text-slate-800 uppercase tracking-wider">Department Performance Comparison</h3>
+            <p className="text-xs text-slate-500 mt-0.5 font-semibold leading-relaxed">Compare the average and maximum scores across participating departments.</p>
           </div>
 
           {deptScores.length === 0 ? (
-            <div className="h-80 w-full flex flex-col items-center justify-center gap-2 border border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-6 bg-slate-50/50 dark:bg-white/2">
+            <div className="h-80 w-full flex flex-col items-center justify-center gap-2 border border-dashed border-slate-200 rounded-xl p-6 bg-slate-50/50">
               <Info className="h-5 w-5 text-slate-400" />
               <span className="text-xs text-slate-400 font-semibold">No graded department scores available yet.</span>
             </div>
@@ -219,22 +219,22 @@ export default function AnalyticsView() {
             <div className="h-80 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={deptScores} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" className="dark:hidden" />
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1E293B" className="hidden dark:block" />
-                  <XAxis dataKey="name" stroke="#94A3B8" fontSize={10} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#94A3B8" fontSize={10} tickLine={false} axisLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                  <XAxis dataKey="name" stroke="#64748B" fontSize={10} tickLine={false} axisLine={false} className="font-bold" />
+                  <YAxis stroke="#64748B" fontSize={10} tickLine={false} axisLine={false} className="font-bold" />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "#0F172A",
-                      borderColor: "#334155",
+                      backgroundColor: "#ffffff",
+                      borderColor: "#cbd5e1",
                       borderRadius: "12px",
-                      color: "#fff",
+                      color: "#1e293b",
                       fontSize: "12px",
+                      fontWeight: "bold",
                     }}
                   />
-                  <Legend iconType="circle" wrapperStyle={{ fontSize: '11px', fontWeight: 600 }} />
-                  <Bar dataKey="avgScore" name="Average Score" fill="#8b5cf6" radius={[4, 4, 0, 0]} barSize={24} />
-                  <Bar dataKey="maxScore" name="Maximum Score" fill="#6366f1" radius={[4, 4, 0, 0]} barSize={24} />
+                  <Legend iconType="circle" wrapperStyle={{ fontSize: '11px', fontWeight: 700 }} />
+                  <Bar dataKey="avgScore" name="Average Score" fill="#2563eb" radius={[4, 4, 0, 0]} barSize={20} />
+                  <Bar dataKey="maxScore" name="Maximum Score" fill="#4f46e5" radius={[4, 4, 0, 0]} barSize={20} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -242,14 +242,14 @@ export default function AnalyticsView() {
         </div>
 
         {/* Chart 2: Radar Criteria Distribution */}
-        <div className="bg-white dark:bg-[#1a1a1a] rounded-3xl border border-slate-200/50 dark:border-white/12 p-6 sm:p-8 space-y-6">
+        <div className="bg-white rounded-2xl border border-slate-300 shadow-sm p-6 sm:p-8 space-y-6">
           <div>
-            <h3 className="text-base font-black text-slate-900 dark:text-white">Rubric Attribute Breakdown</h3>
-            <p className="text-xs text-slate-500 dark:text-white/40 mt-0.5">Understand how average submissions score across each of the criteria.</p>
+            <h3 className="text-sm font-extrabold text-slate-800 uppercase tracking-wider">Rubric Attribute Breakdown</h3>
+            <p className="text-xs text-slate-500 mt-0.5 font-semibold leading-relaxed">Understand how average submissions score across each of the criteria.</p>
           </div>
 
           {rubricScores.length === 0 ? (
-            <div className="h-80 w-full flex flex-col items-center justify-center gap-2 border border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-6 bg-slate-50/50 dark:bg-white/2">
+            <div className="h-80 w-full flex flex-col items-center justify-center gap-2 border border-dashed border-slate-200 rounded-xl p-6 bg-slate-50/50">
               <Info className="h-5 w-5 text-slate-400" />
               <span className="text-xs text-slate-400 font-semibold">No graded rubric metrics available yet.</span>
             </div>
@@ -257,17 +257,18 @@ export default function AnalyticsView() {
             <div className="h-80 w-full flex items-center justify-center">
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart cx="50%" cy="50%" outerRadius="80%" data={rubricScores}>
-                  <PolarGrid stroke="#94A3B8" strokeOpacity={0.2} />
-                  <PolarAngleAxis dataKey="subject" stroke="#94A3B8" fontSize={11} />
-                  <PolarRadiusAxis angle={30} domain={[0, 10]} stroke="#94A3B8" fontSize={10} />
-                  <Radar name="Average Rubric Score" dataKey="A" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.25} />
+                  <PolarGrid stroke="#94A3B8" strokeOpacity={0.25} />
+                  <PolarAngleAxis dataKey="subject" stroke="#64748B" fontSize={10} className="font-bold" />
+                  <PolarRadiusAxis angle={30} domain={[0, 10]} stroke="#64748B" fontSize={9} className="font-bold" />
+                  <Radar name="Average Rubric Score" dataKey="A" stroke="#2563eb" fill="#2563eb" fillOpacity={0.2} />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "#0F172A",
-                      borderColor: "#334155",
+                      backgroundColor: "#ffffff",
+                      borderColor: "#cbd5e1",
                       borderRadius: "12px",
-                      color: "#fff",
+                      color: "#1e293b",
                       fontSize: "12px",
+                      fontWeight: "bold",
                     }}
                   />
                 </RadarChart>

@@ -51,13 +51,13 @@ export default function AdminSidebar({ activeTab, setActiveTab, isCollapsed, set
 
   return (
     <aside
-      className={`fixed top-0 left-0 bottom-0 z-50 bg-[#121212] border-r border-white/12 flex flex-col justify-between transition-all duration-300 ease-in-out ${
+      className={`fixed top-0 left-0 bottom-0 z-50 bg-[#0F172A] border-r border-white/10 flex flex-col justify-between transition-all duration-300 ease-in-out ${
         isCollapsed ? "-translate-x-full md:translate-x-0 md:w-20" : "translate-x-0 w-64"
       }`}
     >
       <div>
         {/* Header / Logo */}
-        <div className="h-16 flex items-center justify-between px-6 border-b border-white/12">
+        <div className="h-16 flex items-center justify-between px-6 border-b border-white/10">
           {!isCollapsed && (
             <div className="flex items-center gap-2">
               <svg className="w-8 h-8 shrink-0" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -84,7 +84,7 @@ export default function AdminSidebar({ activeTab, setActiveTab, isCollapsed, set
               <span className="text-xs font-black tracking-[0.12em] uppercase text-white truncate">
                 SKILL HUNT
               </span>
-              <span className="text-[8px] bg-white/10 text-white/60 px-1.5 py-0.5 rounded font-bold uppercase border border-white/5 shrink-0">
+              <span className="text-[8px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded font-bold uppercase border border-white/5 shrink-0">
                 Admin
               </span>
             </div>
@@ -133,11 +133,11 @@ export default function AdminSidebar({ activeTab, setActiveTab, isCollapsed, set
                 onClick={() => handleItemClick(item.id)}
                 className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${
                   isActive
-                    ? "bg-white text-black font-black"
-                    : "text-white/40 hover:text-white hover:bg-white/5"
+                    ? "bg-blue-600 text-white font-black"
+                    : "text-slate-300 hover:text-white hover:bg-white/5"
                 }`}
               >
-                <Icon className={`h-4.5 w-4.5 ${isActive ? "text-black" : "text-white/40"}`} />
+                <Icon className={`h-4.5 w-4.5 ${isActive ? "text-white" : "text-slate-400"}`} />
                 {!isCollapsed && <span className="truncate">{item.label}</span>}
               </button>
             );
@@ -146,7 +146,7 @@ export default function AdminSidebar({ activeTab, setActiveTab, isCollapsed, set
       </div>
 
       {/* Footer / Logout */}
-      <div className="p-4 border-t border-white/12 bg-[#121212]">
+      <div className="p-4 border-t border-white/10 bg-[#0F172A]">
         <button
           onClick={() => signOut()}
           className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-red-400 hover:bg-red-500/10 hover:text-red-400 transition-all duration-200"

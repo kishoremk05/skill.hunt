@@ -100,47 +100,47 @@ export default function AdminProfile() {
     <div className="space-y-8">
       {/* Header view */}
       <div>
-        <h2 className="text-2xl font-black text-white tracking-tight">Admin Profile</h2>
-        <p className="text-xs text-white/40 mt-1">Manage your administrator credentials and platform identity details.</p>
+        <h2 className="text-2xl font-black text-slate-800 tracking-tight">Admin Profile</h2>
+        <p className="text-xs text-slate-500 mt-1 font-semibold">Manage your administrator credentials and platform identity details.</p>
       </div>
 
       {isLoading ? (
         <div className="flex justify-center items-center py-20">
-          <RefreshCw className="h-8 w-8 animate-spin text-white" />
+          <RefreshCw className="h-8 w-8 animate-spin text-slate-900" />
         </div>
       ) : (
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
           {/* Visual Avatar Card (4/12) */}
-          <div className="xl:col-span-4 bg-[#1a1a1a] rounded-3xl border border-white/12 shadow-sm p-6 sm:p-8 flex flex-col items-center text-center space-y-4">
+          <div className="xl:col-span-4 bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 flex flex-col items-center text-center space-y-4 text-slate-800 animate-fade-in">
             <div className="relative">
               {avatarUrl ? (
                 <img
                   src={avatarUrl}
                   alt={fullName}
-                  className="w-24 h-24 rounded-3xl object-cover border border-white/12 shadow-md"
+                  className="w-24 h-24 rounded-3xl object-cover border border-slate-200 shadow-md"
                 />
               ) : (
-                <div className="w-24 h-24 rounded-3xl bg-white/10 text-white font-extrabold flex items-center justify-center text-3xl shadow-md border border-white/12">
+                <div className="w-24 h-24 rounded-3xl bg-slate-100 text-slate-800 font-extrabold flex items-center justify-center text-3xl shadow-md border border-slate-200">
                   {getInitials(fullName)}
                 </div>
               )}
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-lg font-black text-white leading-tight">{fullName}</h3>
-              <p className="text-xs text-white/40 font-semibold uppercase tracking-wider">
+              <h3 className="text-lg font-black text-slate-800 leading-tight">{fullName}</h3>
+              <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">
                 Super Administrator
               </p>
             </div>
 
-            <div className="w-full pt-4 border-t border-white/12 space-y-3.5 text-left text-xs">
-              <div className="flex items-center gap-2.5 text-white/70 font-semibold">
-                <Mail className="h-4.5 w-4.5 text-white/40" />
+            <div className="w-full pt-4 border-t border-slate-150 space-y-3.5 text-left text-xs">
+              <div className="flex items-center gap-2.5 text-slate-700 font-semibold">
+                <Mail className="h-4.5 w-4.5 text-slate-400" />
                 <span className="truncate">{email}</span>
               </div>
               {department && (
-                <div className="flex items-center gap-2.5 text-white/70 font-semibold">
-                  <Building className="h-4.5 w-4.5 text-white/40" />
+                <div className="flex items-center gap-2.5 text-slate-700 font-semibold">
+                  <Building className="h-4.5 w-4.5 text-slate-400" />
                   <span>{department}</span>
                 </div>
               )}
@@ -148,17 +148,17 @@ export default function AdminProfile() {
           </div>
 
           {/* Edit Form (8/12) */}
-          <div className="xl:col-span-8 bg-[#1a1a1a] rounded-3xl border border-white/12 shadow-sm p-6 sm:p-8 space-y-6">
+          <div className="xl:col-span-8 bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6 text-slate-800 animate-fade-in">
             <div>
-              <h3 className="text-lg font-black text-white">Profile Settings</h3>
-              <p className="text-xs text-white/40 mt-0.5">Keep your administrator registration records accurate.</p>
+              <h3 className="text-lg font-black text-slate-800">Profile Settings</h3>
+              <p className="text-xs text-slate-500 mt-0.5 font-semibold">Keep your administrator registration records accurate.</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {/* Full Name */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-white/40 uppercase tracking-wider">
+                  <label className="text-xs font-bold text-slate-550 uppercase tracking-wider">
                     Full Name *
                   </label>
                   <input
@@ -166,26 +166,26 @@ export default function AdminProfile() {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     required
-                    className="w-full px-4 py-2.5 border border-white/12 rounded-xl bg-white/5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-white/30"
+                    className="w-full px-4 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-xs text-slate-850 placeholder:text-slate-450 focus:outline-none focus:ring-2 focus:ring-slate-100 focus:border-slate-350 font-semibold"
                   />
                 </div>
 
                 {/* Email (Readonly) */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-white/40 uppercase tracking-wider">
+                  <label className="text-xs font-bold text-slate-550 uppercase tracking-wider">
                     Email Address (Linked)
                   </label>
                   <input
                     type="email"
                     value={email}
                     disabled
-                    className="w-full px-4 py-2.5 border border-dashed border-white/12 rounded-xl bg-white/5 text-xs text-white/40 cursor-not-allowed"
+                    className="w-full px-4 py-2.5 border border-dashed border-slate-200 rounded-xl bg-slate-50 text-xs text-slate-450 cursor-not-allowed font-semibold"
                   />
                 </div>
 
                 {/* Department */}
                 <div className="space-y-1.5 sm:col-span-2">
-                  <label className="text-xs font-bold text-white/40 uppercase tracking-wider">
+                  <label className="text-xs font-bold text-slate-550 uppercase tracking-wider">
                     Department / Division
                   </label>
                   <input
@@ -193,13 +193,13 @@ export default function AdminProfile() {
                     placeholder="e.g. Administration"
                     value={department}
                     onChange={(e) => setDepartment(e.target.value)}
-                    className="w-full px-4 py-2.5 border border-white/12 rounded-xl bg-white/5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-white/30"
+                    className="w-full px-4 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-xs text-slate-850 placeholder:text-slate-450 focus:outline-none focus:ring-2 focus:ring-slate-100 focus:border-slate-350 font-semibold"
                   />
                 </div>
 
                 {/* Avatar URL */}
                 <div className="space-y-1.5 sm:col-span-2">
-                  <label className="text-xs font-bold text-white/40 uppercase tracking-wider">
+                  <label className="text-xs font-bold text-slate-550 uppercase tracking-wider">
                     Avatar Image URL
                   </label>
                   <input
@@ -207,16 +207,16 @@ export default function AdminProfile() {
                     placeholder="https://images.unsplash.com/... or profile image link"
                     value={avatarUrl}
                     onChange={(e) => setAvatarUrl(e.target.value)}
-                    className="w-full px-4 py-2.5 border border-white/12 rounded-xl bg-white/5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-white/30"
+                    className="w-full px-4 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-xs text-slate-850 placeholder:text-slate-450 focus:outline-none focus:ring-2 focus:ring-slate-100 focus:border-slate-350 font-semibold"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end pt-4 border-t border-white/12">
+              <div className="flex justify-end pt-4 border-t border-slate-200">
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-bold text-black bg-white hover:bg-white/85 transition-all disabled:opacity-50 shadow-md"
+                  className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 transition-all disabled:opacity-50 shadow-md active:scale-95"
                 >
                   {isSaving ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
                   Save Changes
