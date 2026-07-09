@@ -46,7 +46,9 @@ Skill Hunt is a premium, web-based platform designed for students to showcase th
    Create a `.env` file in the root directory and populate it with your Supabase credentials:
    ```env
    VITE_SUPABASE_URL=https://your-supabase-project-id.supabase.co
+   VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
    VITE_SUPABASE_PUBLISHABLE_KEY=your-supabase-anon-key
+   SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
    ```
 
 3. **Install Dependencies**:
@@ -110,10 +112,13 @@ This project is fully configured for Vercel deployment (supporting client-side r
 3. In the **Configure Project** step:
    - Ensure the Framework Preset is set to **Vite** (Vercel automatically detects this).
    - Expand the **Environment Variables** section and add the following:
-     - `VITE_SUPABASE_URL` (Value from your `.env` file)
-     - `VITE_SUPABASE_PUBLISHABLE_KEY` (Value from your `.env` file)
+      - `VITE_SUPABASE_URL` (Value from your `.env` file)
+      - `VITE_SUPABASE_ANON_KEY` (Value from your `.env` file)
+      - `VITE_SUPABASE_PUBLISHABLE_KEY` (Value from your `.env` file)
+      - `SUPABASE_SERVICE_ROLE_KEY` (Your Supabase service role key secret)
 4. Click **Deploy**. Vercel will build the project and serve it.
 5. Client-side routing is handled seamlessly by our custom `vercel.json` file.
+6. The automated live preview checker is configured via Vercel Cron jobs and runs every 6 hours hitting `/api/cron-health-check`. You can also test check a specific project manually by making a request to `/api/cron-health-check?projectId=<id>`.
 
 ### 3. Deploying with Docker
 

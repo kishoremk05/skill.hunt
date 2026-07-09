@@ -45,7 +45,7 @@ export default function StudentDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#e5e5e5] text-slate-900 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 bg-slate-50/50 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-sky-100/40 via-slate-50 to-slate-100/90 text-slate-900 relative overflow-hidden">
       {/* Sidebar */}
       <StudentSidebar
         activeTab={activeTab}

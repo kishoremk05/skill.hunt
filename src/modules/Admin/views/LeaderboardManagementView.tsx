@@ -11,14 +11,15 @@ interface LeaderboardItem {
   peerVotes: number;
   finalScore: number;
   isPublished: boolean;
+  isUnranked?: boolean;
 }
 
 export default function LeaderboardManagementView() {
   const [rankings, setRankings] = useState<LeaderboardItem[]>([]);
   const [isBusy, setIsBusy] = useState(false);
   const [globalPublished, setGlobalPublished] = useState(false);
-  const [facWeight, setFacWeight] = useState(60);
-  const [peerWeight, setPeerWeight] = useState(40);
+  const [facWeight, setFacWeight] = useState(85);
+  const [peerWeight, setPeerWeight] = useState(15);
 
   const fetchRankings = async () => {
     try {
@@ -29,8 +30,8 @@ export default function LeaderboardManagementView() {
         .single();
       
       if (settings) {
-        setFacWeight(settings.scoring_faculty_percentage ?? 60);
-        setPeerWeight(settings.scoring_peer_percentage ?? 40);
+        setFacWeight(settings.scoring_faculty_percentage ?? 85);
+        setPeerWeight(settings.scoring_peer_percentage ?? 15);
       }
 
       const { data, error } = await supabase
@@ -86,8 +87,8 @@ export default function LeaderboardManagementView() {
         .eq("is_singleton", true)
         .single();
       
-      const fWeight = settings?.scoring_faculty_percentage ?? 60;
-      const pWeight = settings?.scoring_peer_percentage ?? 40;
+      const fWeight = settings?.scoring_faculty_percentage ?? 85;
+      const pWeight = settings?.scoring_peer_percentage ?? 15;
 
       const { data: projects } = await supabase
         .from("projects")

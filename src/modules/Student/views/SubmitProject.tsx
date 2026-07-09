@@ -270,6 +270,13 @@ export default function SubmitProject({ projectId, onBack, setActiveTab }: Submi
         if (fileInsertError) throw fileInsertError;
       }
 
+      // Trigger background health check if demo URL is provided
+      if (demoUrl && activeProjectId) {
+        fetch(`/api/cron-health-check?projectId=${activeProjectId}`).catch((err) =>
+          console.error("Failed to run initial health check:", err)
+        );
+      }
+
       toast({
         title: status === "submitted" ? "Project Submitted Successfully" : "Project Saved as Draft",
         description: status === "submitted" ? "Your project has been locked for review." : "You can edit this project details later.",

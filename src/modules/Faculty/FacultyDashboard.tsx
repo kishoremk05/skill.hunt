@@ -84,6 +84,7 @@ export default function FacultyDashboard() {
             technologies,
             github_url,
             demo_url,
+            preview_status,
             video_url,
             status,
             created_at,
@@ -122,6 +123,7 @@ export default function FacultyDashboard() {
               technologies: p.technologies || [],
               githubUrl: p.github_url || undefined,
               demoUrl: p.demo_url || undefined,
+              previewStatus: p.preview_status || "unchecked",
               videoUrl: p.video_url || undefined,
               status: isGraded ? "verified" : p.status,
               studentName: student?.full_name || "Unknown Student",
@@ -252,7 +254,7 @@ export default function FacultyDashboard() {
   const selectedProject = projects.find((p) => p.id === selectedProjectId);
 
   return (
-    <div className="min-h-screen bg-[#e5e5e5] text-slate-900 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 bg-slate-50/50 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-sky-100/40 via-slate-50 to-slate-100/90 text-slate-900 relative overflow-hidden">
       {/* Collapsible Left Sidebar */}
       <FacultySidebar
         activeTab={activeTab}

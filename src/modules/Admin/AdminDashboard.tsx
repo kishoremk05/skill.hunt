@@ -118,7 +118,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 bg-slate-50/50 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-sky-100/40 via-slate-50 to-slate-100/90 text-slate-800 relative overflow-hidden">
       {/* Sidebar navigation */}
       <AdminSidebar
         activeTab={activeTab}

@@ -11,6 +11,7 @@ export interface Project {
   technologies: string[];
   githubUrl?: string;
   demoUrl?: string;
+  previewStatus?: string;
   videoUrl?: string;
   status: string;
   studentName: string;
@@ -124,14 +125,24 @@ export default function ProjectDetailCard({ project }: ProjectDetailCardProps) {
             </a>
           )}
           {project.demoUrl && (
-            <a
-              href={project.demoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-black text-white text-xs font-bold hover:bg-[#222222] transition-all shadow-sm uppercase tracking-wider"
-            >
-              <ExternalLink className="h-4 w-4 text-white" /> Live Demo
-            </a>
+            <div className="flex flex-col items-start gap-1">
+              <a
+                href={project.demoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-black text-white text-xs font-bold hover:bg-[#222222] transition-all shadow-sm uppercase tracking-wider"
+              >
+                <ExternalLink className="h-4 w-4 text-white" /> Live Demo
+              </a>
+              {project.previewStatus && (
+                <span className={`text-[10px] font-bold mt-1 ${
+                  project.previewStatus === "live" ? "text-emerald-600" :
+                  project.previewStatus === "down" ? "text-red-500" : "text-slate-500"
+                }`}>
+                  Status: {project.previewStatus === "live" ? "Online" : project.previewStatus === "down" ? "Offline" : "Unchecked"}
+                </span>
+              )}
+            </div>
           )}
           {project.videoUrl && (
             <a

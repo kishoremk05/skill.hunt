@@ -26,6 +26,7 @@ interface Project {
   status: string;
   github_url?: string;
   demo_url?: string;
+  preview_status?: string;
   video_url?: string;
   final_score?: number;
   created_at: string;
@@ -41,6 +42,7 @@ export default function ProjectDetails({ project, onBack }: ProjectDetailsProps)
   const [files, setFiles] = useState<ProjectFile[]>([]);
   const [githubData, setGithubData] = useState<any>(null);
   const [demoHealth, setDemoHealth] = useState<boolean | null>(null);
+  const [previewStatus, setPreviewStatus] = useState<string | null>(project.preview_status || "unchecked");
   const [evaluations, setEvaluations] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -48,6 +50,17 @@ export default function ProjectDetails({ project, onBack }: ProjectDetailsProps)
     const fetchExtraData = async () => {
       try {
         setIsLoading(true);
+        
+        // Fetch project preview status
+        const { data: dbProj } = await supabase
+          .from("projects")
+          .select("preview_status")
+          .eq("id", project.id)
+          .single();
+        if (dbProj) {
+          setPreviewStatus(dbProj.preview_status);
+        }
+
         // Fetch members
         const { data: memData } = await supabase
           .from("project_members")
@@ -256,9 +269,22 @@ export default function ProjectDetails({ project, onBack }: ProjectDetailsProps)
                     <span className="text-[10px] text-slate-400">View Source</span>
                   </div>
                   {githubData && (
-                    <div className="flex items-center gap-3 text-[10px] text-slate-500 font-bold">
-                      <span className="flex items-center gap-1"><Star className="h-3 w-3" /> {githubData.stars}</span>
-                      <span className="flex items-center gap-1"><GitFork className="h-3 w-3" /> {githubData.forks}</span>
+                    <div className="flex flex-col gap-1.5 mt-1 border-t border-slate-100 pt-2 text-[10px] text-slate-500 font-bold">
+                      <div className="flex items-center gap-3">
+                        <span className="flex items-center gap-1"><Star className="h-3 w-3" /> {githubData.stars} stars</span>
+                        <span className="flex items-center gap-1"><GitFork className="h-3 w-3" /> {githubData.forks} forks</span>
+                        {githubData.language && (
+                          <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded ml-auto">
+                            {githubData.language}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center justify-between text-slate-400 font-medium mt-0.5">
+                        <span>Commits: {githubData.commits || "N/A"}</span>
+                        {githubData.lastCommit && (
+                          <span>Last updated: {new Date(githubData.lastCommit).toLocaleDateString()}</span>
+                        )}
+                      </div>
                     </div>
                   )}
                 </a>
@@ -277,9 +303,15 @@ export default function ProjectDetails({ project, onBack }: ProjectDetailsProps)
                     </span>
                     <span className="text-[10px] text-slate-400">Visit Web</span>
                   </div>
-                  {demoHealth !== null && (
-                    <div className={`flex items-center gap-1 text-[10px] font-bold ${demoHealth ? "text-emerald-700" : "text-red-655"}`}>
-                      <Activity className="h-3 w-3" /> {demoHealth ? "Status: Online" : "Status: Unreachable"}
+                  {(previewStatus || demoHealth !== null) && (
+                    <div className={`flex items-center gap-1 text-[10px] font-bold ${
+                      (previewStatus === 'live' || (previewStatus === 'unchecked' && demoHealth === true)) ? "text-emerald-700" : 
+                      (previewStatus === 'down' || (previewStatus === 'unchecked' && demoHealth === false)) ? "text-red-600" : "text-slate-500"
+                    }`}>
+                      <Activity className="h-3 w-3" /> Status: {
+                        (previewStatus === 'live' || (previewStatus === 'unchecked' && demoHealth === true)) ? "Online" : 
+                        (previewStatus === 'down' || (previewStatus === 'unchecked' && demoHealth === false)) ? "Unreachable" : "Checking..."
+                      }
                     </div>
                   )}
                 </a>

@@ -20,10 +20,21 @@ Skill Hunt is a comprehensive project showcase and evaluation platform tailored 
 - **Scoring Weights**: Default 85% Faculty / 15% Peer.
 - **Leaderboard Visibility**: Requires minimum 3 faculty reviews to be ranked.
 - **People's Choice Badge**: Awarded to the project with the highest peer votes.
-- **External Sync**: GitHub repo metadata (stars, forks) and live demo URL health check (no-cors) are fetched on the client side.
+- **External Sync**: GitHub repo metadata (stars, forks, primary language, commit count, and last commit date) are fetched and rendered. Live demo URL health is validated at submission and verified on a recurring 6-hour interval via the `/api/cron-health-check` Vercel Serverless Function.
+
+### Environment Configuration
+Create a `.env` file in the root directory (based on `.env.example`) with the following variables:
+- `VITE_SUPABASE_URL`: Your Supabase Project URL
+- `VITE_SUPABASE_ANON_KEY`: Your Supabase Anon Key
+- `SUPABASE_SERVICE_ROLE_KEY`: Your Supabase Service Role Key (used in serverless functions)
+- `PLATFORM_SMTP_HOST` / `PLATFORM_SMTP_PORT` / `PLATFORM_SMTP_USER` / `PLATFORM_SMTP_PASS` / `PLATFORM_SENDER_EMAIL`: SMTP configurations for sending email invitations.
 
 ### Deployment Instructions
 1. Install Docker on your server.
 2. Build the image: `docker build -t skill-hunt-app .`
 3. Run the container: `docker run -p 8080:80 skill-hunt-app`
-4. Make sure to configure the Supabase URL and ANON KEY in `.env.local` before building, or pass them as build args if refactored.
+4. For hosting on Vercel:
+   - Connect the repository to Vercel.
+   - Configure the environment variables in Vercel settings.
+   - The cron health check will run automatically every 6 hours as defined in `vercel.json`.
+
