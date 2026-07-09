@@ -20,7 +20,7 @@ Skill Hunt is a comprehensive project showcase and evaluation platform tailored 
 - **Scoring Weights**: Default 85% Faculty / 15% Peer.
 - **Leaderboard Visibility**: Requires minimum 3 faculty reviews to be ranked.
 - **People's Choice Badge**: Awarded to the project with the highest peer votes.
-- **External Sync**: GitHub repo metadata (stars, forks, primary language, commit count, and last commit date) are fetched and rendered. Live demo URL health is validated at submission and verified on a recurring 6-hour interval via the `/api/cron-health-check` Vercel Serverless Function.
+- **External Sync**: GitHub repo metadata (stars, forks, primary language, commit count, and last commit date) are fetched and rendered. Live demo URL health is validated at submission and verified on a recurring daily interval via the `/api/cron-health-check` Vercel Serverless Function (restricted to once-per-day due to Vercel Hobby account limits; can be changed to 6 hours `0 */6 * * *` on a Pro plan).
 
 ### Environment Configuration
 Create a `.env` file in the root directory (based on `.env.example`) with the following variables:

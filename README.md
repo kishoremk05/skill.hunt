@@ -118,7 +118,7 @@ This project is fully configured for Vercel deployment (supporting client-side r
       - `SUPABASE_SERVICE_ROLE_KEY` (Your Supabase service role key secret)
 4. Click **Deploy**. Vercel will build the project and serve it.
 5. Client-side routing is handled seamlessly by our custom `vercel.json` file.
-6. The automated live preview checker is configured via Vercel Cron jobs and runs every 6 hours hitting `/api/cron-health-check`. You can also test check a specific project manually by making a request to `/api/cron-health-check?projectId=<id>`.
+6. The automated live preview checker is configured via Vercel Cron jobs and runs once per day hitting `/api/cron-health-check` (due to Vercel Hobby plan restrictions). On Pro plans, this can be increased to run every 6 hours by changing the schedule to `0 */6 * * *` in `vercel.json`. You can also manually trigger a check for a specific project by hitting `/api/cron-health-check?projectId=<id>`.
 
 ### 3. Deploying with Docker
 
